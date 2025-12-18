@@ -1,23 +1,38 @@
+import { Inter, Montserrat } from "next/font/google";
 import "../styles/globals.css";
+import "./admin.css";
+import Sidebar from "@/components/AdminSidebar";
 export const metadata = {
     layout: false, // Tắt layout gốc
+    title: "BadmintonGear",
+    description: "BadmintonGear Store",
+    icons: {
+        icon: "/images/logo.ico",
+        shortcut: "/images/logo.ico",
+        apple: "/images/logo.ico",
+    },
 };
+
+// Cấu hình phông chữ Montserrat
+const montserrat = Montserrat({
+    subsets: ["latin"],
+    weight: ["400", "700"], // Chọn các trọng lượng cần thiết
+    variable: "--font-montserrat", // Tạo biến CSS để sử dụng
+});
+
+const inter = Inter({
+    subsets: ["latin"],
+    weight: ["500", "600"], // Chọn các trọng lượng cần thiết
+    variable: "--font-inter", // Tạo biến CSS để sử dụng
+});
 
 export default function AdminLayout({ children }) {
     return (
         <html lang="en">
-            <body className="antialiased bg-black">
+            <body className="antialiased bg-black font-inter">
                 <div className="flex">
                     {/* Sidebar */}
-                    <aside className="w-1/6 bg-gray-200 h-screen p-5">
-                        <nav className="flex flex-col gap-4">
-                            <a href="/admin/dashboard" className="text-black">Dashboard</a>
-                            <a href="/admin/users" className="text-black">Users</a>
-                            <a href="/admin/orders" className="text-black">Orders</a>
-                            <a href="/admin/products" className="text-black">Products</a>
-                        </nav>
-                    </aside>
-
+                    <Sidebar />
                     {/* Main Content */}
                     <main className="w-4/5 p-10">
                         {children}
