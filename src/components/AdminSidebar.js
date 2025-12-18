@@ -12,7 +12,7 @@ export default function Sidebar() {
     };
 
     return (
-        <aside className="w-fit bg-white h-screen p-5">
+        <aside className="w-7/30 bg-white h-screen p-5">
             <div className="flex items-center gap-2 mb-10 cursor-pointer" id="logo" onClick={() => window.location.href = "/dashboard"}>
                 <Image src={"/images/logo.ico"} alt="logo" width={40} height={40} />
                 <h1 className="text-2xl font-bold"
@@ -52,7 +52,7 @@ export default function Sidebar() {
                         <svg onClick={toggleProductDropdown}
                             className={`transform transition-transform duration-300
                                 ${isProductDropdownOpen ? "rotate-180" : "rotate-0"} `} width="22" height="22" viewBox="0 0 22 22" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M17.1481 7.60198C16.7901 7.244 16.2097 7.244 15.8517 7.60198L10.9999 12.4538L6.1481 7.60198C5.79012 7.244 5.20972 7.244 4.85174 7.60198C4.49376 7.95996 4.49376 8.54036 4.85174 8.89834L10.6758 14.7224C10.8548 14.9014 11.145 14.9014 11.324 14.7224L17.1481 8.89834C17.5061 8.54036 17.5061 7.95996 17.1481 7.60198Z" fill="currentColor" />
+                            <path fillRule="evenodd" clipRule="evenodd" d="M17.1481 7.60198C16.7901 7.244 16.2097 7.244 15.8517 7.60198L10.9999 12.4538L6.1481 7.60198C5.79012 7.244 5.20972 7.244 4.85174 7.60198C4.49376 7.95996 4.49376 8.54036 4.85174 8.89834L10.6758 14.7224C10.8548 14.9014 11.145 14.9014 11.324 14.7224L17.1481 8.89834C17.5061 8.54036 17.5061 7.95996 17.1481 7.60198Z" fill="currentColor" />
                         </svg>
                     </div>
 

@@ -2,6 +2,7 @@ import { Inter, Montserrat } from "next/font/google";
 import "../styles/globals.css";
 import "./admin.css";
 import Sidebar from "@/components/AdminSidebar";
+import AdminHeader from "@/components/AdminHeader";
 export const metadata = {
     layout: false, // Tắt layout gốc
     title: "BadmintonGear",
@@ -34,8 +35,11 @@ export default function AdminLayout({ children }) {
                     {/* Sidebar */}
                     <Sidebar />
                     {/* Main Content */}
-                    <main className="w-4/5 p-10">
-                        {children}
+                    <main className="w-full ">
+                        <AdminHeader />
+                        <div className="px-10 py-10">
+                            {children}
+                        </div>
                     </main>
                 </div>
             </body>
