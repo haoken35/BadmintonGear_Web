@@ -38,7 +38,7 @@ export default function Sidebar() {
                         } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md *:${pathname.startsWith("/product/") ? "text-[#ff8200]" : ""} 
                         ${pathname === "/admin/product" ? "text-white" : ""}`}>
                         <a
-                            href="/product"
+                            href="/productlist"
                             className={`w-full flex gap-2  }`}
                         >
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -60,15 +60,15 @@ export default function Sidebar() {
                     {isProductDropdownOpen && (
                         <div className="ml-6 mt-2 flex flex-col gap-2">
                             <a
-                                href="/product/list"
-                                className={`py-2 ${pathname === "/product/list" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
+                                href="/productlist"
+                                className={`py-2 ${pathname === "/admin/productlist" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
                                     }`}
                             >
                                 Product List
                             </a>
                             <a
-                                href="/product/categories"
-                                className={`py-2 ${pathname === "/product/categories" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
+                                href="/productcategory"
+                                className={`py-2 ${pathname === "/admin/productcategory" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
                                     }`}
                             >
                                 Categories
