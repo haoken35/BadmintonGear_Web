@@ -15,7 +15,7 @@ export default function AdminCategoryItem({ category, onCheck }) {
                     <td className='py-4'>
                         <div className='flex items-center gap-2'>
                             <Image src={category.image} alt={category.name} width={50} height={50} className='object-contain rounded-lg' />
-                            <label className='font-medium text-black'>{category.name}</label>
+                            <label onClick={() => window.location.href = "/categorydetail"}className='font-medium text-black'>{category.name}</label>
                         </div>
                     </td>
                     <td className=''>{numOfProduct}</td>
