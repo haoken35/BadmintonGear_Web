@@ -61,14 +61,14 @@ export default function Sidebar() {
                         <div className="ml-6 mt-2 flex flex-col gap-2">
                             <a
                                 href="/productlist"
-                                className={`py-2 ${pathname === "/admin/productlist" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
+                                className={`pl-2 py-2 ${pathname === "/admin/productlist" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
                                     }`}
                             >
                                 Product List
                             </a>
                             <a
                                 href="/productcategory"
-                                className={`py-2 ${pathname === "/admin/productcategory" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
+                                className={`pl-2 py-2 ${pathname === "/admin/productcategory" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
                                     }`}
                             >
                                 Categories
@@ -78,7 +78,7 @@ export default function Sidebar() {
                 </div>
                 <a
                     href="/order"
-                    className={`flex gap-2 py-2 px-2 ${pathname === "/order" ? "text-blue-600 font-bold" : "text-gray-600"
+                    className={`flex gap-2 py-2 px-2 ${pathname === "/order" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
                         } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md`}
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -91,7 +91,7 @@ export default function Sidebar() {
                 </a>
                 <a
                     href="/customer"
-                    className={`flex gap-2 py-2 px-2 ${pathname === "/customer" ? "text-blue-600 font-bold" : "text-gray-600"
+                    className={`flex gap-2 py-2 px-2 ${pathname === "/customer" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
                         } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md`}
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

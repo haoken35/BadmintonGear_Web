@@ -144,7 +144,7 @@ export default function Product() {
                             <th>
                                 <input
                                     type='checkbox'
-                                    className='w-5 h-5 accent-[#ff8200] ml-5'
+                                    className='w-5 h-5 accent-[#ff8200] ml-5 my-4'
                                     checked={isAllChecked}
                                     onChange={handleSelectAll}
                                 />

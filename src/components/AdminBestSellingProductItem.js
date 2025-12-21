@@ -4,7 +4,7 @@ import Image from "next/image";
 export default function BestSellingProductItem(product) {
     const currentPrice = product.price * (1 - product.discount / 100);
     return (
-        <tr className='shadow-xs hover:bg-gray-50'>
+        <tr className='bg-white shadow-md border-b border-[#F0F1F3]'>
             <td>
                 <div className='flex gap-2 items-center py-4 px-2'>
                     <Image src={product.image} alt="product" height={50} width={50} className="rounded-md" />

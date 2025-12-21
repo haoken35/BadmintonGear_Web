@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function AdminOrderItem({ order, onCheck }) {
     return (
-        <tr>
+        <tr className='bg-white shadow-md border-b border-[#F0F1F3]'>
             <td>
                 <input
                     type='checkbox'

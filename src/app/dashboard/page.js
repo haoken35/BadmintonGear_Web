@@ -306,8 +306,8 @@ export default function DashboardPage() {
                 </div>
                 <table className='w-full mt-5'>
                     <thead className='bg-[#F9FAFB] font-medium'>
-                        <tr className='text-left text-[#344054] font-semibold py-4'>
-                            <th className='py-2 px-4'>Product</th>
+                        <tr className='text-left bg-[#F9F9FC] font-semibold border-b border-[#E0E2E7]'>
+                            <th className='py-4 px-4'>Product</th>
                             <th className='py-2 px-4'>Quantity</th>
                             <th className='py-2 px-4'>Price</th>
                             <th className='py-2 px-4'>Status</th>
@@ -342,11 +342,11 @@ export default function DashboardPage() {
                 </div>
                 <table className='w-full mt-5'>
                     <thead className='bg-[#F9FAFB] font-medium'>
-                        <tr className='text-left text-[#344054] font-semibold '>
+                        <tr className='text-left bg-[#F9F9FC] font-semibold border-b border-[#E0E2E7]'>
                             <th>
                                 <input
                                     type='checkbox'
-                                    className='w-5 h-5 accent-[#ff8200] ml-5'
+                                    className='w-5 h-5 accent-[#ff8200] ml-5 my-4'
                                     checked={isAllChecked}
                                     onChange={handleSelectAll}
                                 />
