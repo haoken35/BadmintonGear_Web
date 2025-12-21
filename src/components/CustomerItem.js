@@ -10,7 +10,7 @@ export default function CustomerItem({customer}) {
                 <div className='flex items-center gap-3 py-4 px-2'>
                     <Image src={customer.image} alt="customer" width={50} height={50} className='rounded-full' />
                     <div>
-                        <h1 className='text-[#344054] font-semibold'>{customer.name}</h1>
+                        <h1 className='text-[#344054] font-semibold' >{customer.name}</h1>
                         <p className='text-[#667085] text-sm'>{customer.email}</p>
                     </div>
                 </div>
