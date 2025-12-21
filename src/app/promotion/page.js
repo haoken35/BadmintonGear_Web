@@ -4,7 +4,6 @@ import AdminPromotionItem from '@/components/AdminPromotionItem';
 
 export default function PromotionPage() {
     const [isAllChecked, setIsAllChecked] = useState(false); // Trạng thái checkbox của thead
-    const [selectedOption, setSelectedOption] = useState('all-times');
     const [promotions, setPromotions] = useState([
         {id: 1, code: 'CODE1', discount: 10, startDate: '2023-01-01', endDate: '2023-12-31', status: 'Active', isChecked: false },
         {id: 2, code: 'CODE2', discount: 20, startDate: '2023-02-01', endDate: '2023-11-30', status: 'Out of turn', isChecked: false },
@@ -65,7 +64,7 @@ export default function PromotionPage() {
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M14.7844 16.1991C11.646 18.6416 7.10629 18.4205 4.22156 15.5358C1.09737 12.4116 1.09737 7.34625 4.22156 4.22205C7.34576 1.09786 12.4111 1.09786 15.5353 4.22205C18.42 7.10677 18.6411 11.6464 16.1986 14.7849L20.4851 19.0713C20.8756 19.4618 20.8756 20.095 20.4851 20.4855C20.0945 20.876 19.4614 20.876 19.0708 20.4855L14.7844 16.1991ZM5.63578 14.1215C7.97892 16.4647 11.7779 16.4647 14.1211 14.1215C16.4642 11.7784 16.4642 7.97941 14.1211 5.63627C11.7779 3.29312 7.97892 3.29312 5.63578 5.63627C3.29263 7.97941 3.29263 11.7784 5.63578 14.1215Z" fill="#667085" />
                     </svg>
-                    <input type='text' placeholder='Search product...' className='px-2 py-2 outline-none' />
+                    <input type='text' placeholder='Search customer...' className='px-2 py-2 outline-none' />
                 </div>
                 <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
