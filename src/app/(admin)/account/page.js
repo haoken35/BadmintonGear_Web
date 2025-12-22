@@ -2,12 +2,15 @@
 import React, { useState, useEffect } from 'react'
 import Cookies from "js-cookie";
 import Image from 'next/image';
+import { changePassword, updateUser } from '@/service/userService';
+import { useRouter } from 'next/navigation';
 
 export default function Account() {
     const [user, setUser] = useState(null);
     const [error, setError] = useState("");
     const [updatedUser, setUpdatedUser] = useState(null);
     const [password, setPassword] = useState("");
+    const route = useRouter();
 
     function isValidEmail(email) {
         // Regex kiểm tra định dạng email cơ bản
@@ -52,6 +55,15 @@ export default function Account() {
         }
     }
 
+    const handleCancel = () => {
+        setUser(user);
+        document.getElementById('newPassword').value = "";
+        document.getElementById('confirmPassword').value = "";
+        document.getElementById('password').value = "";
+        setUpdatedUser(null);
+        setError("");
+    }
+    
     const handleSaveChanges = async () => {
         const newPassword = document.getElementById('newPassword').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
@@ -163,7 +175,7 @@ export default function Account() {
                             <div>{error}</div>
                         </div>
                         <div className='flex justify-end gap-5 items-center mt-5 mr-5'>
-                            <button className='px-4 py-2 rounded-xs cursor-pointer' >Cancel</button>
+                            <button className='px-4 py-2 rounded-xs cursor-pointer' onClick={handleCancel}>Cancel</button>
                             <button className={`bg-[#ff8200] text-white px-4 py-2 rounded-xs cursor-pointer ${(error !== "" || (!updatedUser && password === "") || (updatedUser && updatedUser.name === user.name &&
                                 updatedUser.email === user.email && updatedUser.phonenumber === user.phonenumber)) ? "disabled bg-gray-700" : ""}`}
                                 onClick={handleSaveChanges}>Save Changes</button>

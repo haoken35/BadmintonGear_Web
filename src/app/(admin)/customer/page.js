@@ -1,38 +1,42 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect,useState } from 'react'
 import CustomerItem from '@/components/CustomerItem';
+import { getAllUsers } from '@/service/userService';
 
 export default function CustomerPage() {
-    const [customers, setCustomers] = useState([
-        {
-            id: 1,
-            name: "John Doe",
-            email: "john@example.com",
-            phone: "+1234567890",
-            image: "/images/user1.png",
-            status: true,
-            createdAt: "2023-01-01",
-        },
-        {
-            id: 2,
-            name: "Jane Smith",
-            email: "jane@example.com",
-            phone: "+0987654321",
-            image: "/images/user1.png",
-            status: false,
-            createdAt: "2023-02-01",
-        },
-        {
-            id: 3,
-            name: "Alice Johnson",
-            email: "alice@example.com",
-            phone: "+1122334455",
-            image: "/images/user1.png",
-            status: true,
-            createdAt: "2023-03-01",
-        },
-    ]);
+    const [showFilters, setShowFilters] = useState(false);
+    const [customers, setCustomers] = useState([]);
+    const [displayCustomers, setDisplayCustomers] = useState(customers);
 
+    const handleSearchChange = () => {
+        const searchInput = document.getElementById('searchInput');
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredCustomers = customers.filter(customer => {
+            return customer.name.toLowerCase().includes(searchTerm) ||
+                customer.email.toLowerCase().includes(searchTerm) ||
+                customer.phonenumber.toLowerCase().includes(searchTerm);
+        });
+        setDisplayCustomers(filteredCustomers);
+    }
+
+    const fetchCustomers = async () => {
+        try {
+            const data = await getAllUsers();
+            setCustomers(data);
+            setDisplayCustomers(data);
+        } catch (error) {
+            console.error("Failed to fetch customers:", error);
+        }
+    }
+
+    const toggleFilter = () => {
+        setShowFilters(!showFilters);
+    }
+
+    useEffect(() => {
+        fetchCustomers();
+    }, []);
+    
     return (
         <div className='font-inter'>
             <div className="flex justify-between items-end">
@@ -60,9 +64,9 @@ export default function CustomerPage() {
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M14.7844 16.1991C11.646 18.6416 7.10629 18.4205 4.22156 15.5358C1.09737 12.4116 1.09737 7.34625 4.22156 4.22205C7.34576 1.09786 12.4111 1.09786 15.5353 4.22205C18.42 7.10677 18.6411 11.6464 16.1986 14.7849L20.4851 19.0713C20.8756 19.4618 20.8756 20.095 20.4851 20.4855C20.0945 20.876 19.4614 20.876 19.0708 20.4855L14.7844 16.1991ZM5.63578 14.1215C7.97892 16.4647 11.7779 16.4647 14.1211 14.1215C16.4642 11.7784 16.4642 7.97941 14.1211 5.63627C11.7779 3.29312 7.97892 3.29312 5.63578 5.63627C3.29263 7.97941 3.29263 11.7784 5.63578 14.1215Z" fill="#667085" />
                     </svg>
-                    <input type='text' placeholder='Search customer...' className='px-2 py-2 outline-none' />
+                    <input id='searchInput' type='text' placeholder='Search customer...' className='px-2 py-2 outline-none' onChange={handleSearchChange}/>
                 </div>
-                <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'>
+                <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2' onClick={toggleFilter}>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10.8333 6.66667C10.8333 7.1269 11.2064 7.5 11.6667 7.5C12.1269 7.5 12.5 7.1269 12.5 6.66667V5.83333H16.6667C17.1269 5.83333 17.5 5.46024 17.5 5C17.5 4.53976 17.1269 4.16667 16.6667 4.16667H12.5V3.33333C12.5 2.8731 12.1269 2.5 11.6667 2.5C11.2064 2.5 10.8333 2.8731 10.8333 3.33333V6.66667Z" fill="#667085" />
                         <path d="M2.5 10C2.5 9.53976 2.8731 9.16667 3.33333 9.16667H4.58333C4.81345 9.16667 5 9.35321 5 9.58333V10.4167C5 10.6468 4.81345 10.8333 4.58333 10.8333H3.33333C2.8731 10.8333 2.5 10.4602 2.5 10Z" fill="#667085" />
@@ -74,12 +78,61 @@ export default function CustomerPage() {
                     Filters
                 </button>
             </div>
+            {showFilters && (
+                <div className="absolute right-10 mt-2 bg-white p-6 rounded-md shadow-lg min-w-[350px] z-50 ">
+                    <h2 className="text-xl font-bold mb-4">Filter Customers</h2>
+                    {/* Ví dụ: filter theo trạng thái */}
+                    <div className="mb-4">
+                        <label className="block mb-2">Status</label>
+                        <select className="w-full border rounded p-2">
+                            <option value="">All</option>
+                            <option value="active">Active</option>
+                            <option value="blocked">Blocked</option>
+                        </select>
+                    </div>
+                    <div className="mb-4">
+                        <label className="block mb-2">Balance</label>
+                        <input type='range' min={0} max = {100000} className='w-full' />
+                    </div>
+
+                    {/* Thêm các filter khác nếu muốn */}
+                    <div className="flex justify-end gap-2 mt-6">
+                        <button
+                            onClick={() => setShowFilters(false)}
+                            className="px-4 py-2 bg-gray-300 rounded"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={() => {
+                                // Xử lý filter ở đây
+                                const filteredCustomers = customers.filter(customer => {
+                                    // Ví dụ: lọc theo trạng thái
+                                    const status = document.querySelector('select').value;
+                                    if (status === "active") {
+                                        return customer.status;
+                                    } else if (status === "blocked") {
+                                        return !customer.status;
+                                    }
+                                    return true; // Trả về tất cả nếu không có filter
+                                });
+                                setDisplayCustomers(filteredCustomers);
+                                setShowFilters(false);
+                            }}
+                            className="px-4 py-2 bg-[#ff8200] text-white rounded"
+                        >
+                            Apply
+                        </button>
+                    </div>
+                </div>
+            )}
             <div className="shadow-md rounded-md border border-[#E0E2E7] mt-5">
                 <table className='w-full py-2 rounded-md overflow-hidden '>
                     <thead className='bg-[#F9F9FC] font-medium border-b border-[#F0F1F3]'>
                         <tr className='text-left text-[#344054] font-semibold rounded-md'>
                             <th className='py-2 px-4'>Customer</th>
                             <th className='py-2 px-4'>Phone</th>
+                            <th className='py-2 px-4'>Address</th>
                             <th className='py-2 px-4'>Orders</th>
                             <th className='py-2 px-4'>Balance</th>
                             <th className='py-2 px-4'>Status</th>
@@ -87,7 +140,7 @@ export default function CustomerPage() {
                         </tr>
                     </thead>
                     <tbody className='text-[#344054] font-normal'>
-                        {customers.map((customer) => (
+                        {displayCustomers.map((customer) => (
                             <CustomerItem
                                 key={customer.id}
                                 customer={customer} />
