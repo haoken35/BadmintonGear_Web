@@ -22,6 +22,24 @@ export default function AdminHeader() {
     const visibleMennu = () => {
         setMenuVisible(!menuVisible);
     };
+
+     const logout = () => {
+        localStorage.removeItem("loginToken");
+        Cookies.remove("token");
+        Cookies.remove("role");
+        localStorage.removeItem("userData");
+        localStorage.removeItem("password");
+        setUser(null);
+        router.push("/login");
+    }
+
+    useEffect(() => {
+        const profile = JSON.parse(localStorage.getItem('userData'));
+        if (profile) {
+            setUser(profile);
+        }
+    }, []);
+
     return (
         <div className='flex items-center justify-end w-full h-fit py-2 gap-5 px-10 bg-white'>
             <div className='flex items-center gap-5 border-r border-gray-200 px-5'>
@@ -70,7 +88,7 @@ export default function AdminHeader() {
             </div>
             {menuVisible && (
                 <div className="absolute right-8 top-15 px-5 py-5 bg-[#000000ee] rounded-md text-[#FF8200] cursor-pointer" onClick={visibleMennu}>
-                    <div className="mb-5 flex items-center gap-2">
+                    <div className="mb-5 flex items-center gap-2" onClick={() => router.push("/account")}>
                         <Image src="/icons/accountic.png" alt="account" height={25} width={25} />
                         <span>Manage My Account</span>
                     </div>

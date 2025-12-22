@@ -2,7 +2,7 @@ import "./admin.css";
 import Sidebar from "@/components/AdminSidebar";
 import AdminHeader from "@/components/AdminHeader";
 import { Montserrat,Inter } from "next/font/google";
-import ProtectedRoute from "@/components/ProtectedRoute";
+
 export const metadata = {
     layout: false, // Tắt layout gốc
     title: "BadmintonGear",
@@ -30,7 +30,6 @@ const inter = Inter({
 export default function AdminLayout({ children }) {
     return (
             <>
-            <ProtectedRoute requiredRole="2">
                 <div className="flex font-inter">
                     {/* Sidebar */}
                     <Sidebar />
@@ -42,7 +41,6 @@ export default function AdminLayout({ children }) {
                         </div>
                     </main>
                 </div>
-            </ProtectedRoute>
             </>        
 
     );
