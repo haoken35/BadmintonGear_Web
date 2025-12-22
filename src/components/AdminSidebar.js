@@ -34,9 +34,9 @@ export default function Sidebar() {
                 </a>
                 <div>
                     <div className={`flex justify-between items-center px-2 py-2
-                        ${pathname.startsWith("/admin/product/") ? "rounded-md text-[#ff8200] bg-[#FBE3CA]" : (pathname === "/product" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600")
+                        ${pathname.startsWith("/product/") ? "rounded-md text-[#ff8200] bg-[#FBE3CA]" : (pathname === "/product" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600")
                         } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md *:${pathname.startsWith("/product/") ? "text-[#ff8200]" : ""} 
-                        ${pathname === "/admin/product" ? "text-white" : ""}`}>
+                        ${pathname === "/product" ? "text-white" : ""}`}>
                         <a
                             href="/productlist"
                             className={`w-full flex gap-2  }`}
@@ -61,14 +61,14 @@ export default function Sidebar() {
                         <div className="ml-6 mt-2 flex flex-col gap-2">
                             <a
                                 href="/productlist"
-                                className={`pl-2 py-2 ${pathname === "/admin/productlist" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
+                                className={`pl-2 py-2 ${pathname === "/productlist" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
                                     }`}
                             >
                                 Product List
                             </a>
                             <a
                                 href="/productcategory"
-                                className={`pl-2 py-2 ${pathname === "/admin/productcategory" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
+                                className={`pl-2 py-2 ${pathname === "/productcategory" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
                                     }`}
                             >
                                 Categories
