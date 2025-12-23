@@ -23,7 +23,6 @@ export const metadata = {
         shortcut: "/images/logo.ico",
         apple: "/images/logo.ico",
     },
-    layout: false, // Tắt layout gốc
 
 };
 

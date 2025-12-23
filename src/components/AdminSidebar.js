@@ -105,7 +105,7 @@ export default function Sidebar() {
                 </a>
                 <a
                     href="/promotion"
-                    className={`flex gap-2 py-2 px-2 ${pathname.startsWith("/admin/promotion") ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
+                    className={`flex gap-2 py-2 px-2 ${pathname.startsWith("/promotion") ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
                         } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md items-center`}
                 >
                     <svg width="29" height="21" viewBox="0 0 29 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -116,8 +116,8 @@ export default function Sidebar() {
 
                     Promotions
                 </a>
-                <a href="/admin/import"
-                    className={`flex gap-2 py-2 px-2 ${pathname.startsWith("/admin/import") ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
+                <a href="/import"
+                    className={`flex gap-2 py-2 px-2 ${pathname.startsWith("/import") ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
                         } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md items-center`}
                 >
                     <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">

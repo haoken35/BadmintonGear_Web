@@ -49,6 +49,12 @@ export default function PromotionDetail(id) {
         });
     }
 
+    useEffect(() => {
+        if (mode === 'add') {
+            console.log('Add mode', inputPromotion);
+        }
+    }, [inputPromotion]);
+
     const handleCancel = () => {
         if (mode === 'add') {
             window.location.href = "/promotion";
@@ -91,8 +97,12 @@ export default function PromotionDetail(id) {
             }
             const response = await updatePromotion(promotionId, body);
             if (response) {
+                alert('Promotion updated successfully');
                 setPromotion(response);
                 setMode('view');
+            }
+            else {
+                alert('Error updating promotion');
             }
         } catch (error) {
             alert('Error updating promotion');
@@ -101,7 +111,8 @@ export default function PromotionDetail(id) {
     }
 
     const addNewPromotion = async () => {
-        if (!inputPromotion || !inputPromotion.code || !inputPromotion.quantity || !inputPromotion.value || !inputPromotion.start || !inputPromotion.end) {
+        console.log(inputPromotion);
+        if (!inputPromotion || !inputPromotion.code || !inputPromotion.max_uses || !inputPromotion.value || !inputPromotion.start || !inputPromotion.end || !inputPromotion.type) {
             alert('Please fill in all fields before saving.');
             return;
         }
@@ -123,7 +134,11 @@ export default function PromotionDetail(id) {
             }
             const response = await addPromotion(body);
             if (response) {
+                alert('Promotion added successfully');
                 window.location.href = "/promotion";
+            }
+            else {
+                alert('Error adding promotion');
             }
         } catch (error) {
             alert('Error adding promotion');
@@ -278,13 +293,13 @@ export default function PromotionDetail(id) {
                                 value={discountType}
                                 onChange={e => { setDiscountType(e.target.value); handleInputChange(e); }}
                             >
-                                <option value="percentage">Percentage (%)</option>
-                                <option value="cash">Cash (VND)</option>
+                                <option value="0">Percentage (%)</option>
+                                <option value="1">Cash (VND)</option>
                             </select>
                         </div>
                         <div className='mt-2 gap-1'>
                             <label className='text-sm font-medium ml-2'>
-                                {discountType === 'percentage' ? 'Promotion Value (%)' : 'Promotion Value (VND)'}
+                                {discountType === '0' ? 'Promotion Value (%)' : 'Promotion Value (VND)'}
                             </label>
                             <input
                                 id='value'
