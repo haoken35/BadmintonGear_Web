@@ -1,29 +1,135 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import React from 'react'
 import AdminOrderItem from "@/components/AdminOrderItem";
+import { getAllOrders } from "@/service/orderService";
 
 export default function OrderPage() {
-    const [isAllChecked, setIsAllChecked] = useState(false); // Trạng thái checkbox của thead
     const [selectedOption, setSelectedOption] = useState('all-times');
     const [orders, setOrders] = useState([]);
+    const [displayOrders, setDisplayOrders] = useState([]);
+    const dateDialogRef = useRef(null);
+    const [showDateDialog, setShowDateDialog] = useState(false);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [minTotal, setMinTotal] = useState(null);
+    const [maxTotal, setMaxTotal] = useState(null);
+    const [statusFilter, setStatusFilter] = useState('');
+    const [showFilter, setShowFilter] = useState(false);
+    const filterRef = useRef(null);
+    const minOrderTotal = orders.length > 0 ? Math.min(...orders.map(o => Number(o.totalprice) || 0)) : 0;
+    const maxOrderTotal = orders.length > 0 ? Math.max(...orders.map(o => Number(o.totalprice) || 0)) : 1000000;
 
-    const handleSelectAll = () => {
-        const newCheckedState = !isAllChecked;
-        setIsAllChecked(newCheckedState);
-        setOrders(orders.map(order => ({ ...order, isChecked: newCheckedState })));
+    const fetchOrders = async () => {
+        try {
+            const response = await getAllOrders();
+            if (response) {
+                console.log("Orders fetched successfully:", response);
+                setOrders(response);
+                setDisplayOrders(response);
+            } else {
+                console.error("Failed to fetch orders");
+            }
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+        }
+    }
+    useEffect(() => {
+        fetchOrders();
+    }, []);
+
+    useEffect(() => {
+        if (orders.length > 0) {
+            const min = Math.min(...orders.map(o => Number(o.totalprice) || 0));
+            const max = Math.max(...orders.map(o => Number(o.totalprice) || 0));
+            if (minTotal === null) setMinTotal(min);
+            if (maxTotal === null) setMaxTotal(max);
+        }
+        // eslint-disable-next-line
+    }, [orders]);
+
+    useEffect(() => {
+        if (!showDateDialog) return;
+        const handleClickOutside = (event) => {
+            if (dateDialogRef.current && !dateDialogRef.current.contains(event.target)) {
+                setShowDateDialog(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showDateDialog]);
+
+    useEffect(() => {
+        if (!showFilter) return;
+        const handleClickOutside = (event) => {
+            if (filterRef.current && !filterRef.current.contains(event.target)) {
+                setShowFilter(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showFilter]);
+
+    useEffect(() => {
+        let filtered = orders;
+        const now = new Date();
+        if (selectedOption === "24-hours") {
+            filtered = orders.filter(order => {
+                const created = new Date(order.createdAt);
+                return now - created <= 24 * 60 * 60 * 1000;
+            });
+        } else if (selectedOption === "7-days") {
+            filtered = orders.filter(order => {
+                const created = new Date(order.createdAt);
+                return now - created <= 7 * 24 * 60 * 60 * 1000;
+            });
+        } else if (selectedOption === "30-days") {
+            filtered = orders.filter(order => {
+                const created = new Date(order.createdAt);
+                return now - created <= 30 * 24 * 60 * 60 * 1000;
+            });
+        } else if (selectedOption === "12-months") {
+            filtered = orders.filter(order => {
+                const created = new Date(order.createdAt);
+                return now - created <= 365 * 24 * 60 * 60 * 1000;
+            });
+        } else if (selectedOption === "custom-date" && startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            filtered = orders.filter(order => {
+                const created = new Date(order.createdAt);
+                return created >= start && created <= end;
+            });
+        }
+
+        if (minTotal !== '') {
+            filtered = filtered.filter(order => Number(order.totalprice) >= Number(minTotal));
+        }
+        if (maxTotal !== '') {
+            filtered = filtered.filter(order => Number(order.totalprice) <= Number(maxTotal));
+        }
+
+        if (statusFilter !== '') {
+            filtered = filtered.filter(order => String(order.status) === String(statusFilter));
+        }
+        setDisplayOrders(filtered);
+    }, [orders, selectedOption, startDate, endDate, minTotal, maxTotal, statusFilter]);
+
+    const handleOpenDateDialog = () => {
+        setShowDateDialog(true);
     };
 
-    // Hàm xử lý khi checkbox trong tbody được chọn
-    const handleOrderCheck = (id) => {
-        const updatedOrders = orders.map(order =>
-            order.id === id ? { ...order, isChecked: !order.isChecked } : order
-        );
-        setOrders(updatedOrders);
+    const handleCloseDateDialog = () => {
+        setShowDateDialog(false);
+    };
 
-        // Kiểm tra nếu tất cả các checkbox con đều được chọn
-        const allChecked = updatedOrders.every(order => order.isChecked);
-        setIsAllChecked(allChecked);
+    const handleApplyDateFilter = () => {
+        setSelectedOption('custom-date');
+        setShowDateDialog(false);
     };
 
     return (
@@ -126,13 +232,15 @@ export default function OrderPage() {
                     </label>
                 </div>
                 <div className='flex gap-3'>
-                    <button className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2 bg-white'>
+                    <button className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2 bg-white'
+                        onClick={handleOpenDateDialog}>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M7.5 2.49984C7.5 2.0396 7.1269 1.6665 6.66667 1.6665C6.20643 1.6665 5.83333 2.0396 5.83333 2.49984H5C3.61929 2.49984 2.5 3.61913 2.5 4.99984V15.8332C2.5 17.2139 3.61929 18.3332 5 18.3332H15C16.3807 18.3332 17.5 17.2139 17.5 15.8332V4.99984C17.5 3.61913 16.3807 2.49984 15 2.49984H14.1667C14.1667 2.0396 13.7936 1.6665 13.3333 1.6665C12.8731 1.6665 12.5 2.0396 12.5 2.49984H7.5ZM15.8333 5.83317V4.99984C15.8333 4.5396 15.4602 4.1665 15 4.1665H14.1667C14.1667 4.62674 13.7936 4.99984 13.3333 4.99984C12.8731 4.99984 12.5 4.62674 12.5 4.1665H7.5C7.5 4.62674 7.1269 4.99984 6.66667 4.99984C6.20643 4.99984 5.83333 4.62674 5.83333 4.1665H5C4.53976 4.1665 4.16667 4.5396 4.16667 4.99984V5.83317H15.8333ZM4.16667 7.49984V15.8332C4.16667 16.2934 4.53976 16.6665 5 16.6665H15C15.4602 16.6665 15.8333 16.2934 15.8333 15.8332V7.49984H4.16667Z" fill="#667085" />
                         </svg>
                         Select Dates
                     </button>
-                    <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'>
+                    <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'
+                        onClick={() => setShowFilter((prev) => !prev)}>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.8333 6.66667C10.8333 7.1269 11.2064 7.5 11.6667 7.5C12.1269 7.5 12.5 7.1269 12.5 6.66667V5.83333H16.6667C17.1269 5.83333 17.5 5.46024 17.5 5C17.5 4.53976 17.1269 4.16667 16.6667 4.16667H12.5V3.33333C12.5 2.8731 12.1269 2.5 11.6667 2.5C11.2064 2.5 10.8333 2.8731 10.8333 3.33333V6.66667Z" fill="#667085" />
                             <path d="M2.5 10C2.5 9.53976 2.8731 9.16667 3.33333 9.16667H4.58333C4.81345 9.16667 5 9.35321 5 9.58333V10.4167C5 10.6468 4.81345 10.8333 4.58333 10.8333H3.33333C2.8731 10.8333 2.5 10.4602 2.5 10Z" fill="#667085" />
@@ -146,18 +254,115 @@ export default function OrderPage() {
 
                 </div>
             </div>
+            {showDateDialog && (
+                <div className="fixed right-20 top-60 z-50">
+                    <div ref={dateDialogRef}
+                        className="bg-white rounded-lg shadow-lg p-6 min-w-[320px]">
+                        <h3 className="text-lg font-semibold mb-4">Select Dates</h3>
+                        <div className="flex flex-col gap-3">
+                            <label className="flex justify-between items-center">
+                                Start Date:
+                                <input
+                                    type="date"
+                                    className="border rounded px-2 py-1 ml-2"
+                                    value={startDate}
+                                    onChange={e => setStartDate(e.target.value)}
+                                />
+                            </label>
+                            <label className="flex justify-between items-center">
+                                End Date:
+                                <input
+                                    type="date"
+                                    className="border rounded px-2 py-1 ml-2"
+                                    value={endDate}
+                                    onChange={e => setEndDate(e.target.value)}
+                                />
+                            </label>
+                        </div>
+                        <div className="flex justify-end gap-2 mt-4">
+                            <button
+                                className="px-4 py-2 rounded bg-gray-200 text-gray-700"
+                                onClick={handleCloseDateDialog}
+                            >
+                                Clear
+                            </button>
+                            <button
+                                className="px-4 py-2 rounded bg-[#ff8200] text-white"
+                                onClick={handleApplyDateFilter}
+                                disabled={!startDate || !endDate}
+                            >
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {showFilter && (
+                <div
+                    ref={filterRef}
+                    className="absolute z-50 bg-white border border-[#E0E2E7] rounded-md shadow-md py-4 px-5 mt-2 right-10"
+                >
+                    <div className="flex flex-col gap-3 mb-2">
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-700">
+                                Min Total: <span className="font-bold text-[#ff8200]">{minTotal}</span>
+                            </label>
+                            <input
+                                type="range"
+                                min={minOrderTotal}
+                                max={maxOrderTotal}
+                                value={minTotal ?? minOrderTotal}
+                                onChange={e => setMinTotal(Number(e.target.value))}
+                                className="w-full"
+                            />
+                        </div>
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-700">
+                                Max Total: <span className="font-bold text-[#ff8200]">{maxTotal}</span>
+                            </label>
+                            <input
+                                type="range"
+                                min={minOrderTotal}
+                                max={maxOrderTotal}
+                                value={maxTotal ?? maxOrderTotal}
+                                onChange={e => setMaxTotal(Number(e.target.value))}
+                                className="w-full"
+                            />
+                        </div>
+                        <div>
+                            <label className="block mb-1 text-sm font-medium text-gray-700">Status</label>
+                            <select
+                                className="border px-2 py-1 rounded w-full"
+                                value={statusFilter}
+                                onChange={e => setStatusFilter(e.target.value)}
+                            >
+                                <option value="">All</option>
+                                <option value="1">Processing</option>
+                                <option value="2">Shipped</option>
+                                <option value="3">Delivered</option>
+                                <option value="4">Cancelled</option>
+                                {/* Thêm trạng thái khác nếu có */}
+                            </select>
+                        </div>
+                    </div>
+                    <div className="flex gap-2 justify-end">
+                        <button
+                            className="bg-gray-200 text-gray-700 px-3 py-1 rounded"
+                            onClick={() => {
+                                setMinTotal(minOrderTotal);
+                                setMaxTotal(maxOrderTotal);
+                                setStatusFilter('');
+                            }}
+                        >
+                            Clear
+                        </button>
+                    </div>
+                </div>
+            )}
             <div className="shadow-md rounded-md border border-[#E0E2E7] mt-5">
                 <table className='w-full py-2 rounded-md overflow-hidden '>
                     <thead className='bg-[#F9F9FC] font-medium border-b border-[#F0F1F3]'>
-                        <tr className='text-left text-[#344054] font-semibold rounded-md'>
-                            <th>
-                                <input
-                                    type='checkbox'
-                                    className='w-5 h-5 accent-[#ff8200] ml-5 my-4'
-                                    checked={isAllChecked}
-                                    onChange={handleSelectAll}
-                                />
-                            </th>
+                        <tr className='text-center text-[#344054] font-semibold rounded-md'>
                             <th className='py-2 px-4'>OrderID</th>
                             <th className='py-2 px-4'>Product</th>
                             <th className='py-2 px-4'>Date</th>
@@ -170,12 +375,11 @@ export default function OrderPage() {
 
                         </tr>
                     </thead>
-                    <tbody className='text-[#344054] font-normal'>
-                        {orders.map((order) => (
+                    <tbody className='text-[#344054] font-normal text-center'>
+                        {displayOrders.map((order) => (
                             <AdminOrderItem
                                 key={order.id}
-                                order={order}
-                                onCheck={() => handleOrderCheck(order.id)} />
+                                order={order} />
                         ))}
                     </tbody>
                 </table>

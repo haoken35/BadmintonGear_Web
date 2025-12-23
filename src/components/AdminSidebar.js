@@ -12,7 +12,7 @@ export default function Sidebar() {
     };
 
     return (
-        <aside className="w-7/30 bg-white min-h-screen p-5">
+        <aside className=" bg-white min-h-screen p-5 fixed left-0 top-0 z-52 ">
             <div className="flex items-center gap-2 mb-10 cursor-pointer" id="logo" onClick={() => window.location.href = "/dashboard"}>
                 <Image src={"/images/logo.ico"} alt="logo" width={40} height={40} />
                 <h1 className="text-2xl font-bold"
