@@ -1,32 +1,59 @@
 "use client"
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import AdminPromotionItem from '@/components/AdminPromotionItem';
+import { getPromotions, deletePromotion } from '@/service/promotionService';
 
 export default function PromotionPage() {
-    const [isAllChecked, setIsAllChecked] = useState(false); // Trạng thái checkbox của thead
-    const [promotions, setPromotions] = useState([
-        {id: 1, code: 'CODE1', discount: 10, startDate: '2023-01-01', endDate: '2023-12-31', status: 'Active', isChecked: false },
-        {id: 2, code: 'CODE2', discount: 20, startDate: '2023-02-01', endDate: '2023-11-30', status: 'Out of turn', isChecked: false },
-        {id: 3, code: 'CODE3', discount: 30, startDate: '2023-03-01', endDate: '2023-10-31', status: 'Inactive', isChecked: false },
-    ]);
+    const [promotions, setPromotions] = useState([]);
+    const [displayPromotions, setDisplayPromotions] = useState([]);
 
-    const handleSelectAll = () => {
-        const newCheckedState = !isAllChecked;
-        setIsAllChecked(newCheckedState);
-        setPromotions(promotions.map(promotion => ({ ...promotion, isChecked: newCheckedState })));
-    };
+    const fetchPromotions = async () => {
+        try {
+            const response = await getPromotions();
+            if (response && response.length > 0) {
+                setPromotions(response);
+                setDisplayPromotions(response);
+            } else {
+                alert('No promotions found');
+            }
+        }
+        catch (error) {
+            console.error('Error fetching promotions:', error);
+            alert('Error fetching promotions');
+        }
+    }
 
-    // Hàm xử lý khi checkbox trong tbody được chọn
-    const handlePromotionCheck = (id) => {
-        const updatedPromotions = promotions.map(promotion =>
-            promotion.id === id ? { ...promotion, isChecked: !promotion.isChecked } : promotion
+    const handleDeletePromotion = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this promotion?')) {
+            return;
+        }
+        try {
+            const response = await deletePromotion(id);
+            if (response === "Promotion deleted successfully") {
+                alert('Promotion deleted successfully');
+                fetchPromotions(); // Refresh the list after deletion
+            } else {
+                alert('Error deleting promotion');
+            }
+        } catch (error) {
+            console.error('Error deleting promotion:', error);
+            alert('Error deleting promotion');
+        }
+    }
+
+    useEffect(() => {
+        fetchPromotions();
+    }, []);
+
+    const handleSearch = () => {
+        const searchInput = document.getElementById('search');
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredPromotions = promotions.filter(promotion =>
+            promotion.code.toLowerCase().includes(searchTerm) ||
+            promotion.id.toString().includes(searchTerm)
         );
-        setPromotions(updatedPromotions);
-
-        // Kiểm tra nếu tất cả các checkbox con đều được chọn
-        const allChecked = updatedPromotions.every(promotion => promotion.isChecked);
-        setIsAllChecked(allChecked);
-    };
+        setDisplayPromotions(filteredPromotions);
+    }
 
     return (
         <div className='font-inter'>
@@ -51,7 +78,7 @@ export default function PromotionPage() {
                         </svg>
                         Export</button>
                     <button className='bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center'
-                        >
+                        onClick={() => window.location.href = '/admin/promotiondetail?mode=add'}>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.16667 15.4167C9.16667 15.8769 9.53976 16.25 10 16.25C10.4602 16.25 10.8333 15.8769 10.8333 15.4167V10.8333H15.4167C15.8769 10.8333 16.25 10.4602 16.25 10C16.25 9.53976 15.8769 9.16667 15.4167 9.16667H10.8333V4.58333C10.8333 4.1231 10.4602 3.75 10 3.75C9.53976 3.75 9.16667 4.1231 9.16667 4.58333V9.16667H4.58333C4.1231 9.16667 3.75 9.53976 3.75 10C3.75 10.4602 4.1231 10.8333 4.58333 10.8333H9.16667V15.4167Z" fill="white" />
                         </svg>
@@ -64,7 +91,7 @@ export default function PromotionPage() {
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M14.7844 16.1991C11.646 18.6416 7.10629 18.4205 4.22156 15.5358C1.09737 12.4116 1.09737 7.34625 4.22156 4.22205C7.34576 1.09786 12.4111 1.09786 15.5353 4.22205C18.42 7.10677 18.6411 11.6464 16.1986 14.7849L20.4851 19.0713C20.8756 19.4618 20.8756 20.095 20.4851 20.4855C20.0945 20.876 19.4614 20.876 19.0708 20.4855L14.7844 16.1991ZM5.63578 14.1215C7.97892 16.4647 11.7779 16.4647 14.1211 14.1215C16.4642 11.7784 16.4642 7.97941 14.1211 5.63627C11.7779 3.29312 7.97892 3.29312 5.63578 5.63627C3.29263 7.97941 3.29263 11.7784 5.63578 14.1215Z" fill="#667085" />
                     </svg>
-                    <input type='text' placeholder='Search customer...' className='px-2 py-2 outline-none' />
+                    <input id='search' type='text' placeholder='Search promotion...' className='px-2 py-2 outline-none' onChange={handleSearch} />
                 </div>
                 <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -81,18 +108,11 @@ export default function PromotionPage() {
             <div className="shadow-md rounded-md border border-[#E0E2E7] mt-5">
                 <table className='w-full py-2 rounded-md overflow-hidden '>
                     <thead className='bg-[#F9F9FC] font-medium border-b border-[#F0F1F3]'>
-                        <tr className='text-left text-[#344054] font-semibold rounded-md'>
-                            <th>
-                                <input
-                                    type='checkbox'
-                                    className='w-5 h-5 accent-[#ff8200] ml-5 my-4'
-                                    checked={isAllChecked}
-                                    onChange={handleSelectAll}
-                                />
-                            </th>
+                        <tr className='text-center text-[#344054] font-semibold rounded-md'>
                             <th className='py-2 px-4'>Promotion ID</th>
                             <th className='py-2 px-4'>Code</th>
                             <th className='py-2 px-4'>Discount</th>
+                            <th className='py-2 px-4'>Quantity</th>
                             <th className='py-2 px-4'>Start Date</th>
                             <th className='py-2 px-4'>End Date</th>
                             <th className='py-2 px-4'>Status</th>
@@ -104,7 +124,7 @@ export default function PromotionPage() {
                             <AdminPromotionItem
                                 key={promotion.id}
                                 promotion={promotion}
-                                onCheck={() => handlePromotionCheck(promotion.id)} />
+                                onDelete={() => handleDeletePromotion(promotion.id)} />
                         ))}
                     </tbody>
                 </table>
