@@ -1,47 +1,70 @@
 "use client"
 import React, { useState } from 'react'
 import Image from 'next/image'
+import { addCategory } from '@/service/categoryService';
 
 export default function AddCategory() {
-    const [isDragging, setIsDragging] = useState(false);
-    const [imagePreview, setImagePreview] = useState(null);
+    const [category, setCategory] = useState(null);
 
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                setImagePreview(reader.result); // Lưu URL của ảnh vào state
-            };
-            reader.readAsDataURL(file);
+    const handleInputChange = () => {
+        const name = document.getElementById('name').value;
+        const description = document.getElementById('description').value;
+        setCategory({
+            name: name,
+            description: description
+        });
+    }
+
+    const handleSave = async () => {
+        try {
+            const response = await addCategory(category);
+            if (response) {
+                window.location.href = "/admin/productcategory";
+            }
+        }
+        catch (error) {
+            console.error('Error adding category:', error);
+            alert('Failed to add category. Please try again.');
         }
     };
 
-    const handleDragOver = (event) => {
-        event.preventDefault();
-        setIsDragging(true); // Hiển thị trạng thái kéo
-    };
+    // const [isDragging, setIsDragging] = useState(false);
+    // const [imagePreview, setImagePreview] = useState(null);
+    // const handleImageUpload = (event) => {
+    //     const file = event.target.files[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.onload = () => {
+    //             setImagePreview(reader.result); // Lưu URL của ảnh vào state
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    // };
+    // const handleDragOver = (event) => {
+    //     event.preventDefault();
+    //     setIsDragging(true); // Hiển thị trạng thái kéo
+    // };
 
-    const handleDragLeave = () => {
-        setIsDragging(false); // Ẩn trạng thái kéo
-    };
+    // const handleDragLeave = () => {
+    //     setIsDragging(false); // Ẩn trạng thái kéo
+    // };
 
-    const handleDrop = (event) => {
-        event.preventDefault();
-        setIsDragging(false); // Ẩn trạng thái kéo
-        const file = event.dataTransfer.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                setImagePreview(reader.result); // Lưu URL của ảnh vào state
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+    // const handleDrop = (event) => {
+    //     event.preventDefault();
+    //     setIsDragging(false); // Ẩn trạng thái kéo
+    //     const file = event.dataTransfer.files[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.onload = () => {
+    //             setImagePreview(reader.result); // Lưu URL của ảnh vào state
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    // };
 
-    const removeImage = () => {
-        setImagePreview(null); // Xóa ảnh theo chỉ số
-    };
+    // const removeImage = () => {
+    //     setImagePreview(null); // Xóa ảnh theo chỉ số
+    // };
 
 
     return (
@@ -66,14 +89,14 @@ export default function AddCategory() {
                     </div>
                 </div>
                 <div className='flex gap-3'>
-                    <button className='border border-[#858D9D] text-[#858D9D] px-4 py-2 rounded-md flex gap-2 items-center'
+                    <button className='border border-[#858D9D] text-[#858D9D] px-4 py-2 rounded-md flex gap-2 items-center cursor-pointer'
                         onClick={() => window.location.href = "/productcategory"}>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M15.1728 13.9941C15.4982 14.3195 15.4982 14.8472 15.1728 15.1726C14.8473 15.498 14.3197 15.498 13.9942 15.1726L10.0002 11.1786L6.00626 15.1726C5.68082 15.4981 5.15318 15.4981 4.82774 15.1726C4.5023 14.8472 4.5023 14.3195 4.82773 13.9941L8.82167 10.0001L4.82758 6.00607C4.50214 5.68064 4.50214 5.15301 4.82758 4.82757C5.15302 4.50214 5.68066 4.50214 6.0061 4.82757L10.0002 8.82158L13.9941 4.82759C14.3195 4.50215 14.8472 4.50214 15.1726 4.82758C15.498 5.15301 15.4981 5.68065 15.1726 6.00609L11.1787 10.0001L15.1728 13.9941Z" fill="#858D9D" />
                         </svg>
                         Cancel</button>
-                    <button className='bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center'
-                    >
+                    <button className='bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+                        disabled={!category || category.name === ""} onClick={handleSave}>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.16667 15.4167C9.16667 15.8769 9.53976 16.25 10 16.25C10.4602 16.25 10.8333 15.8769 10.8333 15.4167V10.8333H15.4167C15.8769 10.8333 16.25 10.4602 16.25 10C16.25 9.53976 15.8769 9.16667 15.4167 9.16667H10.8333V4.58333C10.8333 4.1231 10.4602 3.75 10 3.75C9.53976 3.75 9.16667 4.1231 9.16667 4.58333V9.16667H4.58333C4.1231 9.16667 3.75 9.53976 3.75 10C3.75 10.4602 4.1231 10.8333 4.58333 10.8333H9.16667V15.4167Z" fill="white" />
                         </svg>
@@ -81,8 +104,8 @@ export default function AddCategory() {
                     </button>
                 </div>
             </div>
-            <div className='mt-5 flex justify-between'>
-                <div className='w-4/15'>
+            <div className='mt-5 flex justify-center items-center gap-5'>
+                {/* <div className='w-4/15'>
                     <div className='bg-white shadow-md rounded-lg p-5'>
                         <h2 className='text-xl font-semibold'>Thumbnail</h2>
                         <div className='mt-2 gap-1'>
@@ -134,20 +157,20 @@ export default function AddCategory() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <div className='w-2/3'>
                     <div className='bg-white shadow-md rounded-lg p-5'>
                         <h2 className='text-xl font-semibold'>General Information</h2>
                         <div className='mt-2 gap-1'>
                             <label className='text-sm font-medium ml-2'>Category Name</label>
-                            <input type="text" className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2  outline-none'
-                                placeholder='Type category name here...' />
+                            <input id='name' type="text" className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2  outline-none'
+                                placeholder='Type category name here...' onChange={handleInputChange}/>
                         </div>
 
                         <div className='mt-2 gap-1'>
                             <label className='text-sm font-medium ml-2'>Description</label>
-                            <textarea className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 resize-none  outline-none'
-                                placeholder='Type category description here...' rows="6" />
+                            <textarea id='description' className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 resize-none  outline-none'
+                                placeholder='Type category description here...' rows="6" onChange={handleInputChange}/>
                         </div>
                     </div>
                 </div>

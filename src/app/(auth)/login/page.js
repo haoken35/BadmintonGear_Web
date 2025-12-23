@@ -6,8 +6,6 @@ import { jwtDecode } from "jwt-decode";
 import { getUserById } from "@/service/userService";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-// import Header from "@/components/Header";
-// import Footer from "@/components/Footer"
 
 export default function Login() {
     const [error, setError] = useState(null); // State để lưu thông báo lỗi
@@ -49,7 +47,6 @@ export default function Login() {
     }
     return (
         <div className="w-full h-full">
-            {/* <Header /> */}
             <div className="flex items-center my-20 mx-auto h-auto w-fit bg-[#FFFFF6] rounded-xl text-montserrat">
                 <Image src="/images/loginimage.jpg" alt="image" width={350} height={400} className="rounded-xl" />
                 <div className="ml-10 mr-10 w-fit gap-5 ">
@@ -70,7 +67,6 @@ export default function Login() {
 
                 </div>
             </div>
-            {/* <Footer /> */}
         </div>
     )
 }
