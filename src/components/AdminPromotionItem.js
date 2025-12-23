@@ -1,18 +1,19 @@
 import React from 'react'
 
 export default function AdminPromotionItem({ promotion, onDelete }) {
+    console.log("Promotion item:", promotion);
     return (
         <tr className='bg-white shadow-md border-b border-[#F0F1F3]'>
-            <td className='text-[#ff8200] py-4'>{promotion.id}</td>
-            <td className='py-4'>{promotion.code}</td>
-            <td >{promotion.value}%</td>
-            <td className='py-4'>{promotion.quantity}</td>
-            <td>{new Date(promotion.start).toLocaleDateString("en-US", {
+            <td className='text-[#ff8200] py-4 text-center'>{promotion.id}</td>
+            <td className='py-4 text-center'>{promotion.code}</td>
+            <td className='text-center'>{promotion.value}{promotion.type === 0 ? "%" : "đ"}</td>
+            <td className='py-4 text-center'>{promotion.max_uses}</td>
+            <td className='py-4 text-center'>{new Date(promotion.start).toLocaleDateString("vi-VN", {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit'
             })}</td>
-            <td>{new Date(promotion.end).toLocaleDateString("en-US", {
+            <td className='py-4 text-center'>{new Date(promotion.end).toLocaleDateString("vi-VN", {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit'

@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect, use } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { addPromotion, getPromotionById, updatePromotion } from '@/service/promotionService';
@@ -11,12 +11,16 @@ export default function PromotionDetail(id) {
     const [mode, setMode] = useState(searchParams.get('mode'));
     const [promotion, setPromotion] = useState(null);
     const [inputPromotion, setInputPromotion] = useState(null);
+    const [discountType, setDiscountType] = useState('percentage');
 
-    const handleInputChange = () => {
+    const handleInputChange = (e) => {
         const code = document.getElementById('code').value;
         const description = document.getElementById('description').value;
         const quantity = document.getElementById('quantity').value;
         const value = document.getElementById('value').value;
+        const maxValue = document.getElementById('max_value')?.value;
+        const minOrderValue = document.getElementById('min_order_value')?.value;
+        const type = discountType;
         const start = document.getElementById('start').value;
         const end = document.getElementById('end').value;
         let status = 0; // Default status is Expired
@@ -31,12 +35,14 @@ export default function PromotionDetail(id) {
                 status = 1; // Disabled
             }
         }
-
         setInputPromotion({
             code: code,
             description: description,
-            quantity: quantity,
+            max_uses: quantity,
             value: value,
+            max_value: maxValue,
+            min_order_value: minOrderValue,
+            type: type,
             start: start ? new Date(start).toISOString() : null,
             end: end ? new Date(end).toISOString() : null,
             status: status
@@ -50,9 +56,12 @@ export default function PromotionDetail(id) {
         else {
             document.getElementById('code').value = promotion.code;
             document.getElementById('description').value = promotion.description;
-            document.getElementById('quantity').value = promotion.quantity;
+            document.getElementById('quantity').value = promotion.max_uses;
             document.getElementById('value').value = promotion.value;
+            setDiscountType(promotion.type || 'percentage');
             document.getElementById('start').value = new Date(promotion.start).toISOString().slice(0, 16);
+            document.getElementById('max_value').value = promotion.max_value || '';
+            document.getElementById('min_order_value').value = promotion.min_order_value || '';
             document.getElementById('end').value = new Date(promotion.end).toISOString().slice(0, 16);
             setInputPromotion(null);
             setMode('view');
@@ -60,12 +69,27 @@ export default function PromotionDetail(id) {
     }
 
     const updatePromotionDetails = async () => {
-        if (!inputPromotion || !inputPromotion.code || !inputPromotion.quantity || !inputPromotion.value || !inputPromotion.start || !inputPromotion.end) {
+        if (!inputPromotion || !inputPromotion.code || !inputPromotion.max_uses || !inputPromotion.value || !inputPromotion.start || !inputPromotion.end || !inputPromotion.type) {
             alert('Please fill in all fields before saving.');
             return;
         }
         try {
-            const response = await updatePromotion(promotionId, inputPromotion);
+            const body = {
+                code: inputPromotion.code,
+                description: inputPromotion.description,
+                type: inputPromotion.type,
+                value: inputPromotion.value,
+                min_order_value: inputPromotion.min_order_value,
+                max_value: inputPromotion.max_value,
+                require_point: inputPromotion.require_point,
+                max_uses: inputPromotion.max_uses,
+                used_count: inputPromotion.used_count,
+                userid: inputPromotion.userid,
+                start: inputPromotion.start,
+                end: inputPromotion.end,
+                status: inputPromotion.status,
+            }
+            const response = await updatePromotion(promotionId, body);
             if (response) {
                 setPromotion(response);
                 setMode('view');
@@ -82,7 +106,22 @@ export default function PromotionDetail(id) {
             return;
         }
         try {
-            const response = await addPromotion(inputPromotion);
+            const body = {
+                code: inputPromotion.code,
+                description: inputPromotion.description,
+                type: inputPromotion.type,
+                value: inputPromotion.value,
+                min_order_value: inputPromotion.min_order_value,
+                max_value: inputPromotion.max_value,
+                require_point: inputPromotion.require_point,
+                max_uses: inputPromotion.max_uses,
+                used_count: inputPromotion.used_count,
+                userid: inputPromotion.userid,
+                start: inputPromotion.start,
+                end: inputPromotion.end,
+                status: inputPromotion.status,
+            }
+            const response = await addPromotion(body);
             if (response) {
                 window.location.href = "/promotion";
             }
@@ -104,8 +143,11 @@ export default function PromotionDetail(id) {
         const updatedPromotion = {
             code: promotion.code,
             description: promotion.description,
-            quantity: promotion.quantity,
+            max_uses: promotion.max_uses,
+            min_order_value: promotion.min_order_value,
+            max_value: promotion.max_value,
             value: promotion.value,
+            type: promotion.type || '0',
             start: promotion.start,
             end: promotion.end,
             status: 1 // Set status to Disabled
@@ -174,10 +216,10 @@ export default function PromotionDetail(id) {
                             </svg>
                             Cancel</button>
                         <button className='bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center disabled:opacity-65'
-                            disabled={!inputPromotion || !inputPromotion.code || !inputPromotion.quantity || !inputPromotion.value || !inputPromotion.start
+                            disabled={!inputPromotion || !inputPromotion.code || !inputPromotion.max_uses || !inputPromotion.value || !inputPromotion.start || !inputPromotion.type
                                 || !inputPromotion.end || (inputPromotion.code === promotion?.code && inputPromotion.description === promotion?.description &&
-                                    inputPromotion.quantity === promotion?.quantity && inputPromotion.value === promotion?.value && inputPromotion.start === promotion?.start
-                                    && inputPromotion.end === promotion?.end)}
+                                    inputPromotion.max_uses === promotion?.max_uses && inputPromotion.value === promotion?.value && inputPromotion.start === promotion?.start
+                                    && inputPromotion.end === promotion?.end && inputPromotion.type === (promotion?.type))}
                             onClick={handleSave}>
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M5 2.5C3.61929 2.5 2.5 3.61929 2.5 5V15C2.5 16.3807 3.61929 17.5 5 17.5H15C16.3807 17.5 17.5 16.3807 17.5 15V7.47072C17.5 6.80768 17.2366 6.17179 16.7678 5.70295L14.297 3.23223C13.8282 2.76339 13.1923 2.5 12.5293 2.5H5ZM12.5293 4.16667H12.5V5.83333C12.5 6.75381 11.7538 7.5 10.8333 7.5H7.5C6.57953 7.5 5.83333 6.75381 5.83333 5.83333V4.16667H5C4.53976 4.16667 4.16667 4.53976 4.16667 5V15C4.16667 15.4602 4.53976 15.8333 5 15.8333H5.83333V10.8333C5.83333 9.91286 6.57953 9.16667 7.5 9.16667H12.5C13.4205 9.16667 14.1667 9.91286 14.1667 10.8333V15.8333H15C15.4602 15.8333 15.8333 15.4602 15.8333 15V7.47072C15.8333 7.24971 15.7455 7.03774 15.5893 6.88146L13.1185 4.41074C12.9623 4.25446 12.7503 4.16667 12.5293 4.16667ZM12.5 15.8333V10.8333H7.5V15.8333H12.5ZM7.5 4.16667H10.8333V5.83333H7.5V4.16667Z" fill="white" />
@@ -225,15 +267,59 @@ export default function PromotionDetail(id) {
                             <label className='text-sm font-medium ml-2'>Quantity</label>
                             <input id='quantity' type="number" className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 flex items-center gap-2 outline-none'
                                 placeholder='Type promotion quantity here...'
-                                defaultValue={promotion ? promotion.quantity : 0} min={0}
+                                defaultValue={promotion ? promotion.max_uses : 0} min={0}
                                 onChange={handleInputChange} />
                         </div>
                         <div className='mt-2 gap-1'>
-                            <label className='text-sm font-medium ml-2'>Promotion Value (%)</label>
-                            <input id='value' type="number" className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2  outline-none'
-                                placeholder='Type promotion value. . .' min={0} max={100}
+                            <label className='text-sm font-medium ml-2'>Discount Type</label>
+                            <select
+                                id='type'
+                                className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 outline-none'
+                                value={discountType}
+                                onChange={e => { setDiscountType(e.target.value); handleInputChange(e); }}
+                            >
+                                <option value="percentage">Percentage (%)</option>
+                                <option value="cash">Cash (VND)</option>
+                            </select>
+                        </div>
+                        <div className='mt-2 gap-1'>
+                            <label className='text-sm font-medium ml-2'>
+                                {discountType === 'percentage' ? 'Promotion Value (%)' : 'Promotion Value (VND)'}
+                            </label>
+                            <input
+                                id='value'
+                                type="number"
+                                className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2  outline-none'
+                                placeholder='Type promotion value. . .'
+                                min={0}
+                                max={discountType === 'percentage' ? 100 : undefined}
                                 defaultValue={promotion ? promotion.value : 0}
-                                onChange={handleInputChange} />
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className='mt-2 gap-1'>
+                            <label className='text-sm font-medium ml-2'>Max Value</label>
+                            <input
+                                id='max_value'
+                                type="number"
+                                className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 outline-none'
+                                placeholder='Nhập số tiền giảm tối đa...'
+                                defaultValue={promotion ? promotion.max_value : ''}
+                                min={0}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className='mt-2 gap-1'>
+                            <label className='text-sm font-medium ml-2'>Min Order Value</label>
+                            <input
+                                id='min_order_value'
+                                type="number"
+                                className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 outline-none'
+                                placeholder='Nhập giá trị đơn tối thiểu...'
+                                defaultValue={promotion ? promotion.min_order_value : ''}
+                                min={0}
+                                onChange={handleInputChange}
+                            />
                         </div>
                     </div>
 

@@ -96,16 +96,15 @@ const fetchCustomers = async () => {
               <th className="py-2 px-4">Customer</th>
               <th className="py-2 px-4">Phone</th>
               <th className="py-2 px-4">Address</th>
-              <th className="py-2 px-4">Orders</th>
-              <th className="py-2 px-4">Balance</th>
-              <th className="py-2 px-4">Status</th>
+              <th className="py-2 px-4 text-center">Orders</th>
+              <th className="py-2 px-4 text-center">Balance</th>
               <th className="py-2 px-4">Created</th>
             </tr>
           </thead>
 
           <tbody className="text-[#344054] font-normal">
             {displayCustomers.map((user) => (
-              <CustomerItem key={user.roleid} user={user} />
+              <CustomerItem key={user.id} user={user} />
             ))}
           </tbody>
         </table>

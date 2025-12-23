@@ -109,14 +109,14 @@ export default function PromotionPage() {
                 <table className='w-full py-2 rounded-md overflow-hidden '>
                     <thead className='bg-[#F9F9FC] font-medium border-b border-[#F0F1F3]'>
                         <tr className='text-center text-[#344054] font-semibold rounded-md'>
-                            <th className='py-2 px-4'>Promotion ID</th>
-                            <th className='py-2 px-4'>Code</th>
-                            <th className='py-2 px-4'>Discount</th>
-                            <th className='py-2 px-4'>Quantity</th>
-                            <th className='py-2 px-4'>Start Date</th>
-                            <th className='py-2 px-4'>End Date</th>
-                            <th className='py-2 px-4'>Status</th>
-                            <th className='py-2 px-4'>Action</th>
+                            <th className='py-2 px-4 text-center'>Promotion ID</th>
+                            <th className='py-2 px-4 text-center'>Code</th>
+                            <th className='py-2 px-4 text-center'>Discount</th>
+                            <th className='py-2 px-4 text-center'>Quantity</th>
+                            <th className='py-2 px-4 text-center'>Start Date</th>
+                            <th className='py-2 px-4 text-center'>End Date</th>
+                            <th className='py-2 px-4 text-center'>Status</th>
+                            <th className='py-2 px-4 text-center'>Action</th>
                         </tr>
                     </thead>
                     <tbody className='text-[#344054] font-normal'>

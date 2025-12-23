@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 
-export default function CustomerItem({user}) {
+export default function CustomerItem({ user }) {
     const order = 0; // Placeholder for order count
     const balance = 0;
     return (
@@ -17,11 +17,8 @@ export default function CustomerItem({user}) {
             </td>
             <td className='py-4'>{user.phonenumber}</td>
             <td className='py-4'>{user.address}</td>
-            <td >{order}</td>
-            <td>{balance}</td>
-            <td><div className={`w-fit px-2 py-1 rounded-full ${user.status ? "text-[#0D894F] bg-[#E7F4EE]" : "text-[#F04438] bg-[#FEEDEC]"}`}>
-                     {user.status ? "Active" : "Blocked"}
-            </div></td>
+            <td className='text-center'>{order}</td>
+            <td className='text-center'>{balance}</td>
             <td>
                 {new Date(user.createdAt).toLocaleDateString("en-US", {
                     year: 'numeric',
@@ -29,7 +26,7 @@ export default function CustomerItem({user}) {
                     day: '2-digit'
                 })}
             </td>
-            
+
         </tr>
     )
 }
