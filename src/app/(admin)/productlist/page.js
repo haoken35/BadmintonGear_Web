@@ -1,13 +1,25 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import AdminProductItem from '@/components/AdminProductItem';
 import { getAllProducts, deleteProduct } from '@/service/productService';
+import { getAllCategories } from '@/service/categoryService';
 
 export default function Product() {
     const [products, setProducts] = useState([]);
     const [displayProducts, setDisplayProducts] = useState([]);
     const [isCheck, setIsCheck] = useState(false);
-    const [isAllChecked, setIsAllChecked] = useState(false); // Trạng thái checkbox của thead
+    const [isAllChecked, setIsAllChecked] = useState(false);
+    const [showFilter, setShowFilter] = useState(false);
+    const [filterBrand, setFilterBrand] = useState('');
+    const [filterCategory, setFilterCategory] = useState('');
+    const [filterPrice, setFilterPrice] = useState({ min: '', max: '' });
+    const [categories, setCategories] = useState([]);
+    const [brands, setBrands] = useState([]);
+    const filterRef = useRef(null);
+    const [min, setMin] = useState(0);
+    const [max, setMax] = useState(0);
+    const [tempMinPrice, setTempMinPrice] = useState('');
+    const [tempMaxPrice, setTempMaxPrice] = useState('');
 
      const fetchProducts = async () => {
         try {
@@ -22,10 +34,16 @@ export default function Product() {
         }
     }
 
+    const fetchCategories = async () => {
+        const res = await getAllCategories();
+        if (res) {
+            setCategories(res);
+        }
+    }
     const handleDeleteProduct = async (id) => {
         try {
             await deleteProduct(id);
-            fetchProducts(); // Cập nhật lại danh sách sản phẩm sau khi xóa
+            fetchProducts();
         } catch (error) {
             console.error('Error deleting product:', error);
         }
@@ -40,7 +58,26 @@ export default function Product() {
 
     useEffect(() => {
         fetchProducts();
+        fetchCategories();
     }, []);
+
+    useEffect(() => {
+        const uniqueBrands = [...new Set(products.map(p => p.brand).filter(Boolean))];
+        setBrands(uniqueBrands);
+        const prices = products.map(p => Number(p.price)).filter(p => !isNaN(p));
+        setMin(prices.length > 0 ? Math.min(...prices) : 0);
+        setMax(prices.length > 0 ? Math.max(...prices) : 10000000);
+    }, [products]);
+
+    const handleSearch = (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filteredProducts = products.filter(product =>
+            product.name.toLowerCase().includes(searchTerm) ||
+            (product.brand && product.brand.toLowerCase().includes(searchTerm))
+        );
+        setDisplayProducts(filteredProducts);
+        setIsAllChecked(false);
+    }
 
     const handleSelectAll = () => {
         const newCheckedState = !isAllChecked;
@@ -48,7 +85,6 @@ export default function Product() {
         setProducts(products.map(product => ({ ...product, isChecked: newCheckedState })));
     };
 
-    // Hàm xử lý khi checkbox trong tbody được chọn
     const handleProductCheck = (id) => {
         const updateProducts = products.map(product =>
             product.id === id ? { ...product, isChecked: !product.isChecked } : product
@@ -56,7 +92,6 @@ export default function Product() {
         setProducts(updateProducts);
 
         setDisplayProducts(updateProducts);
-        // Kiểm tra nếu tất cả các checkbox con đều được chọn
         const allChecked = updateProducts.every(product => product.isChecked);
         setIsAllChecked(allChecked);
     };
@@ -71,10 +106,50 @@ export default function Product() {
         const confirmDelete = window.confirm(`Are you sure you want to delete ${checkedProducts.length} product(s)?`);
         if (confirmDelete) {
             checkedProducts.forEach(product => handleDeleteProduct(product.id));
-            setIsCheck(false); // Reset trạng thái checkbox
-            setIsAllChecked(false); // Reset trạng thái checkbox của thead
+            setIsCheck(false); 
+            setIsAllChecked(false);
         }
     }
+
+    useEffect(() => {
+        if (showFilter) {
+            setTempMinPrice(filterPrice.min || '');
+            setTempMaxPrice(filterPrice.max || '');
+        }
+    }, [showFilter, filterPrice]);
+
+    useEffect(() => {
+        let filtered = products;
+        if (filterBrand) {
+            filtered = filtered.filter(p => p.brand?.toLowerCase().includes(filterBrand.toLowerCase()));
+        }
+        if (filterCategory) {
+            filtered = filtered.filter(p => String(p.categoriesid) === filterCategory);
+        }
+        if (filterPrice.min) {
+            filtered = filtered.filter(p => Number(p.price) >= Number(filterPrice.min));
+        }
+        if (filterPrice.max) {
+            filtered = filtered.filter(p => Number(p.price) <= Number(filterPrice.max));
+        }
+        setDisplayProducts(filtered);
+    }, [products, filterBrand, filterCategory, filterPrice]);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (filterRef.current && !filterRef.current.contains(event.target)) {
+                setShowFilter(false);
+            }
+        }
+        if (showFilter) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showFilter]);
 
     useEffect(() => {
         const anyChecked = products.some(product => product.isChecked);
@@ -129,9 +204,10 @@ export default function Product() {
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M14.7844 16.1991C11.646 18.6416 7.10629 18.4205 4.22156 15.5358C1.09737 12.4116 1.09737 7.34625 4.22156 4.22205C7.34576 1.09786 12.4111 1.09786 15.5353 4.22205C18.42 7.10677 18.6411 11.6464 16.1986 14.7849L20.4851 19.0713C20.8756 19.4618 20.8756 20.095 20.4851 20.4855C20.0945 20.876 19.4614 20.876 19.0708 20.4855L14.7844 16.1991ZM5.63578 14.1215C7.97892 16.4647 11.7779 16.4647 14.1211 14.1215C16.4642 11.7784 16.4642 7.97941 14.1211 5.63627C11.7779 3.29312 7.97892 3.29312 5.63578 5.63627C3.29263 7.97941 3.29263 11.7784 5.63578 14.1215Z" fill="#667085" />
                     </svg>
-                    <input type='text' placeholder='Search product...' className='px-2 py-2 outline-none' />
+                    <input type='text' placeholder='Search product...' className='px-2 py-2 outline-none' onChange={handleSearch} />
                 </div>
-                <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'>
+                <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'
+                    onClick={() => setShowFilter((prev) => !prev)}>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10.8333 6.66667C10.8333 7.1269 11.2064 7.5 11.6667 7.5C12.1269 7.5 12.5 7.1269 12.5 6.66667V5.83333H16.6667C17.1269 5.83333 17.5 5.46024 17.5 5C17.5 4.53976 17.1269 4.16667 16.6667 4.16667H12.5V3.33333C12.5 2.8731 12.1269 2.5 11.6667 2.5C11.2064 2.5 10.8333 2.8731 10.8333 3.33333V6.66667Z" fill="#667085" />
                         <path d="M2.5 10C2.5 9.53976 2.8731 9.16667 3.33333 9.16667H4.58333C4.81345 9.16667 5 9.35321 5 9.58333V10.4167C5 10.6468 4.81345 10.8333 4.58333 10.8333H3.33333C2.8731 10.8333 2.5 10.4602 2.5 10Z" fill="#667085" />
@@ -142,6 +218,95 @@ export default function Product() {
                     </svg>
                     Filters
                 </button>
+
+                {showFilter && (
+                    <div
+                        ref={filterRef}
+                        className="absolute z-10 bg-white border border-[#E0E2E7] rounded-md shadow-md p-4 mt-2 right-10"
+                    >
+                        <div className="flex flex-col gap-3 mb-2">
+                            <div>
+                                <label className="block mb-1 text-sm font-medium text-gray-700">Brand</label>
+                                <select
+                                    value={filterBrand}
+                                    onChange={e => setFilterBrand(e.target.value)}
+                                    className="border px-2 py-1 rounded w-full"
+                                >
+                                    <option value="">All Brand</option>
+                                    {brands.map((brand, index) => (
+                                        <option key={index} value={brand}>{brand}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <hr></hr>
+                            <div >
+                                <label className="block mb-1 text-sm font-medium text-gray-700">Price Range</label>
+                                <div className="flex flex-col items-center gap-2">
+                                    <div className='grid grid-cols-3 w-full gap-2 items-center'>
+                                        <span className="text-sm">From:</span>
+                                        <input
+                                            type="range"
+                                            min={min}
+                                            max={tempMaxPrice || max}
+                                            value={tempMinPrice}
+                                            onChange={e => {
+                                                setTempMinPrice(e.target.value);
+                                                setFilterPrice(fp => ({ ...fp, min: e.target.value }));
+                                            }}
+                                            className="w-24"
+                                        />
+                                        <span className="text-sm">{Number(tempMinPrice).toLocaleString()} VND</span>
+                                    </div>
+                                    <div className='grid grid-cols-3 w-full gap-2 items-center'>
+                                        <span className="text-sm">To:</span>
+                                        <input
+                                            type="range"
+                                            min={tempMinPrice || min}
+                                            max={max}
+                                            value={tempMaxPrice}
+                                            onChange={e => {
+                                                setTempMaxPrice(e.target.value);
+                                                setFilterPrice(fp => ({ ...fp, max: e.target.value }));
+                                            }}
+                                            className="w-24"
+                                        />
+                                        <span className="text-sm">{Number(tempMaxPrice).toLocaleString()} VND</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr></hr>
+                            <div>
+                                <label className="block mb-1 text-sm font-medium text-gray-700">Category</label>
+                                <select
+                                    value={filterCategory}
+                                    onChange={e => setFilterCategory(e.target.value)}
+                                    className="border px-2 py-1 rounded w-full"
+                                >
+                                    <option value="">All Categories</option>
+                                    {categories.map(category => (
+                                        <option key={category.id} value={category.id}>{category.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="flex gap-2 justify-end">
+                            <button
+                                className="bg-gray-200 text-gray-700 px-3 py-1 rounded"
+                                onClick={() => {
+                                    setFilterBrand('');
+                                    setFilterCategory('');
+                                    setTempMinPrice('');
+                                    setTempMaxPrice('');
+                                    setFilterPrice({ min: '', max: '' });
+                                    setShowFilter(false);
+                                }}
+                            >
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                )}
+                
             </div>
 
             <div className=' shadow-md rounded-md border border-[#E0E2E7] mt-5'>
