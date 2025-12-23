@@ -1,72 +1,47 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import AdminProductItem from '@/components/AdminProductItem';
+import { getAllProducts, deleteProduct } from '@/service/productService';
 
 export default function Product() {
-    const [products, setProducts] = useState([
-        {
-            id: 1,
-            name: 'Product 1',
-            sku: 'SKU001',
-            category: 'Category 1',
-            stock: 10,
-            price: 100,
-            discount: 10,
-            createdTime: '2023-01-01',
-            image: '/images/product1.png',
-            isChecked: false,
-        },
-        {
-            id: 2,
-            name: 'Product 2',
-            sku: 'SKU002',
-            category: 'Category 2',
-            stock: 20,
-            price: 200,
-            discount: 20,
-            createdTime: '2023-02-01',
-            image: '/images/product1.png',
-            isChecked: false,
-        },
-        {
-            id: 3,
-            name: 'Product 3',
-            sku: 'SKU003',
-            category: 'Category 3',
-            stock: 30,
-            price: 300,
-            discount: 30,
-            createdTime: '2023-03-01',
-            image: '/images/product1.png',
-            isChecked: false,
-        },
-        {
-            id: 4,
-            name: 'Product 4',
-            sku: 'SKU004',
-            category: 'Category 4',
-            stock: 40,
-            price: 400,
-            discount: 40,
-            createdTime: '2023-04-01',
-            image: '/images/product1.png',
-            isChecked: false,
-        },
-        {
-            id: 5,
-            name: 'Product 5',
-            sku: 'SKU005',
-            category: 'Category 5',
-            stock: 50,
-            price: 500,
-            discount: 50,
-            createdTime: '2023-05-01',
-            image: '/images/product1.png',
-            isChecked: false,
-        },
-            
-    ]);
+    const [products, setProducts] = useState([]);
+    const [displayProducts, setDisplayProducts] = useState([]);
+    const [isCheck, setIsCheck] = useState(false);
     const [isAllChecked, setIsAllChecked] = useState(false); // Trạng thái checkbox của thead
+
+     const fetchProducts = async () => {
+        try {
+            const data = await getAllProducts();
+            if (data) {
+                const productsWithCheck = data.map(product => ({ ...product, isChecked: false }));
+                setProducts(productsWithCheck);
+                setDisplayProducts(productsWithCheck);
+            }
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    }
+
+    const handleDeleteProduct = async (id) => {
+        try {
+            await deleteProduct(id);
+            fetchProducts(); // Cập nhật lại danh sách sản phẩm sau khi xóa
+        } catch (error) {
+            console.error('Error deleting product:', error);
+        }
+    }
+
+    const onDeleteProduct = (id) => {
+        const confirmDelete = window.confirm('Are you sure you want to delete this product?');
+        if (confirmDelete) {
+            handleDeleteProduct(id);
+        }
+    }
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
     const handleSelectAll = () => {
         const newCheckedState = !isAllChecked;
         setIsAllChecked(newCheckedState);
@@ -80,10 +55,32 @@ export default function Product() {
         );
         setProducts(updateProducts);
 
+        setDisplayProducts(updateProducts);
         // Kiểm tra nếu tất cả các checkbox con đều được chọn
         const allChecked = updateProducts.every(product => product.isChecked);
         setIsAllChecked(allChecked);
     };
+
+    const handleDeleteChecked = () => {
+        const checkedProducts = products.filter(product => product.isChecked);
+        if (checkedProducts.length === 0) {
+            alert('No products selected for deletion');
+            return;
+        }
+
+        const confirmDelete = window.confirm(`Are you sure you want to delete ${checkedProducts.length} product(s)?`);
+        if (confirmDelete) {
+            checkedProducts.forEach(product => handleDeleteProduct(product.id));
+            setIsCheck(false); // Reset trạng thái checkbox
+            setIsAllChecked(false); // Reset trạng thái checkbox của thead
+        }
+    }
+
+    useEffect(() => {
+        const anyChecked = products.some(product => product.isChecked);
+        setIsCheck(anyChecked);
+        setDisplayProducts(products)
+    }, [products]);
 
     return (
         <div className='px-2 py-5'>
@@ -114,6 +111,16 @@ export default function Product() {
                         </svg>
                         Add Product
                     </button>
+                    {isCheck && (
+                        <button className='bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center' onClick={handleDeleteChecked}>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.33317 8.12484C8.79341 8.12484 9.1665 8.49793 9.1665 8.95817V13.9582C9.1665 14.4184 8.79341 14.7915 8.33317 14.7915C7.87293 14.7915 7.49984 14.4184 7.49984 13.9582V8.95817C7.49984 8.49793 7.87293 8.12484 8.33317 8.12484Z" fill="#fff" />
+                                <path d="M12.4998 8.95817C12.4998 8.49793 12.1267 8.12484 11.6665 8.12484C11.2063 8.12484 10.8332 8.49793 10.8332 8.95817V13.9582C10.8332 14.4184 11.2063 14.7915 11.6665 14.7915C12.1267 14.7915 12.4998 14.4184 12.4998 13.9582V8.95817Z" fill="#fff" />
+                                <path fillRule="evenodd" clipRule="evenodd" d="M14.9998 4.99984V4.1665C14.9998 2.78579 13.8806 1.6665 12.4998 1.6665H7.49984C6.11913 1.6665 4.99984 2.78579 4.99984 4.1665V4.99984H3.74984C3.2896 4.99984 2.9165 5.37293 2.9165 5.83317C2.9165 6.29341 3.2896 6.6665 3.74984 6.6665H4.1665V15.8332C4.1665 17.2139 5.28579 18.3332 6.6665 18.3332H13.3332C14.7139 18.3332 15.8332 17.2139 15.8332 15.8332V6.6665H16.2498C16.7101 6.6665 17.0832 6.29341 17.0832 5.83317C17.0832 5.37293 16.7101 4.99984 16.2498 4.99984H14.9998ZM12.4998 3.33317H7.49984C7.0396 3.33317 6.6665 3.70627 6.6665 4.1665V4.99984H13.3332V4.1665C13.3332 3.70627 12.9601 3.33317 12.4998 3.33317ZM14.1665 6.6665H5.83317V15.8332C5.83317 16.2934 6.20627 16.6665 6.6665 16.6665H13.3332C13.7934 16.6665 14.1665 16.2934 14.1665 15.8332V6.6665Z" fill="#fff" />
+                            </svg>
+                            Delete
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -140,7 +147,7 @@ export default function Product() {
             <div className=' shadow-md rounded-md border border-[#E0E2E7] mt-5'>
                 <table className='w-full py-2 rounded-md overflow-hidden '>
                     <thead className='bg-[#F9F9FC] font-medium border-b border-[#F0F1F3]'>
-                        <tr className='text-left text-[#344054] font-semibold rounded-md'>
+                        <tr className='text-center text-[#344054] font-semibold rounded-md'>
                             <th>
                                 <input
                                     type='checkbox'
@@ -150,7 +157,8 @@ export default function Product() {
                                 />
                             </th>
                             <th className='py-2 px-4'>Product</th>
-                            <th className='py-2 px-4'>SKU</th>
+                            {/* <th className='py-2 px-4'>SKU</th> */}
+                            <th className='py-2 px-4'>Brand</th>
                             <th className='py-2 px-4'>Category</th>
                             <th className='py-2 px-4'>Stock</th>
                             <th className='py-2 px-4'>Price</th>
@@ -161,12 +169,13 @@ export default function Product() {
 
                         </tr>
                     </thead>
-                    <tbody className='text-[#344054] font-normal'>
-                        {products.map((product) => (
+                    <tbody className='text-[#344054] font-normal text-center'>
+                        {displayProducts.map((product) => (
                             <AdminProductItem
                                 key={product.id}
                                 product={product}
                                 onCheck={() => handleProductCheck(product.id)}
+                                onDelete={() => onDeleteProduct(product.id)}
                             />
                         ))}
                     </tbody>

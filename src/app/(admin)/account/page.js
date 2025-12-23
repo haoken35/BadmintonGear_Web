@@ -172,7 +172,7 @@ export default function Account() {
                             <input id='password' type="password" className='bg-gray-100 rounded-xs p-2' placeholder='Current Password' onChange={handleChangePassword} />
                             <input id='newPassword' type="password" className='bg-gray-100 rounded-xs p-2' placeholder='New Password' onChange={handleChangePassword} />
                             <input id='confirmPassword' type="password" className='bg-gray-100 rounded-xs p-2' placeholder='Confirm New Password' onChange={handleChangePassword} />
-                            <div>{error}</div>
+                            <div className='text-sm text-red'>{error}</div>
                         </div>
                         <div className='flex justify-end gap-5 items-center mt-5 mr-5'>
                             <button className='px-4 py-2 rounded-xs cursor-pointer' onClick={handleCancel}>Cancel</button>

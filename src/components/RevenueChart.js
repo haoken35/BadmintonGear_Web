@@ -16,18 +16,18 @@ import {
 
 export default function RevenueChart() {
     const data = [
-        { name: "Jan", Revenue: 880, Sales: 770 },
-        { name: "Feb", Revenue: 790, Sales: 660 },
-        { name: "Mar", Revenue: 950, Sales: 890 },
-        { name: "Apr", Revenue: 870, Sales: 1100 },
-        { name: "May", Revenue: 930, Sales: 720 },
-        { name: "Jun", Revenue: 1020, Sales: 800 },
-        { name: "Jul", Revenue: 980, Sales: 850 },
-        { name: "Aug", Revenue: 1200, Sales: 820 },
-        { name: "Sep", Revenue: 1350, Sales: 880 },
-        { name: "Oct", Revenue: 770, Sales: 740 },
-        { name: "Nov", Revenue: 900, Sales: 1120 },
-        { name: "Dec", Revenue: 850, Sales: 1000 },
+        { name: "Jan", Revenue: 880, Cost: 770 },
+        { name: "Feb", Revenue: 790, Cost: 660 },
+        { name: "Mar", Revenue: 950, Cost: 890 },
+        { name: "Apr", Revenue: 870, Cost: 1100 },
+        { name: "May", Revenue: 930, Cost: 720 },
+        { name: "Jun", Revenue: 1020, Cost: 800 },
+        { name: "Jul", Revenue: 980, Cost: 850 },
+        { name: "Aug", Revenue: 1200, Cost: 820 },
+        { name: "Sep", Revenue: 1350, Cost: 880 },
+        { name: "Oct", Revenue: 770, Cost: 740 },
+        { name: "Nov", Revenue: 900, Cost: 1120 },
+        { name: "Dec", Revenue: 850, Cost: 1000 },
     ];
 
     return (
@@ -61,7 +61,7 @@ export default function RevenueChart() {
                         />
                         <Area
                             type="monotone"
-                            dataKey="Sales"
+                            dataKey="Cost"
                             stroke="#ff8200"
                             fillOpacity={1}
                             fill="url(#colorSale)"

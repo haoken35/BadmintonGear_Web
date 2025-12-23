@@ -5,19 +5,9 @@ import Image from "next/image";
 
 
 export default function AdminHeader() {
-    const [searchVisible, setSearchVisible] = useState(false);
     const [menuVisible, setMenuVisible] = useState(false);
     const [user, setUser] = useState(null); // State để lưu thông tin người dùng
-
-    useEffect(() => {
-        const storedUser = Cookies.get("user"); // Lấy thông tin người dùng từ cookie
-        if (storedUser) {
-            setUser(storedUser); // Nếu có dữ liệu, cập nhật state `user`
-        }
-    }, []);
-    const visibleSearchBar = () => {
-        setSearchVisible(!searchVisible);
-    };
+    const router = useRouter();
 
     const visibleMennu = () => {
         setMenuVisible(!menuVisible);
@@ -43,19 +33,6 @@ export default function AdminHeader() {
     return (
         <div className='flex items-center justify-end w-full h-fit py-2 gap-5 px-10 bg-white'>
             <div className='flex items-center gap-5 border-r border-gray-200 px-5'>
-                <div className={`flex items-center gap-2 rounded-md ${searchVisible ? "bg-[#f5f5f5]" : "bg-white"}`}>
-                    <input
-                        type="text"
-                        placeholder="What are you looking for?"
-                        className={`w-64 p-2 outline-none ${searchVisible ? "visible" : "invisible"
-                            }`}
-                    />
-                    <button onClick={visibleSearchBar} className="flex items-center justify-center cursor-pointer pr-4">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fillRule="evenodd" clipRule="evenodd" d="M14.7847 16.1991C11.6462 18.6416 7.10654 18.4205 4.22181 15.5358C1.09761 12.4116 1.09761 7.34625 4.22181 4.22205C7.346 1.09786 12.4113 1.09786 15.5355 4.22205C18.4202 7.10677 18.6414 11.6464 16.1989 14.7849L20.4853 19.0713C20.8758 19.4618 20.8758 20.095 20.4853 20.4855C20.0948 20.876 19.4616 20.876 19.0711 20.4855L14.7847 16.1991ZM5.63602 14.1215C7.97917 16.4647 11.7782 16.4647 14.1213 14.1215C16.4644 11.7784 16.4644 7.97941 14.1213 5.63627C11.7782 3.29312 7.97917 3.29312 5.63602 5.63627C3.29288 7.97941 3.29288 11.7784 5.63602 14.1215Z" fill="#667085" />
-                        </svg>
-                    </button>
-                </div>
                 <button>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V3.57088C7.60769 4.0561 4.99997 6.97352 4.99997 10.5V15.5L4.28237 16.7558C3.71095 17.7558 4.433 19 5.58474 19H8.12602C8.57006 20.7252 10.1362 22 12 22C13.8638 22 15.4299 20.7252 15.874 19H18.4152C19.5669 19 20.289 17.7558 19.7176 16.7558L19 15.5V10.5C19 6.97354 16.3923 4.05614 13 3.57089V3ZM6.99997 16.0311L6.44633 17H17.5536L17 16.0311V10.5C17 7.73858 14.7614 5.5 12 5.5C9.23854 5.5 6.99997 7.73858 6.99997 10.5V16.0311ZM12 20C11.2597 20 10.6134 19.5978 10.2676 19H13.7324C13.3866 19.5978 12.7403 20 12 20Z" fill="#667085" />

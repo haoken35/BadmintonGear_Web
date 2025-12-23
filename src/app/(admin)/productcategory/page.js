@@ -4,12 +4,7 @@ import AdminCategoryItem from '@/components/AdminCategoryItem';
 import { getAllCategories, deleteCategory } from '@/service/categoryService';
 
 export default function ProductCategory() {
-    const [categories, setCategories] = useState([
-        { id: 1, name: 'Shoes', image: "/icons/shoesic.png", isChecked: false },
-        { id: 2, name: 'Clothing', image: "/icons/clotheic.png", isChecked: false },
-        { id: 3, name: 'Racket', image: "/icons/racketic.png", isChecked: false },
-    ]);
-
+    const [categories, setCategories] = useState([]);
     const [displayCategories, setDisplayCategories] = useState(categories); // Danh sách hiển thị
     const [isCheck, setIsCheck] = useState(false); // Trạng thái checkbox của tbody
     const [isAllChecked, setIsAllChecked] = useState(false); // Trạng thái checkbox của thead
