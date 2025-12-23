@@ -61,6 +61,7 @@ const addProduct = async (data) => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
             method: 'POST',
             headers: {
+                'token': localStorage.getItem('loginToken'),
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data)

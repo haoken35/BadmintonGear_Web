@@ -19,7 +19,7 @@ export default function AdminProductItem({ product, onCheck, onDelete }) {
                 </div>
             </td>
             <td>{product.brand}</td>
-            <td>{product.Category.name}</td>
+            <td>{product.Category ? product.Category.name : ""}</td>
             <td>{product.quantity}</td>
             <td>{Number(product.price).toLocaleString()} VND</td>
             <td className='py-4 flex justify-center items-center'>
