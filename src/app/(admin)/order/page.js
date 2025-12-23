@@ -6,61 +6,7 @@ import AdminOrderItem from "@/components/AdminOrderItem";
 export default function OrderPage() {
     const [isAllChecked, setIsAllChecked] = useState(false); // Trạng thái checkbox của thead
     const [selectedOption, setSelectedOption] = useState('all-times');
-    const [orders, setOrders] = useState([
-        {
-            id: "1",
-            total: 345,
-            date: "2025-05-01",
-            customer: { username: "customer1", email: "cus1@gmail.com" },
-            payment: "Cash On Delivery",
-            state: "Delivered",
-            isChecked: false,
-            products: [
-                { id: "pro001", name: "Product 1", image: "/images/product1.png", price: 166, quantity: 2 },
-                { id: "pro002", name: "Product 2", image: "/images/product1.png", price: 200, quantity: 1 },
-            ],
-        },
-        {
-            id: "2",
-            total: 456,
-            date: "2025-05-02",
-            customer: { username: "customer1", email: "cus1@gmail.com" },
-            payment: "Bank Transfer",
-            state: "Shipped",
-            isChecked: false,
-            products: [
-                { id: "pro001", name: "Product 1", image: "/images/product1.png", price: 166, quantity: 2 },
-            ],
-        },
-        {
-            id: "3",
-            total: 288,
-            date: "2025-05-04",
-            customer: { username: "customer1", email: "cus1@gmail.com" },
-            payment: "Bank Transfer",
-            state: "Processing",
-            isChecked: false,
-            products: [
-                { id: "pro001", name: "Product 3", image: "/images/product1.png", price: 189, quantity: 1 },
-                { id: "pro002", name: "Product 2", image: "/images/product1.png", price: 99, quantity: 1 },
-
-            ],
-        },
-        {
-            id: "4",
-            total: 288,
-            date: "2025-05-04",
-            customer: { username: "customer1", email: "cus1@gmail.com" },
-            payment: "Cash On Delivery",
-            state: "Cancelled",
-            isChecked: false,
-            products: [
-                { id: "pro001", name: "Product 3", image: "/images/product1.png", price: 189, quantity: 1 },
-                { id: "pro002", name: "Product 2", image: "/images/product1.png", price: 99, quantity: 1 },
-
-            ],
-        },
-    ]);
+    const [orders, setOrders] = useState([]);
 
     const handleSelectAll = () => {
         const newCheckedState = !isAllChecked;

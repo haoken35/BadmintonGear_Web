@@ -14,6 +14,7 @@ const getAllProducts = async () =>{
         return products;
     } catch (error) {
         alert('Error fetching products:', error);
+        console.log("API =", process.env.NEXT_PUBLIC_API_URL);
     }
 }
 
