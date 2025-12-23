@@ -18,6 +18,7 @@ export default function Login() {
 
         try {
             const response = await login(username, password);
+            console.log("Login response:", response);
             if (response.message === "Login successfully") {
                 localStorage.setItem("loginToken", response.token); // Store the token in local storage
                 localStorage.setItem("password", password); // Store the password in local storage
@@ -31,7 +32,13 @@ export default function Login() {
                     router.push("/dashboard");
                 }
                 else {
-                    router.push("/");
+                    alert("You are not authorized to access the admin dashboard. Please login with an admin account.");
+                    localStorage.removeItem("loginToken");
+                    localStorage.removeItem("userData");
+                    Cookies.remove("token");
+                    Cookies.remove("role");
+                    setError("You are not authorized to access the admin dashboard.");
+                    document.getElementById("login-form").reset();
                 }
 
             } else {
@@ -42,7 +49,6 @@ export default function Login() {
         } catch (error) {
             setError("Login failed. Please try again.");
             console.log("Login failed:", error);
-            // Handle login failure (e.g., show error message)
         }
     }
     return (
