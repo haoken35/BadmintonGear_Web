@@ -49,7 +49,7 @@ export default function AdminHeader() {
                     {
                         user ? (<div className="flex items-center gap-2"
                             onClick={visibleMennu}>
-                            <Image src={user && user.Imagesuser ? user.Imagesuser.url : "/images/noavatar.png"} alt="account" height={40} width={40} className='rounded-full' />
+                            <Image src={user && user.Imagesuser ? user.Imagesuser.url : "/icons/noavatar.png"} alt="account" height={40} width={40} className='rounded-full' />
                             <div className='flex flex-col gap-1'>
                                 <a id="account" href="/admin/account">{user.username}</a>
                                 <span className="text-sm text-gray-500">Admin</span>

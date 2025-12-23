@@ -1,31 +1,45 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import Cookies from "js-cookie";
 import Image from 'next/image';
-import { changePassword, updateUser } from '@/service/userService';
+import { changePassword, updateUser, uploadAvatar as uploadAvatarAPI, changeAvatar as changeAvatarAPI, getUserById } from '@/service/userService';
 import { useRouter } from 'next/navigation';
 
 export default function Account() {
     const [user, setUser] = useState(null);
     const [error, setError] = useState("");
     const [updatedUser, setUpdatedUser] = useState(null);
-    const [password, setPassword] = useState("");
-    const route = useRouter();
+    const [avatarButton, setAvatarButton] = useState(false);
+    const [avatar, setAvatar] = useState(null);
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phonenumber, setPhonenumber] = useState("");
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const router = useRouter();
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("userData");
+        if (storedUser) {
+            const u = JSON.parse(storedUser);
+            setUser(u);
+            setName(u.name || "");
+            setEmail(u.email || "");
+            setPhonenumber(u.phonenumber || "");
+        }
+    }, []);
 
     function isValidEmail(email) {
-        // Regex kiểm tra định dạng email cơ bản
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    const checkValidInput = () => {
-        const email = document.getElementById('email').value;
-        const name = document.getElementById('name').value;
-        const phonenumber = document.getElementById('phonenumber').value;
+    useEffect(() => {
         setUpdatedUser({
-            name: name,
-            email: email,
-            phonenumber: phonenumber
-        })
+            name,
+            email,
+            phonenumber
+        });
         if (name === "" || phonenumber === "") {
             setError('Please fill in all fields');
         }
@@ -34,14 +48,10 @@ export default function Account() {
         } else {
             setError('');
         }
-    }
+    }, [name, email, phonenumber]);
 
-    const handleChangePassword = async () => {
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        const password = document.getElementById('password').value;
-        setPassword(newPassword);
-        if (password !== "" && password !== localStorage.getItem("password")) {
+    useEffect(() => {
+        if (currentPassword !== "" && currentPassword !== localStorage.getItem("password")) {
             setError('Current password is incorrect');
         }
         else if (newPassword.length < 6 && newPassword !== "") {
@@ -53,77 +63,178 @@ export default function Account() {
         else {
             setError('')
         }
-    }
-
+    }, [currentPassword, newPassword, confirmPassword]);
+    
     const handleCancel = () => {
-        setUser(user);
-        document.getElementById('newPassword').value = "";
-        document.getElementById('confirmPassword').value = "";
-        document.getElementById('password').value = "";
+        if (user) {
+            setName(user.name || "");
+            setEmail(user.email || "");
+            setPhonenumber(user.phonenumber || "");
+        }
+        setNewPassword("");
+        setConfirmPassword("");
+        setCurrentPassword("");
         setUpdatedUser(null);
+        setAvatar(null);
+        setAvatarFile(null);
         setError("");
-    }
+    };
+
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setAvatar(URL.createObjectURL(file));
+        setAvatarFile(file);
+    };
+
+    const uploadAvatar = async () => {
+        if (!avatarFile) return;
+        const formData = new FormData();
+        formData.append("image", avatarFile);
+        formData.append("userid", user.id);
+        try {
+            const response = await uploadAvatarAPI(formData);
+            if (response) {
+                let updatedUser = JSON.parse(localStorage.getItem("userData"));
+                updatedUser.Imagesuser = response;
+                updatedUser.updatedAt = Date.now();
+                setUser(updatedUser);
+                localStorage.setItem("userData", JSON.stringify(updatedUser));
+                setAvatar(null);
+                setAvatarFile(null);
+                return true;
+            } else {
+                setError("Failed to upload avatar.");
+                return false;
+            }
+        } catch (err) {
+            setError("Failed to upload avatar. Please try again.");
+            return false;
+        }
+    };
+
+    const changeAvatar = async () => {
+        if (!avatarFile) return;
+        const formData = new FormData();
+        formData.append("image", avatarFile);
+        try {
+            const response = await changeAvatarAPI(user.id, formData);
+            if (response) {
+                let updatedUser = JSON.parse(localStorage.getItem("userData"));
+                updatedUser.Imagesuser = response.image;
+                updatedUser.updatedAt = Date.now();
+                setUser(updatedUser);
+                localStorage.setItem("userData", JSON.stringify(updatedUser));
+                setAvatar(null);
+                setAvatarFile(null);
+                return true;
+            } else {
+                setError("Failed to change avatar.");
+                return false;
+            }
+        } catch (err) {
+            setError("Failed to change avatar. Please try again.");
+            return false;
+        }
+    };
     
     const handleSaveChanges = async () => {
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        const password = document.getElementById('password').value;
-        let response = null;
-        if (password !== "" && newPassword !== "" && confirmPassword !== "" && error === "") {
+        if (currentPassword && newPassword && confirmPassword && error === "") {
             const passwordData = {
-                oldpass: password,
+                oldpass: currentPassword,
                 newpass: newPassword,
                 passagain: confirmPassword
-            }
+            };
             try {
-                response = await changePassword(passwordData);
-                console.log(response);
+                const response = await changePassword(passwordData);
                 if (response === "Password changed successfully") {
                     alert("Password changed successfully");
-                    localStorage.setItem("password", newPassword); // Cập nhật mật khẩu trong localStorage
-                    window.location.reload(); // Tải lại trang để cập nhật thông tin người dùng
+                    localStorage.setItem("password", newPassword);
+                } else {
+                    alert("Failed to change password. Please try again.");
+                    return;
                 }
-                else alert("Failed to change password. Please try again.");
-            }
-            catch (err) {
-                console.error("Error changing password:", err);
-                alert("Failed to change password", err);
+                } catch (err) {
+                setError("Failed to change password");
                 return;
             }
         }
-        if (updatedUser !== null && (updatedUser.name !== user.name || updatedUser.email !== user.email || updatedUser.phonenumber !== user.phonenumber)) {
-            try {
-                response = await updateUser(user.id, updatedUser);
-                if (response.success) {
-                    let update = JSON.parse(localStorage.getItem("userData"));
-                    update.name = response.name; // Cập nhật tên người dùng
-                    update.email = response.email; // Cập nhật email người dùng
-                    update.phonenumber = response.phonenumber; // Cập nhật số điện thoại người dùng
-                    update.updatedAt = response.updatedAt; // Cập nhật thời gian cập nhật
-                    setUser(update);
-                    localStorage.setItem("userData", JSON.stringify(update)); // Cập nhật dữ liệu người dùng trong localStorage
-                    localStorage.setItem("password", newPassword); // Cập nhật mật khẩu trong localStorage
-                    setUpdatedUser(null); // Đặt lại state `updatedUser` sau khi lưu thay đổi
-                    window.location.reload(); // Tải lại trang để cập nhật thông tin người dùng
-
-                }
-                else console.error("Failed to change password: No response received");
+        if (avatarFile) {
+            if (user.Imagesuser) {
+                const ok = await changeAvatar();
+                if (!ok) return;
+            } else {
+                const ok = await uploadAvatar();
+                if (!ok) return;
             }
-            catch (err) {
-                alert("Failed to update user information. Please try again.");
-                console.error("Error updating user:", err);
+            }
+
+        if (
+            updatedUser &&
+            (updatedUser.name !== user.name ||
+                updatedUser.email !== user.email ||
+                updatedUser.phonenumber !== user.phonenumber)
+        ) {
+            try {
+                const response = await updateUser(user.id, updatedUser);
+                console.log("response", response);
+                if (response) {
+                    const updatedUserData = await getUserById(user.id);
+                    console.log("updatedUserData", updatedUserData);
+                    localStorage.setItem("userData", JSON.stringify(updatedUserData));
+                    setUser(updatedUserData);
+                    setUpdatedUser(null);
+                } else {
+                    setError("Failed to update user information.");
+                    return;
+                }
+            } catch (err) {
                 setError("Failed to update user information. Please try again.");
                 return;
             }
         }
-    }
+         window.location.reload();
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem("userData");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser)); // Nếu có dữ liệu, cập nhật state `user`
+        const userData = await getUserById(user.id);
+        if (userData) {
+            userData.updatedAt = Date.now();
+            setUser(userData);
+            setAvatar(userData.Imagesuser ? userData.Imagesuser.url : null);
+            setName(userData.name || "");
+            setEmail(userData.email || "");
+            setPhonenumber(userData.phonenumber || "");
+            setUpdatedUser(null);
+            setAvatarFile(null);
+            setAvatarButton(false);
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+            setError("");
+            localStorage.setItem("userData", JSON.stringify(userData));
         }
-    }, []);
+        };
+
+    const isDisabled = !!error ||
+        (
+            !(
+                avatar && user && user.Imagesuser && avatar !== user.Imagesuser.url
+            ) &&
+            !avatarFile &&
+            (!updatedUser || (
+                updatedUser.name === user?.name &&
+                updatedUser.email === user?.email &&
+                updatedUser.phonenumber === user?.phonenumber
+            )) &&
+            currentPassword === "" &&
+            newPassword === "" &&
+            confirmPassword === ""
+        );
+
+    const avatarUrl = avatar
+        || (user && user.Imagesuser
+            ? `${user.Imagesuser.url}?v=${user.updatedAt || Date.now()}`
+            : "/images/noavatar.png");
+            
     return (
         <div className='px-2 py-5'>
             <div>
@@ -143,7 +254,31 @@ export default function Account() {
                     <div className="max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden w-full p-1">
                         <div className="bg-[#ff8200] h-35 w-full rounded-sm"></div>
                         <div className="flex flex-col items-center -mt-20 gap-5 mb-10">
-                            <Image src={"/images/user1.png"} alt="user" width={150} height={150} className="rounded-full border-4 border-white" />
+                            <Image
+                                src={avatarUrl}
+                                alt="user"
+                                width={150}
+                                height={150}
+                                className="rounded-full border-4 border-white"
+                                onClick={() => setAvatarButton((prev) => !prev)}
+                            />
+                            {avatarButton && (
+                                <div className="flex flex-col items-center">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        style={{ display: "none" }}
+                                        id="avatar-upload"
+                                        onChange={handleAvatarChange}
+                                    />
+                                    <button
+                                        className="bg-[#ff8200] text-white px-4 py-2 rounded-md cursor-pointer hover:bg-gray-100"
+                                        onClick={() => document.getElementById('avatar-upload').click()}
+                                    >
+                                        {user && user.Imagesuser ? "Change Avatar" : "Upload Avatar"}
+                                    </button>
+                                </div>
+                            )}
                             <h2 className="mt-2 text-xl font-semibold text-gray-800">{user ? user.name : ""}</h2>
                             <p className="text-md text-gray-500">{user ? user.username : ""}</p>
                             <p className="text-md text-gray-500">{user && user.Role ? user.Role.name : ""}</p>
@@ -155,30 +290,67 @@ export default function Account() {
                         <p className='text-[#ff8200] text-xl'>Edit Your Profile</p>
                         <div className='flex flex-col gap-1 mt-5'>
                             <label className='text-gray-500'>Name</label>
-                            <input id='name' type="text" className='bg-gray-100 rounded-xs p-2' defaultValue={user ? user.name : ""} onChange={checkValidInput} />
+                            <input
+                                type="text"
+                                className='bg-gray-100 rounded-xs p-2'
+                                value={name}
+                                onChange={e => setName(e.target.value)}
+                            />
                         </div>
                         <div className='flex w-full gap-5 mt-5 justify-between'>
                             <div className='flex flex-col gap-1 w-3/7'>
                                 <label className='text-gray-500 '>Email</label>
-                                <input id='email' type="text" className='bg-gray-100 rounded-xs p-2' defaultValue={user ? user.email : ""} onChange={checkValidInput} />
+                                <input
+                                    type="text"
+                                    className='bg-gray-100 rounded-xs p-2'
+                                    value={email}
+                                    onChange={e => setEmail(e.target.value)}
+                                />
                             </div>
                             <div className='flex flex-col gap-1 w-3/7'>
                                 <label className='text-gray-500'>Phone Number</label>
-                                <input id='phonenumber' type="text" className='bg-gray-100 rounded-xs p-2' defaultValue={user ? user.phonenumber : ""} onChange={checkValidInput} />
+                                <input
+                                    type="text"
+                                    className='bg-gray-100 rounded-xs p-2'
+                                    value={phonenumber}
+                                    onChange={e => setPhonenumber(e.target.value)}
+                                />
                             </div>
                         </div>
                         <div className='flex flex-col gap-2 mt-5'>
                             <label className='text-gray-500'>Password Change</label>
-                            <input id='password' type="password" className='bg-gray-100 rounded-xs p-2' placeholder='Current Password' onChange={handleChangePassword} />
-                            <input id='newPassword' type="password" className='bg-gray-100 rounded-xs p-2' placeholder='New Password' onChange={handleChangePassword} />
-                            <input id='confirmPassword' type="password" className='bg-gray-100 rounded-xs p-2' placeholder='Confirm New Password' onChange={handleChangePassword} />
+                            <input
+                                type="password"
+                                className='bg-gray-100 rounded-xs p-2'
+                                placeholder='Current Password'
+                                value={currentPassword}
+                                onChange={e => setCurrentPassword(e.target.value)}
+                            />
+                            <input
+                                type="password"
+                                className='bg-gray-100 rounded-xs p-2'
+                                placeholder='New Password'
+                                value={newPassword}
+                                onChange={e => setNewPassword(e.target.value)}
+                            />
+                            <input
+                                type="password"
+                                className='bg-gray-100 rounded-xs p-2'
+                                placeholder='Confirm New Password'
+                                value={confirmPassword}
+                                onChange={e => setConfirmPassword(e.target.value)}
+                            />
                             <div className='text-sm text-red'>{error}</div>
                         </div>
                         <div className='flex justify-end gap-5 items-center mt-5 mr-5'>
                             <button className='px-4 py-2 rounded-xs cursor-pointer' onClick={handleCancel}>Cancel</button>
-                            <button className={`bg-[#ff8200] text-white px-4 py-2 rounded-xs cursor-pointer ${(error !== "" || (!updatedUser && password === "") || (updatedUser && updatedUser.name === user.name &&
-                                updatedUser.email === user.email && updatedUser.phonenumber === user.phonenumber)) ? "disabled bg-gray-700" : ""}`}
-                                onClick={handleSaveChanges}>Save Changes</button>
+                            <button
+                                className={`bg-[#ff8200] text-white px-4 py-2 rounded-xs cursor-pointer${isDisabled ? " disabled bg-gray-700" : ""}`}
+                                onClick={isDisabled ? undefined : handleSaveChanges}
+                                disabled={isDisabled}
+                            >
+                                Save Changes
+                            </button>
                         </div>
                     </div>
 

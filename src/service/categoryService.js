@@ -46,14 +46,14 @@ const updateCategory = async (id, data) => {
             body: JSON.stringify(data)
         });
         if (!response.ok) {
-            alert('Error updating category');
+            // alert('Error updating category');
             console.log('Error updating category');
         }
         const category = await response.json();
-        alert('Category updated successfully');
+        // alert('Category updated successfully');
         return category;
     } catch (error) {
-        alert('Error updating category by ID');
+        // alert('Error updating category by ID');
         console.error('Error updating category by ID:', error);
         throw error;
     }
@@ -69,14 +69,14 @@ const addCategory = async (data) => {
             body: JSON.stringify(data)
         });
         if (!response.ok) {
-            alert('Error adding category');
+            // alert('Error adding category');
             console.log('Error adding category');
         }
         const category = await response.json();
-        alert('Category added successfully');
+        // alert('Category added successfully');
         return category;
     } catch (error) {
-        alert('Error adding category');
+        // alert('Error adding category');
         console.error('Error adding category:', error);
         throw error;
     }
@@ -91,12 +91,12 @@ const deleteCategory = async (id) => {
             }
         });
         if (!response.ok) {
-            alert('Error deleting category');
+            // alert('Error deleting category');
             console.log('Error deleting category');
         }
-        alert(`Category ${id} deleted successfully`);
+        // alert(`Category ${id} deleted successfully`);
     } catch (error) {
-        alert('Error deleting category');
+        // alert('Error deleting category');
         throw error;
     }
 }
