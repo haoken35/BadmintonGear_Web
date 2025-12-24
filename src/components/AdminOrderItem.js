@@ -29,7 +29,7 @@ export default function AdminOrderItem({ order, customer }) {
                         <div className="flex items-center gap-3">
                             {/* Hiển thị sản phẩm đầu tiên */}
                             <Image
-                                src={product && product.Imagesproducts ? product.Imagesproducts[0].url : "/images/unimage.png"}
+                                src={product && product.ImagesProducts ? product.ImagesProducts[0].url : "/images/unimage.png"}
                                 alt={details[0] ? details[0].Product.name : ""}
                                 className="rounded-lg"
                                 width={50}

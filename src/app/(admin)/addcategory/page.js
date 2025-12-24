@@ -19,7 +19,7 @@ export default function AddCategory() {
         try {
             const response = await addCategory(category);
             if (response) {
-                window.location.href = "/admin/productcategory";
+                window.location.href = "/productcategory";
             }
         }
         catch (error) {

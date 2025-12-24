@@ -51,7 +51,7 @@ export default function AdminHeader() {
                             onClick={visibleMennu}>
                             <Image src={user && user.Imagesuser ? user.Imagesuser.url : "/images/noavatar.png"} alt="account" height={40} width={40} className='rounded-full' />
                             <div className='flex flex-col gap-1'>
-                                <a id="account" href="/admin/account">{user.username}</a>
+                                <a id="account" href="/account">{user.username}</a>
                                 <span className="text-sm text-gray-500">Admin</span>
                             </div>
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +66,7 @@ export default function AdminHeader() {
                 </div>
                 {menuVisible && (
                     <div className="absolute right-8 top-15 px-5 py-5 bg-[#000000ee] rounded-md text-[#FF8200] cursor-pointer" onClick={visibleMennu}>
-                        <div className="mb-5 flex items-center gap-2" onClick={() => router.push("/admin/account")}>
+                        <div className="mb-5 flex items-center gap-2" onClick={() => router.push("/account")}>
                             <Image src="/icons/accountic.png" alt="account" height={25} width={25} />
                             <span>Manage My Account</span>
                         </div>

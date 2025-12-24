@@ -68,8 +68,8 @@ export const ProductCard = ({ product }) => {
             <div className='absolute top-4 right-4 bg-[#F5F5F5] p-2 rounded-full'>
                 <Image src={"/icons/blwishlistic.png"} alt={"wish"} width={30} height={30} />
             </div>
-            <Image src={product?.Imagesproducts?.[0]?.url
-                ? product.Imagesproducts[0].url
+            <Image src={product?.ImagesProducts?.[0]?.url
+                ? product.ImagesProducts[0].url
                 : "/images/unimage.png"}
                 alt={"Product"}
                 width={240}

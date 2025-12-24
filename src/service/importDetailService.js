@@ -1,6 +1,6 @@
-const getDetailByImportId = async (importId) => {
+const getDetailByImportId = async (grnId) => {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/grndetails/${importId}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/grndetails/${grnId}?lang=vi`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

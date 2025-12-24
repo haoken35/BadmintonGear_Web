@@ -22,7 +22,7 @@ export default function ImportDetailItem({ item }) {
             <td className='py-4'>
                 <div className='flex items-center gap-2'>
                     <Image
-                        src={product && product.Imagesproducts ? product.Imagesproducts[0].url : "/images/unimage.png"}
+                        src={product && product.ImagesProducts ? product.ImagesProducts[0].url : "/images/unimage.png"}
                         alt={product ? product.name : "Product Image"}
                         width={50}
                         height={50}

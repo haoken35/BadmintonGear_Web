@@ -152,4 +152,4 @@ const getAllUsersByRoleId = async (roleid) => {
 };
 
 
-export { getUserById, createUser, getAllUsers, updateUser, changePassword, getAllUsersByRoleId, uploadAvatar, changeAvatar, forgotPassword };
+export { getUserById, createUser, getAllUsers, updateUser, changePassword, getAllUsersByRoleId, uploadAvatar, changeAvatar };

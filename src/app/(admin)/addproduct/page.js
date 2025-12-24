@@ -117,7 +117,7 @@ export default function AddProduct() {
                 for (let i = 0; i < imageFiles.length; i++) {
                     await handleUpload(imageFiles[i], response.id);
                 }
-                window.location.href = "/admin/productlist";
+                window.location.href = "/productlist";
             }
         } catch (error) {
             console.error("Error adding product:", error);

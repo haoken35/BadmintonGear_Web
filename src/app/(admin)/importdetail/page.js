@@ -12,6 +12,7 @@ export default function ImportDetailsPage() {
     const importID = searchParams.get('id');
     const [grn, setGrn] = useState([]);
     const [details, setDetails] = useState([]);
+    // const vatAmount = (subtotal * order.vat / 100).toFixed(2);
     const [grandTotal, setGrandTotal] = useState(0);
     const [user, setUser] = useState({});
 
@@ -44,76 +45,62 @@ export default function ImportDetailsPage() {
     }
 
     useEffect(() => {
-        if (!importID) return;
+  const fetchDetails = async () => {
+    try {
+      const response = await getDetailByImportId(importID);
 
-        const fetchDetails = async () => {
-            try {
-                const response = await getDetailByImportId(importID);
+      // Nếu service trả về { data: [...] } hoặc { result: [...] } thì lấy đúng mảng
+      const list =
+        Array.isArray(response) ? response :
+        Array.isArray(response?.data) ? response.data :
+        Array.isArray(response?.result) ? response.result :
+        [];
 
-                // CHỈ SỬA PHẦN FETCH: chuẩn hoá về array để .map không lỗi
-                const arr =
-                    Array.isArray(response) ? response :
-                    Array.isArray(response?.details) ? response.details :
-                    Array.isArray(response?.data) ? response.data :
-                    Array.isArray(response?.data?.details) ? response.data.details :
-                    [];
+      setDetails(list);
+    } catch (error) {
+      console.error("Error fetching import details:", error);
+      setDetails([]); // fallback an toàn
+    }
+  };
 
-                setDetails(arr);
-            } catch (error) {
-                console.error("Error fetching import details:", error);
-                setDetails([]); // đảm bảo luôn là mảng
-            }
-        }
+  const fetchImport = async () => {
+    try {
+      const response = await getImportById(importID);
+      setGrn(response);
 
-        const fetchImport = async () => {
-            try {
-                const response = await getImportById(importID);
+      const userResponse = await getUserById(response.userid);
+      setUser(userResponse);
 
-                // CHỈ SỬA PHẦN FETCH: nếu response null/undefined thì không set sai kiểu
-                if (response) {
-                    setGrn(response);
-                    console.log("Import Data:", response);
+      setGrandTotal(response.totalprice);
+    } catch (error) {
+      console.error("Error fetching import:", error);
+    }
+  };
 
-                    const userResponse = await getUserById(response.userid);
-                    setUser(userResponse);
-
-                    setGrandTotal(response.totalprice);
-                } else {
-                    setGrn([]);
-                    setUser({});
-                    setGrandTotal(0);
-                }
-            } catch (error) {
-                console.error("Error fetching import:", error);
-                setGrn([]);
-                setUser({});
-                setGrandTotal(0);
-            }
-        }
-
-        fetchImport();
-        fetchDetails();
-    }, [importID]);
-
+  if (importID) {
+    fetchImport();
+    fetchDetails();
+  }
+}, [importID]);
     return (
         <div className='px-2 py-5'>
             <div className='flex justify-between items-end'>
                 <div>
                     <h1 className='text-3xl font-bold'>Import Detail</h1>
                     <div id="roadmap" className="flex items-center mt-2">
-                        <a className="text-[#ff8200]" href="/admin/dashboard">Dashboard</a>
+                        <a className="text-[#ff8200]" href="/dashboard">Dashboard</a>
                         <label className="ml-3 mr-3">
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                             </svg>
                         </label>
-                        <a className="text-[#ff8200]" href="/admin/import">Import List</a>
+                        <a className="text-[#ff8200]" href="/import">Import List</a>
                         <label className="ml-3 mr-3">
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                             </svg>
                         </label>
-                        <a className="text-[#667085]" href={`/admin/importdetail?id=${grn.id}`}>Import Detail #{grn.id}</a>
+                        <a className="text-[#667085]" href={`/importdetail?id=${grn.id}`}>Import Detail #{grn.id}</a>
                     </div>
                 </div>
                 <div className='flex gap-2'>
@@ -194,7 +181,7 @@ export default function ImportDetailsPage() {
                                 </tr>
                             </thead>
                             <tbody className='text-[#344054] font-normal text-center'>
-                                {details?.map((item) => (
+                                {details.map((item) => (
                                     <ImportDetailItem
                                         key={item.id}
                                         item={item} />

@@ -79,8 +79,8 @@ export default function ProductDetail() {
             categoriesid: selectedCategory,
         };
 
-        if (imagePreviews !== product.Imagesproducts) {
-            const removedImages = (product.Imagesproducts || []).filter(
+        if (imagePreviews !== product.ImagesProducts) {
+            const removedImages = (product.ImagesProducts || []).filter(
                 img => !imagePreviews.some(preview => preview.url === img.url)
             );
             for (const img of removedImages) {
@@ -88,7 +88,7 @@ export default function ProductDetail() {
             }
             const newImages = imagePreviews.filter(
                 preview =>
-                    !(product.Imagesproducts || []).some(img => img.url === preview.url)
+                    !(product.ImagesProducts || []).some(img => img.url === preview.url)
             );
             for (const img of newImages) {
                 const file = await fetch(img.url).then(res => res.blob());
@@ -187,7 +187,7 @@ export default function ProductDetail() {
                                 price === product.price &&
                                 quantity === product.quantity &&
                                 selectedCategory === product.categoriesid &&
-                                imagePreviews === product.Imagesproducts
+                                imagePreviews === product.ImagesProducts
                             }
                             onClick={handleSaveProduct}
                         >
@@ -353,7 +353,7 @@ export default function ProductDetail() {
                                     type="text"
                                     className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 outline-none'
                                     placeholder='Product weight (g). . .'
-                                    value={weight}
+                                    // value={weight}
                                     onChange={e => setWeight(e.target.value)}
                                     disabled={mode === 'view'}
                                 />
@@ -364,7 +364,7 @@ export default function ProductDetail() {
                                     type="text"
                                     className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 outline-none'
                                     placeholder='Height (cm). . .'
-                                    value={height}
+                                    // value={height}
                                     onChange={e => setHeight(e.target.value)}
                                     disabled={mode === 'view'}
                                 />
@@ -386,7 +386,7 @@ export default function ProductDetail() {
                                     type="text"
                                     className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 outline-none'
                                     placeholder='Width (cm). . .'
-                                    value={width}
+                                    // value={width}
                                     onChange={e => setWidth(e.target.value)}
                                     disabled={mode === 'view'}
                                 />
