@@ -1,27 +1,21 @@
-export const getAllOrders = async () => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    // ném lỗi để UI catch và set []
-    throw new Error(`Fetch orders failed: ${response.status}`);
-  }
-
-  const json = await response.json();
-  console.log("orders json:", json);
-  // Chuẩn hóa: đảm bảo return là Array
-  const orders =
-    Array.isArray(json) ? json :
-    Array.isArray(json?.orders) ? json.orders :
-    Array.isArray(json?.data) ? json.data :
-    Array.isArray(json?.data?.orders) ? json.data.orders :
-    [];
-
-  return orders;
-};
+const getAllOrders = async () => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        if (!response.ok) {
+            console.log('Error fetching orders');
+        }
+        const orders = await response.json();
+        return orders;
+    } catch (error) {
+        console.error('Error fetching order:', error);
+        throw error;
+    }
+}
 
 const getOrderById = async (id) => {
     try {
@@ -41,6 +35,7 @@ const getOrderById = async (id) => {
         throw error;
     }
 }
+
 const getOrderByUserId = async (userId) => {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/user/${userId}`, {
@@ -59,8 +54,64 @@ const getOrderByUserId = async (userId) => {
         throw error;
     }
 }
-const updateCategory = async (id, data) => {
-
+const updateOrder = async (id, status) => {
+    const data = {};
+    const now = new Date();
+    switch (status) {
+        case 1:
+            data.process = now.toISOString();
+            break;
+        case 2:
+            data.shipping = now.toISOString();
+            break;
+        case 3:
+            data.delivered = now.toISOString();
+            data.status = 1;
+            break;
+        case -1:
+            data.status = -1;
+            break;
+        default:
+            throw new Error('Invalid status');
+    }
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) {
+            console.log('Error updating order');
+        }
+        const updatedOrder = await response.json();
+        alert('Order updated successfully');
+        return updatedOrder;
+    } catch (error) {
+        console.error('Error updating order:', error);
+        throw error;
+    }
 }
 
-export { getAllOrders, getOrderById, getOrderByUserId, updateCategory };
+const getRecentOrders = async () => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        if (!response.ok) {
+            console.log('Error fetching recent orders');
+        }
+        const orders = await response.json();
+        const sorted = orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return sorted.slice(0, 20);
+    } catch (error) {
+        console.error('Error fetching recent orders:', error);
+        throw error;
+    }
+}
+
+export { getAllOrders, getOrderById, getOrderByUserId, updateOrder, getRecentOrders };

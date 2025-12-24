@@ -1,79 +1,152 @@
 "use client"
-import React, {useState} from 'react'
+import { useSearchParams } from 'next/navigation';
+import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import { getOrderByUserId } from '@/service/orderService';
+import { getUserById, updateUser } from '@/service/userService';
 import AdminOrderItem from '@/components/AdminOrderItem';
 
-export default function CustomerDetailPage(id) {
-    const customerId = id.params.id;
-    const customer = {
-        id: 1,
-        name: "John Doe",
-        username: "johndoe",
-        email: "john@example.com",
-        phone: "+1234567890",
-        image: "/images/user1.png",
-        status: true,
-        point: 100,
-        address: "123 Main St, City, Country",
-        createdAt: "2023-01-01",
+export default function CustomerDetailPage() {
+    const searchParams = useSearchParams();
+    const customerId = searchParams.get('id');
+    const [customer, setCustomer] = useState({});
+    const [orders, setOrders] = useState([]);
+    const [totalBalance, setTotalBalance] = useState(0);
+    const [orderCount, setOrderCount] = useState(0);
+    const [lastOrder, setLastOrder] = useState(null);
+    const [displayOrders, setDisplayOrders] = useState([]);
+    const dateDialogRef = useRef(null);
+    const [showDateDialog, setShowDateDialog] = useState(false);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [minTotal, setMinTotal] = useState(null);
+    const [maxTotal, setMaxTotal] = useState(null);
+    const [statusFilter, setStatusFilter] = useState('');
+    const [showFilter, setShowFilter] = useState(false);
+    const filterRef = useRef(null);
+    const minOrderTotal = orders.length > 0 ? Math.min(...orders.map(o => Number(o.totalprice) || 0)) : 0;
+    const maxOrderTotal = orders.length > 0 ? Math.max(...orders.map(o => Number(o.totalprice) || 0)) : 1000000;
+
+    // const handleBanUser = async () => {
+    //     if (confirm("Are you sure you want to ban this user?")) {
+    //         try {
+    //             const updatedUser = { ...customer, isBanned: true };
+    //             await updateUser(customer.id, updatedUser);
+    //             alert("User has been banned successfully.");
+    //             setCustomer(updatedUser);
+    //         } catch (error) {
+    //             console.error('Error banning user:', error);
+    //             alert("Failed to ban user.");
+    //         }
+    //     }
+    // }
+
+    useEffect(() => {
+        const fetchOrder = async () => {
+            try {
+                const orderData = await getOrderByUserId(customerId);
+                setOrderCount(orderData.length);
+                const total = orderData.reduce((acc, order) => acc + order.totalprice, 0);
+                setTotalBalance(total);
+                setOrders(orderData);
+                setDisplayOrders(orderData);
+                if (orderData.length > 0) {
+                    const latest = orderData.reduce((a, b) =>
+                        new Date(a.createdAt) > new Date(b.createdAt) ? a : b
+                    );
+                    setLastOrder(latest);
+                } else {
+                    setLastOrder(null);
+                }
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
+        }
+        const fetchCustomer = async () => {
+            try {
+                const customerData = await getUserById(customerId);
+                console.log('Customer Data:', customerData);
+                setCustomer(customerData);
+            } catch (error) {
+                console.error('Error fetching customer:', error);
+            }
+        }
+        fetchCustomer();
+        fetchOrder();
+
+    }, []);
+
+    useEffect(() => {
+        if (orders.length > 0) {
+            const min = Math.min(...orders.map(o => Number(o.totalprice) || 0));
+            const max = Math.max(...orders.map(o => Number(o.totalprice) || 0));
+            if (minTotal === null) setMinTotal(min);
+            if (maxTotal === null) setMaxTotal(max);
+        }
+        // eslint-disable-next-line
+    }, [orders]);
+
+    useEffect(() => {
+        if (!showDateDialog) return;
+        const handleClickOutside = (event) => {
+            if (dateDialogRef.current && !dateDialogRef.current.contains(event.target)) {
+                setShowDateDialog(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showDateDialog]);
+
+    useEffect(() => {
+        if (!showFilter) return;
+        const handleClickOutside = (event) => {
+            if (filterRef.current && !filterRef.current.contains(event.target)) {
+                setShowFilter(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showFilter]);
+
+    useEffect(() => {
+        let filtered = orders;
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            filtered = orders.filter(order => {
+                const created = new Date(order.createdAt);
+                return created >= start && created <= end;
+            });
+        }
+
+        if (minTotal !== '') {
+            filtered = filtered.filter(order => Number(order.totalprice) >= Number(minTotal));
+        }
+        if (maxTotal !== '') {
+            filtered = filtered.filter(order => Number(order.totalprice) <= Number(maxTotal));
+        }
+
+        if (statusFilter !== '') {
+            filtered = filtered.filter(order => String(order.status) === String(statusFilter));
+        }
+
+        setDisplayOrders(filtered);
+    }, [orders, startDate, endDate, minTotal, maxTotal, statusFilter]);
+
+    const handleOpenDateDialog = () => {
+        setShowDateDialog(true);
     };
-    const [orders, setOrders] = useState([
-        {
-            id: "1",
-            total: 345,
-            date: "2025-05-01",
-            customer: { username: "customer1", email: "cus1@gmail.com" },
-            payment: "Cash On Delivery",
-            state: "Delivered",
-            isChecked: false,
-            products: [
-                { id: "pro001", name: "Product 1", image: "/images/product1.png", price: 166, quantity: 2 },
-                { id: "pro002", name: "Product 2", image: "/images/product1.png", price: 200, quantity: 1 },
-            ],
-        },
-        {
-            id: "2",
-            total: 456,
-            date: "2025-05-02",
-            customer: { username: "customer1", email: "cus1@gmail.com" },
-            payment: "Bank Transfer",
-            state: "Shipped",
-            isChecked: false,
-            products: [
-                { id: "pro001", name: "Product 1", image: "/images/product1.png", price: 166, quantity: 2 },
-            ],
-        },
-        {
-            id: "3",
-            total: 288,
-            date: "2025-05-04",
-            customer: { username: "customer1", email: "cus1@gmail.com" },
-            payment: "Bank Transfer",
-            state: "Processing",
-            isChecked: false,
-            products: [
-                { id: "pro001", name: "Product 3", image: "/images/product1.png", price: 189, quantity: 1 },
-                { id: "pro002", name: "Product 2", image: "/images/product1.png", price: 99, quantity: 1 },
-
-            ],
-        },
-        {
-            id: "4",
-            total: 288,
-            date: "2025-05-04",
-            customer: { username: "customer1", email: "cus1@gmail.com" },
-            payment: "Cash On Delivery",
-            state: "Cancelled",
-            isChecked: false,
-            products: [
-                { id: "pro001", name: "Product 3", image: "/images/product1.png", price: 189, quantity: 1 },
-                { id: "pro002", name: "Product 2", image: "/images/product1.png", price: 99, quantity: 1 },
-
-            ],
-        },
-    ]);
-    const totalBalance = 1000; // Placeholder for total balance
-    const orderCount = 5; // Placeholder for order count
+    const handleCloseDateDialog = () => {
+        setShowDateDialog(false);
+    };
+    const handleApplyDateFilter = () => {
+        setSelectedOption('custom-date');
+        setShowDateDialog(false);
+    };
 
     return (
         <div className='px-2 py-5'>
@@ -99,7 +172,7 @@ export default function CustomerDetailPage(id) {
                 <div className="max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden w-1/3 p-1">
                     <div className="bg-[#ff8200] h-35 w-full rounded-sm"></div>
                     <div className="flex flex-col items-center -mt-20">
-                        <Image src={customer.image} alt="customer" width={150} height={150} className="rounded-full border-4 border-white" />
+                        <Image src={customer.Imagesuser ? customer.Imagesuser.url : "/images/noavatar.png"} alt="customer" width={150} height={150} className="rounded-full border-4 border-white" />
                         <h2 className="mt-2 text-lg font-semibold text-gray-800">{customer.name}</h2>
                         <p className="text-sm text-gray-500">{customer.username}</p>
                     </div>
@@ -155,7 +228,7 @@ export default function CustomerDetailPage(id) {
                             </svg>
                             <div className='flex flex-col justify-start'>
                                 <span className="font-medium text-gray-500">Delivery Address</span>
-                                <div className="text-black">1833 Bel Meadow Drive, Fontana, California 92335, USA</div>
+                                <div className="text-black">{customer.address}</div>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
@@ -169,36 +242,37 @@ export default function CustomerDetailPage(id) {
 
                             <div className='flex flex-col justify-start'>
                                 <span className="font-medium text-gray-500">Latest Transaction</span>
-                                <span className=" text-black">12 December 2022</span>
+                                <span className=" text-black">{new Date(lastOrder?.createdAt).toLocaleDateString("vi-VN")}</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className='w-full'>
-                    <div className='flex justify-between items-center mb-5'>
-                        <div className='w-2/7 bg-white rounded-md shadow-md overflow-hidden p-5 flex flex-col gap-2'>
-                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="2" y="2" width="36" height="36" rx="18" fill="#CFE7DC" />
-                                <rect x="2" y="2" width="36" height="36" rx="18" stroke="#E7F4EE" strokeWidth="4" />
-                                <path d="M23 20.5C22.4477 20.5 22 20.9477 22 21.5C22 22.0523 22.4477 22.5 23 22.5H25C25.5523 22.5 26 22.0523 26 21.5C26 20.9477 25.5523 20.5 25 20.5H23Z" fill="#0D894F" />
-                                <path fillRule="evenodd" clipRule="evenodd" d="M28 14.5C29.1046 14.5 30 15.3954 30 16.5V26C30 27.6569 28.6569 29 27 29H13C11.3431 29 10 27.6569 10 26V14C10 12.3431 11.3431 11 13 11H25C26.6569 11 28 12.3431 28 14V14.5ZM25 13H13C12.4477 13 12 13.4477 12 14V26C12 26.5523 12.4477 27 13 27H27C27.5523 27 28 26.5523 28 26V16.5H17C16.4477 16.5 16 16.0523 16 15.5C16 14.9477 16.4477 14.5 17 14.5H26V14C26 13.4477 25.5523 13 25 13Z" fill="#0D894F" />
-                            </svg>
-                            <span className='text-gray-600'>Total Balance</span>
-                            <div className='text-xl font-semibold'>${totalBalance}</div>
-                        </div>
-                        <div className='w-2/7 bg-white rounded-md shadow-md overflow-hidden p-5 flex flex-col gap-2'>
-                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="2" y="2" width="36" height="36" rx="18" fill="#FAE1CF" />
-                                <rect x="2" y="2" width="36" height="36" rx="18" stroke="#FDF1E8" strokeWidth="4" />
-                                <path fillRule="evenodd" clipRule="evenodd" d="M14.638 12.1223C14.4569 11.1806 13.6329 10.5 12.674 10.5H11C10.4477 10.5 10 10.9477 10 11.5C10 12.0523 10.4477 12.5 11 12.5L12.674 12.5L14.55 22.2554C14.9122 24.1388 16.5602 25.5 18.478 25.5H24.6873C26.5044 25.5 28.0932 24.2752 28.5556 22.518L29.8068 17.7635C30.3074 15.8612 28.8726 14 26.9056 14H14.9991L14.638 12.1223ZM15.3837 16L16.514 21.8777C16.6951 22.8194 17.5191 23.5 18.478 23.5H24.6873C25.5959 23.5 26.3903 22.8876 26.6215 22.009L27.8727 17.2545C28.0395 16.6204 27.5613 16 26.9056 16H15.3837Z" fill="#E46A11" />
-                                <path d="M16.75 29.5C15.9215 29.5 15.25 28.8284 15.25 28C15.25 27.1716 15.9215 26.5 16.75 26.5C17.5784 26.5 18.25 27.1716 18.25 28C18.25 28.8284 17.5784 29.5 16.75 29.5Z" fill="#E46A11" />
-                                <path d="M25.5 29.5C24.6715 29.5 24 28.8284 24 28C24 27.1716 24.6715 26.5 25.5 26.5C26.3284 26.5 27 27.1716 27 28C27 28.8284 26.3284 29.5 25.5 29.5Z" fill="#E46A11" />
-                            </svg>
+                    <div className='flex justify-between mb-5'>
+                        <div className='flex items-center mb-5 gap-10'>
+                            <div className='w-100 bg-white rounded-md shadow-md overflow-hidden p-10 flex flex-col gap-2  pr-20'>
+                                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="2" y="2" width="36" height="36" rx="18" fill="#CFE7DC" />
+                                    <rect x="2" y="2" width="36" height="36" rx="18" stroke="#E7F4EE" strokeWidth="4" />
+                                    <path d="M23 20.5C22.4477 20.5 22 20.9477 22 21.5C22 22.0523 22.4477 22.5 23 22.5H25C25.5523 22.5 26 22.0523 26 21.5C26 20.9477 25.5523 20.5 25 20.5H23Z" fill="#0D894F" />
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M28 14.5C29.1046 14.5 30 15.3954 30 16.5V26C30 27.6569 28.6569 29 27 29H13C11.3431 29 10 27.6569 10 26V14C10 12.3431 11.3431 11 13 11H25C26.6569 11 28 12.3431 28 14V14.5ZM25 13H13C12.4477 13 12 13.4477 12 14V26C12 26.5523 12.4477 27 13 27H27C27.5523 27 28 26.5523 28 26V16.5H17C16.4477 16.5 16 16.0523 16 15.5C16 14.9477 16.4477 14.5 17 14.5H26V14C26 13.4477 25.5523 13 25 13Z" fill="#0D894F" />
+                                </svg>
+                                <span className='text-gray-600'>Total Balance</span>
+                                <div className='text-xl font-semibold'>{Number(totalBalance).toLocaleString()} VND</div>
+                            </div>
+                            <div className='w-100 bg-white rounded-md shadow-md overflow-hidden p-10 flex flex-col gap-2 pr-20'>
+                                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="2" y="2" width="36" height="36" rx="18" fill="#FAE1CF" />
+                                    <rect x="2" y="2" width="36" height="36" rx="18" stroke="#FDF1E8" strokeWidth="4" />
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M14.638 12.1223C14.4569 11.1806 13.6329 10.5 12.674 10.5H11C10.4477 10.5 10 10.9477 10 11.5C10 12.0523 10.4477 12.5 11 12.5L12.674 12.5L14.55 22.2554C14.9122 24.1388 16.5602 25.5 18.478 25.5H24.6873C26.5044 25.5 28.0932 24.2752 28.5556 22.518L29.8068 17.7635C30.3074 15.8612 28.8726 14 26.9056 14H14.9991L14.638 12.1223ZM15.3837 16L16.514 21.8777C16.6951 22.8194 17.5191 23.5 18.478 23.5H24.6873C25.5959 23.5 26.3903 22.8876 26.6215 22.009L27.8727 17.2545C28.0395 16.6204 27.5613 16 26.9056 16H15.3837Z" fill="#E46A11" />
+                                    <path d="M16.75 29.5C15.9215 29.5 15.25 28.8284 15.25 28C15.25 27.1716 15.9215 26.5 16.75 26.5C17.5784 26.5 18.25 27.1716 18.25 28C18.25 28.8284 17.5784 29.5 16.75 29.5Z" fill="#E46A11" />
+                                    <path d="M25.5 29.5C24.6715 29.5 24 28.8284 24 28C24 27.1716 24.6715 26.5 25.5 26.5C26.3284 26.5 27 27.1716 27 28C27 28.8284 26.3284 29.5 25.5 29.5Z" fill="#E46A11" />
+                                </svg>
 
-                            <span className='text-gray-600'>Total Orders</span>
-                            <div className='text-xl font-semibold'>{orderCount}</div>
-                        </div>
-                        <div className='w-2/7 bg-white rounded-md shadow-md overflow-hidden p-5 flex flex-col gap-2'>
+                                <span className='text-gray-600'>Total Orders</span>
+                                <div className='text-xl font-semibold'>{orderCount}</div>
+                            </div>
+                            {/* <div className='w-2/7 bg-white rounded-md shadow-md overflow-hidden p-5 flex flex-col gap-2'>
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect x="2" y="2" width="36" height="36" rx="18" fill="#FBE3CA" />
                                 <rect x="2" y="2" width="36" height="36" rx="18" stroke="#EFEFFD" strokeWidth="4" />
@@ -208,19 +282,23 @@ export default function CustomerDetailPage(id) {
 
                             <span className='text-gray-600'>Reward Point</span>
                             <div className='text-xl font-semibold'>{customer.point}</div>
-                        </div>
+                        </div>*/}
+                    </div>
+                    {/* <button className='bg-[#FF8200] text-white px-4 py-2 rounded-md shadow-md hover:bg-[#e67e22] transition-colors cursor-pointer h-fit'>Ban Account</button> */}
                     </div>
                     <div className='mt-5 shadow-md bg-white rounded-md py-5'>
                         <div className='flex w-full justify-between items-center px-5'>
                             <div className='text-lg font-semibold'>Transaction History</div>
                             <div className='flex gap-5'>
-                                <button className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2'>
+                                <button className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2'
+                                    onClick={handleOpenDateDialog}>
                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path fillRule="evenodd" clipRule="evenodd" d="M7.5 2.49984C7.5 2.0396 7.1269 1.6665 6.66667 1.6665C6.20643 1.6665 5.83333 2.0396 5.83333 2.49984H5C3.61929 2.49984 2.5 3.61913 2.5 4.99984V15.8332C2.5 17.2139 3.61929 18.3332 5 18.3332H15C16.3807 18.3332 17.5 17.2139 17.5 15.8332V4.99984C17.5 3.61913 16.3807 2.49984 15 2.49984H14.1667C14.1667 2.0396 13.7936 1.6665 13.3333 1.6665C12.8731 1.6665 12.5 2.0396 12.5 2.49984H7.5ZM15.8333 5.83317V4.99984C15.8333 4.5396 15.4602 4.1665 15 4.1665H14.1667C14.1667 4.62674 13.7936 4.99984 13.3333 4.99984C12.8731 4.99984 12.5 4.62674 12.5 4.1665H7.5C7.5 4.62674 7.1269 4.99984 6.66667 4.99984C6.20643 4.99984 5.83333 4.62674 5.83333 4.1665H5C4.53976 4.1665 4.16667 4.5396 4.16667 4.99984V5.83317H15.8333ZM4.16667 7.49984V15.8332C4.16667 16.2934 4.53976 16.6665 5 16.6665H15C15.4602 16.6665 15.8333 16.2934 15.8333 15.8332V7.49984H4.16667Z" fill="#667085" />
                                     </svg>
                                     Select Dates
                                 </button>
-                                <button className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2'>
+                                <button className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2'
+                                    onClick={() => setShowFilter((prev) => !prev)}>
                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M10.8333 6.66667C10.8333 7.1269 11.2064 7.5 11.6667 7.5C12.1269 7.5 12.5 7.1269 12.5 6.66667V5.83333H16.6667C17.1269 5.83333 17.5 5.46024 17.5 5C17.5 4.53976 17.1269 4.16667 16.6667 4.16667H12.5V3.33333C12.5 2.8731 12.1269 2.5 11.6667 2.5C11.2064 2.5 10.8333 2.8731 10.8333 3.33333V6.66667Z" fill="#667085" />
                                         <path d="M2.5 10C2.5 9.53976 2.8731 9.16667 3.33333 9.16667H4.58333C4.81345 9.16667 5 9.35321 5 9.58333V10.4167C5 10.6468 4.81345 10.8333 4.58333 10.8333H3.33333C2.8731 10.8333 2.5 10.4602 2.5 10Z" fill="#667085" />
@@ -234,23 +312,127 @@ export default function CustomerDetailPage(id) {
 
                             </div>
                         </div>
+                        {showDateDialog && (
+                            <div className="absolute z-50 mt-2 right-10">
+                                <div ref={dateDialogRef}
+                                    className="bg-white rounded-lg shadow-lg p-6 min-w-[320px]">
+                                    <h3 className="text-lg font-semibold mb-4">Select Dates</h3>
+                                    <div className="flex flex-col gap-3">
+                                        <label className="flex justify-between items-center">
+                                            Start Date:
+                                            <input
+                                                type="date"
+                                                className="border rounded px-2 py-1 ml-2"
+                                                value={startDate}
+                                                onChange={e => setStartDate(e.target.value)}
+                                            />
+                                        </label>
+                                        <label className="flex justify-between items-center">
+                                            End Date:
+                                            <input
+                                                type="date"
+                                                className="border rounded px-2 py-1 ml-2"
+                                                value={endDate}
+                                                onChange={e => setEndDate(e.target.value)}
+                                            />
+                                        </label>
+                                    </div>
+                                    <div className="flex justify-end gap-2 mt-4">
+                                        <button
+                                            className="px-4 py-2 rounded bg-gray-200 text-gray-700"
+                                            onClick={handleCloseDateDialog}
+                                        >
+                                            Clear
+                                        </button>
+                                        <button
+                                            className="px-4 py-2 rounded bg-[#ff8200] text-white"
+                                            onClick={handleApplyDateFilter}
+                                            disabled={!startDate || !endDate}
+                                        >
+                                            Apply
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {showFilter && (
+                            <div
+                                ref={filterRef}
+                                className="absolute z-50 bg-white border border-[#E0E2E7] rounded-md shadow-md py-4 px-5 mt-2 right-10"
+                            >
+                                <div className="flex flex-col gap-3 mb-2">
+                                    <div>
+                                        <label className="block mb-1 text-sm font-medium text-gray-700">
+                                            Min Total: <span className="font-bold text-[#ff8200]">{minTotal}</span>
+                                        </label>
+                                        <input
+                                            type="range"
+                                            min={minOrderTotal}
+                                            max={maxOrderTotal}
+                                            value={minTotal ?? minOrderTotal}
+                                            onChange={e => setMinTotal(Number(e.target.value))}
+                                            className="w-full"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block mb-1 text-sm font-medium text-gray-700">
+                                            Max Total: <span className="font-bold text-[#ff8200]">{maxTotal}</span>
+                                        </label>
+                                        <input
+                                            type="range"
+                                            min={minOrderTotal}
+                                            max={maxOrderTotal}
+                                            value={maxTotal ?? maxOrderTotal}
+                                            onChange={e => setMaxTotal(Number(e.target.value))}
+                                            className="w-full"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block mb-1 text-sm font-medium text-gray-700">Status</label>
+                                        <select
+                                            className="border px-2 py-1 rounded w-full"
+                                            value={statusFilter}
+                                            onChange={e => setStatusFilter(e.target.value)}
+                                        >
+                                            <option value="">All</option>
+                                            <option value="1">Processing</option>
+                                            <option value="2">Shipped</option>
+                                            <option value="3">Delivered</option>
+                                            <option value="4">Cancelled</option>
+                                            {/* Thêm trạng thái khác nếu có */}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2 justify-end">
+                                    <button
+                                        className="bg-gray-200 text-gray-700 px-3 py-1 rounded"
+                                        onClick={() => {
+                                            setMinTotal(minOrderTotal);
+                                            setMaxTotal(maxOrderTotal);
+                                            setStatusFilter('');
+                                        }}
+                                    >
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                         <table className='w-full mt-5'>
                             <thead className='bg-[#F9FAFB] font-medium'>
-                                <tr className='text-left bg-[#F9F9FC] font-semibold border-b border-[#E0E2E7]'>
+                                <tr className='text-center bg-[#F9F9FC] font-semibold border-b border-[#E0E2E7]'>
                                     <th className='py-2 px-4'>OrderID</th>
                                     <th className='py-2 px-4'>Product</th>
                                     <th className='py-2 px-4'>Date</th>
                                     <th className='py-2 px-4'>Total</th>
                                     <th className='py-2 px-4'>State</th>
-
-
                                 </tr>
                             </thead>
-                            <tbody className='text-[#344054] font-normal'>
-                                {orders.map((order) => (
+                            <tbody className='text-[#344054] font-normal text-center'>
+                                {displayOrders.map((order) => (
                                     <AdminOrderItem
                                         key={order.id}
-                                        order={order}/>
+                                        order={order}
+                                        customer={true} />
                                 ))}
                             </tbody>
                         </table>

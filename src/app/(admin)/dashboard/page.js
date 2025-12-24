@@ -274,7 +274,7 @@ export default function DashboardPage() {
                         </button>
                         <button className='bg-[#ff8200] rounded-md text-white px-4 py-2'
                             onClick={() => {
-                                window.location.href = '/admin/order';
+                                window.location.href = '/order';
                             }}>See more</button>
                     </div>
 

@@ -5,7 +5,8 @@ export default function CustomerItem({ user }) {
     const order = 0; // Placeholder for order count
     const balance = 0;
     return (
-        <tr className='bg-white shadow-md border-b border-[#F0F1F3]'>
+        <tr className='bg-white shadow-md border-b border-[#F0F1F3] cursor-pointer'
+            onClick={() => window.location.href = `/admin/customerdetail?id=${customer.id}`}>
             <td>
                 <div className='flex items-center gap-3 py-4 px-2'>
                     <Image src={"/images/user1.png"} alt="customer" width={50} height={50} className='rounded-full' />
