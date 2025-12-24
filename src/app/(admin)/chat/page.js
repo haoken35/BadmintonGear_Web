@@ -23,7 +23,7 @@ export default function ChatBox() {
 
     // Lấy danh sách chat rooms
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/chats`)
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`)
             .then(res => res.json())
             .then(data => {
                 setChatRooms(data);
@@ -42,7 +42,7 @@ export default function ChatBox() {
             console.warn("[chat:admin] socket unavailable when joining room");
         }
 
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/chats/${selectedRoom.room}`)
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedRoom.room}`)
             .then(res => res.json())
             .then(data => {
                 const mapped = data.map(item => ({

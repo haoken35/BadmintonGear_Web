@@ -10,6 +10,7 @@ export default function AdminOrderItem({ order, customer }) {
         const fetchDetails = async () => {
             try {
                 const orderDetails = await getDetailByOrderId(order.id);
+                console.log(orderDetails);
                 const res = await getProductById(orderDetails[0].Product.id);
                 setProduct(res);
                 setDetails(orderDetails);
@@ -30,15 +31,15 @@ export default function AdminOrderItem({ order, customer }) {
                             {/* Hiển thị sản phẩm đầu tiên */}
                             <Image
                                 src={product && product.ImagesProducts ? product.ImagesProducts[0].url : "/images/unimage.png"}
-                                alt={details[0] ? details[0].Product.name : ""}
+                                alt={details[0] ? details[0].Product?.translations[0]?.name : "Product Image"}
                                 className="rounded-lg"
                                 width={50}
                                 height={50}
                             />
                             <div className='flex flex-col items-start'>
-                                <div className="font-medium">{details[0].Product.name}</div>
+                                <div className="font-medium">{details[0].Product?.translations[0]?.name}</div>
                                 <div className="text-sm text-gray-500">
-                                    {Number(details[0].Product.price).toLocaleString()} VND x {details[0].quantity}
+                                    {Number(details[0].Product?.price).toLocaleString()} VND x {details[0].quantity}
                                 </div>
                                 {/* Hiển thị số lượng sản phẩm còn lại */}
                                 {details.length > 1 && (
@@ -54,7 +55,7 @@ export default function AdminOrderItem({ order, customer }) {
             <td className='text-gray-500 font-medium'>{new Date(order.createdAt).toLocaleDateString('vi-VN')}</td>
             {!customer && (
                 <td>
-                    <div>   
+                    <div>
                         <div className='font-medium'>{order.User.name}</div>
                         <div className='text-gray-500 text-sm' >{order.User.email}</div>
                     </div>

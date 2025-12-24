@@ -1,6 +1,6 @@
 const getDetailByOrderId = async (orderId) => {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orderdetails/${orderId}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orderdetails/${orderId}?lang=vi`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

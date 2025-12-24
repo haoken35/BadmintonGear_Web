@@ -26,20 +26,20 @@ export default function OrderPage() {
             // normalize về array
             const arr =
                 Array.isArray(response) ? response :
-                Array.isArray(response?.orders) ? response.orders :
-                Array.isArray(response?.data) ? response.data :
-                Array.isArray(response?.data?.orders) ? response.data.orders :
-            [];
+                    Array.isArray(response?.orders) ? response.orders :
+                        Array.isArray(response?.data) ? response.data :
+                            Array.isArray(response?.data?.orders) ? response.data.orders :
+                                [];
 
-                console.log("Orders fetched:", arr);
+            console.log("Orders fetched:", arr);
 
-                setOrders(arr);
-                setDisplayOrders(arr);
-            } catch (error) {
-                console.error("Error fetching orders:", error);
-                setOrders([]);
-                setDisplayOrders([]);
-            }
+            setOrders(arr);
+            setDisplayOrders(arr);
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+            setOrders([]);
+            setDisplayOrders([]);
+        }
         //     if (response) {
         //         console.log("Orders fetched successfully:", response);
         //         setOrders(response);
@@ -149,6 +149,47 @@ export default function OrderPage() {
         setShowDateDialog(false);
     };
 
+    const handleExport = async () => {
+        const ExcelJS = (await import('exceljs')).default;
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Import List');
+
+        worksheet.columns = [
+            { header: 'OrderID', key: 'OrderID', width: 10 },
+            { header: 'Customer', key: 'Customer', width: 25 },
+            { header: 'Total', key: 'Total', width: 15 },
+            { header: 'Payment', key: 'Payment', width: 15 },
+            { header: 'Status', key: 'status', width: 15 },
+            { header: 'CreatedAt', key: 'CreatedAt', width: 20 },
+            { header: 'UpdatedAt', key: 'UpdatedAt', width: 20 },
+        ];
+
+        displayOrders.forEach(item => {
+            worksheet.addRow({
+                OrderID: item.id,
+                Customer: item.User ? item.User.name : 'Unknown',
+                Total: Number(item.totalprice).toLocaleString('vi-VN'),
+                Payment: item.Payment?.paymentmethod || "Cash",
+                status: item.delivered ? "Delivered" : (item.shipping ? "Shipping" : (item.process ? "Processing" : (item.status === -1 ? "Cancelled" : "Order Placed"))),
+                CreatedAt: new Date(item.createdAt).toLocaleString('vi-VN'),
+                UpdatedAt: new Date(item.updatedAt).toLocaleString('vi-VN'),
+            });
+        });
+
+        worksheet.getRow(1).eachCell((cell) => {
+            cell.font = { bold: true };
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = 'Order_List.xlsx';
+        anchor.click();
+        window.URL.revokeObjectURL(url);
+    };
+
     return (
         <div className='font-inter'>
             <div className="flex justify-between items-end">
@@ -164,7 +205,10 @@ export default function OrderPage() {
                         <a className="text-[#667085]" href="/order">Order List</a>
                     </div>
                 </div>
-                <button className='bg-[#FBE3CA] text-[#FF8200] rounded-md px-4 py-2 flex items-center gap-2'>
+                <button
+                    onClick={handleExport}
+                    className='bg-[#FBE3CA] text-[#FF8200] rounded-md px-4 py-2 flex items-center gap-2'
+                >
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M13.0891 6.00582C12.7637 6.33126 12.236 6.33126 11.9106 6.00582L10.8332 4.92841V12.9166C10.8332 13.3768 10.4601 13.7499 9.99984 13.7499C9.5396 13.7499 9.1665 13.3768 9.1665 12.9166V4.92841L8.08909 6.00582C7.76366 6.33126 7.23602 6.33126 6.91058 6.00582C6.58514 5.68039 6.58514 5.15275 6.91058 4.82731L9.70521 2.03268C9.86793 1.86997 10.1317 1.86996 10.2945 2.03268L13.0891 4.82731C13.4145 5.15275 13.4145 5.68039 13.0891 6.00582Z" fill="#FF8200" />
                         <path d="M14.9998 7.08323C16.8408 7.08323 18.3332 8.57562 18.3332 10.4166V14.5832C18.3332 16.4242 16.8408 17.9166 14.9998 17.9166H4.99984C3.15889 17.9166 1.6665 16.4242 1.6665 14.5832V10.4166C1.6665 8.57562 3.15889 7.08323 4.99984 7.08323H6.6665C7.12674 7.08323 7.49984 7.45633 7.49984 7.91657C7.49984 8.37681 7.12674 8.7499 6.6665 8.7499H4.99984C4.07936 8.7499 3.33317 9.49609 3.33317 10.4166V14.5832C3.33317 15.5037 4.07936 16.2499 4.99984 16.2499H14.9998C15.9203 16.2499 16.6665 15.5037 16.6665 14.5832V10.4166C16.6665 9.49609 15.9203 8.7499 14.9998 8.7499H13.3332C12.8729 8.7499 12.4998 8.37681 12.4998 7.91657C12.4998 7.45633 12.8729 7.08323 13.3332 7.08323H14.9998Z" fill="#FF8200" />
