@@ -18,8 +18,11 @@ export default function CustomerItem({ user }) {
             </td>
             <td className='py-4'>{user.phonenumber}</td>
             <td className='py-4'>{user.address}</td>
-            <td className='text-center'>{order}</td>
-            <td className='text-center'>{balance}</td>
+            <td >{customer.orderCount}</td>
+            <td>{Number(customer.totalAmount).toLocaleString()} VND</td>
+            <td><div className={`w-fit px-2 py-1 rounded-full ${!customer.status ? "text-[#0D894F] bg-[#E7F4EE]" : "text-[#F04438] bg-[#FEEDEC]"}`}>
+                {!customer.status ? "Active" : "Blocked"}
+            </div></td>
             <td>
                 {new Date(user.createdAt).toLocaleDateString("en-US", {
                     year: 'numeric',

@@ -1,7 +1,9 @@
 "use client"
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AdminCategoryItem from '@/components/AdminCategoryItem';
 import { getAllCategories, deleteCategory } from '@/service/categoryService';
+import { getAllProducts } from '@/service/productService';
+import * as XLSX from 'xlsx';
 
 export default function ProductCategory() {
     const [categories, setCategories] = useState([]);
@@ -23,6 +25,20 @@ export default function ProductCategory() {
         setCategories(categories.map(category => ({ ...category, isChecked: newCheckedState })));
     };
 
+    const handleExport = () => {
+        const worksheet = XLSX.utils.json_to_sheet(categories.map(item => ({
+            Category: item.name,
+            Description: item.description,
+            NumberOfProducts: item.product,
+            CreatedAt: new Date(item.createdAt).toLocaleString('vi-VN'),
+            UpdatedAt: new Date(item.updatedAt).toLocaleString('vi-VN'),
+        })));
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Category List');
+
+        XLSX.writeFile(workbook, 'Category_List.xlsx');
+    }
     // Hàm xử lý khi checkbox trong tbody được chọn
     const handleCategoryCheck = (id) => {
         const updatedCategories = categories.map(category =>
@@ -37,12 +53,17 @@ export default function ProductCategory() {
 
     const fetchCategories = async () => {
         try {
+            const productResponse = await getAllProducts();
             const response = await getAllCategories();
             if (response && Array.isArray(response)) {
-                const updatedCategories = response.map(category => ({
-                    ...category,
-                    isChecked: false // Thêm thuộc tính isChecked cho mỗi category
-                }));
+                const updatedCategories = response.map(category => {
+                    const productCount = productResponse.filter(p => p.categoriesid === category.id).length;
+                    return {
+                        ...category,
+                        isChecked: false,
+                        product: productCount
+                    }
+                });
                 setCategories(updatedCategories);
                 setDisplayCategories(updatedCategories);
             } else {
@@ -113,7 +134,8 @@ export default function ProductCategory() {
                     </div>
                 </div>
                 <div className='flex gap-3'>
-                    <button className='bg-[#FBE3CA] text-[#ff8200] px-4 py-2 rounded-md flex gap-2 items-center'>
+                    <button className='bg-[#FBE3CA] text-[#ff8200] px-4 py-2 rounded-md flex gap-2 items-center'
+                        onClick={handleExport}>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M13.0891 6.00582C12.7637 6.33126 12.236 6.33126 11.9106 6.00582L10.8332 4.92841V12.9166C10.8332 13.3768 10.4601 13.7499 9.99984 13.7499C9.5396 13.7499 9.1665 13.3768 9.1665 12.9166V4.92841L8.08909 6.00582C7.76366 6.33126 7.23602 6.33126 6.91058 6.00582C6.58514 5.68039 6.58514 5.15275 6.91058 4.82731L9.70521 2.03268C9.86793 1.86997 10.1317 1.86996 10.2945 2.03268L13.0891 4.82731C13.4145 5.15275 13.4145 5.68039 13.0891 6.00582Z" fill="#FF8200" />
                             <path d="M14.9998 7.08323C16.8408 7.08323 18.3332 8.57562 18.3332 10.4166V14.5832C18.3332 16.4242 16.8408 17.9166 14.9998 17.9166H4.99984C3.15889 17.9166 1.6665 16.4242 1.6665 14.5832V10.4166C1.6665 8.57562 3.15889 7.08323 4.99984 7.08323H6.6665C7.12674 7.08323 7.49984 7.45633 7.49984 7.91657C7.49984 8.37681 7.12674 8.7499 6.6665 8.7499H4.99984C4.07936 8.7499 3.33317 9.49609 3.33317 10.4166V14.5832C3.33317 15.5037 4.07936 16.2499 4.99984 16.2499H14.9998C15.9203 16.2499 16.6665 15.5037 16.6665 14.5832V10.4166C16.6665 9.49609 15.9203 8.7499 14.9998 8.7499H13.3332C12.8729 8.7499 12.4998 8.37681 12.4998 7.91657C12.4998 7.45633 12.8729 7.08323 13.3332 7.08323H14.9998Z" fill="#FF8200" />

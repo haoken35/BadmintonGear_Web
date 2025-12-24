@@ -1,7 +1,6 @@
 import Image from "next/image";
 
 export default function AdminCategoryItem({ category, onCheck, onDelete }) {
-    const numOfProduct = category.products ? category.products.length : 0; // Số lượng sản phẩm trong danh mục
     return (
         <tr className='bg-white shadow-md border-b border-[#F0F1F3]'>
                     <td>
@@ -18,7 +17,7 @@ export default function AdminCategoryItem({ category, onCheck, onDelete }) {
                     <label className='font-medium text-black'>{category.name}</label>
                 </div>
             </td>
-            <td className=''>{numOfProduct}</td>
+            <td className=''>{category.product}</td>
             <td>{new Date(category.createdAt).toLocaleDateString("en-US", {
                 year: 'numeric',
                 month: '2-digit',
