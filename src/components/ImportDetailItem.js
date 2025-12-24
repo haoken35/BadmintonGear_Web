@@ -18,17 +18,17 @@ export default function ImportDetailItem({ item }) {
     }, [item.Product.id])
 
     return (
-        <tr>
+        <tr className='text-(--text) bg-(--surface)'>
             <td className='py-4'>
                 <div className='flex items-center gap-2'>
                     <Image
                         src={product && product.ImagesProducts ? product.ImagesProducts[0].url : "/images/unimage.png"}
-                        alt={product ? product.name : "Product Image"}
+                        alt={product ? product.translations?.[0]?.name : "Product Image"}
                         width={50}
                         height={50}
                         className="rounded-md"
                     />
-                    <div>{item.Product.name}</div>
+                    <div>{item.Product.translations?.[0]?.name}</div>
                 </div>
             </td>
             <td>{item.quantity}</td>

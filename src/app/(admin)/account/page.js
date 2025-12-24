@@ -64,7 +64,7 @@ export default function Account() {
             setError('')
         }
     }, [currentPassword, newPassword, confirmPassword]);
-    
+
     const handleCancel = () => {
         if (user) {
             setName(user.name || "");
@@ -137,7 +137,7 @@ export default function Account() {
             return false;
         }
     };
-    
+
     const handleSaveChanges = async () => {
         if (currentPassword && newPassword && confirmPassword && error === "") {
             const passwordData = {
@@ -154,7 +154,7 @@ export default function Account() {
                     alert("Failed to change password. Please try again.");
                     return;
                 }
-                } catch (err) {
+            } catch (err) {
                 setError("Failed to change password");
                 return;
             }
@@ -167,7 +167,7 @@ export default function Account() {
                 const ok = await uploadAvatar();
                 if (!ok) return;
             }
-            }
+        }
 
         if (
             updatedUser &&
@@ -193,7 +193,7 @@ export default function Account() {
                 return;
             }
         }
-         window.location.reload();
+        window.location.reload();
 
         const userData = await getUserById(user.id);
         if (userData) {
@@ -212,7 +212,7 @@ export default function Account() {
             setError("");
             localStorage.setItem("userData", JSON.stringify(userData));
         }
-        };
+    };
 
     const isDisabled = !!error ||
         (
@@ -234,25 +234,25 @@ export default function Account() {
         || (user && user.Imagesuser
             ? `${user.Imagesuser.url}?v=${user.updatedAt || Date.now()}`
             : "/images/noavatar.png");
-            
+
     return (
         <div className='px-2 py-5'>
             <div>
                 <h1 className='text-3xl font-bold'>Account</h1>
                 <div id="roadmap" className="flex items-center mt-2">
-                    <a className="text-[#ff8200]" href="/dashboard">Dashboard</a>
+                    <a className="text-(--primary)" href="/dashboard">Dashboard</a>
                     <label className="ml-3 mr-3">
                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                         </svg>
                     </label>
-                    <a className="text-[#667085]" href="/account">Account</a>
+                    <a className="text-(--muted)" href="/account">Account</a>
                 </div>
             </div>
             <div className='grid grid-cols-[20%_1fr] gap-5 mt-10'>
                 <div className='flex flex-col gap-3 font-medium' >
-                    <div className="max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden w-full p-1">
-                        <div className="bg-[#ff8200] h-35 w-full rounded-sm"></div>
+                    <div className="max-w-sm mx-auto bg-(--surface) rounded-xl shadow-md overflow-hidden w-full p-1">
+                        <div className="bg-(--primary) h-35 w-full rounded-sm"></div>
                         <div className="flex flex-col items-center -mt-20 gap-5 mb-10">
                             <Image
                                 src={avatarUrl}
@@ -272,70 +272,70 @@ export default function Account() {
                                         onChange={handleAvatarChange}
                                     />
                                     <button
-                                        className="bg-[#ff8200] text-white px-4 py-2 rounded-md cursor-pointer hover:bg-gray-100"
+                                        className="bg-(--primary) text-white px-4 py-2 rounded-md cursor-pointer hover:bg-gray-100"
                                         onClick={() => document.getElementById('avatar-upload').click()}
                                     >
                                         {user && user.Imagesuser ? "Change Avatar" : "Upload Avatar"}
                                     </button>
                                 </div>
                             )}
-                            <h2 className="mt-2 text-xl font-semibold text-gray-800">{user ? user.name : ""}</h2>
-                            <p className="text-md text-gray-500">{user ? user.username : ""}</p>
-                            <p className="text-md text-gray-500">{user && user.Role ? user.Role.name : ""}</p>
+                            <h2 className="mt-2 text-xl font-semibold text-(--text)">{user ? user.name : ""}</h2>
+                            <p className="text-md text-(--text2)">{user ? user.username : ""}</p>
+                            <p className="text-md text-(--text2)">{user && user.Role ? user.Role.name : ""}</p>
                         </div>
                     </div>
                 </div>
-                <div className='w-full bg-white pb-10'>
+                <div className='w-full bg-(--surface) pb-10'>
                     <div className='mt-10 mx-auto w-4/5'>
-                        <p className='text-[#ff8200] text-xl'>Edit Your Profile</p>
+                        <p className='text-(--primary) text-xl'>Edit Your Profile</p>
                         <div className='flex flex-col gap-1 mt-5'>
-                            <label className='text-gray-500'>Name</label>
+                            <label className='text-(--text2)'>Name</label>
                             <input
                                 type="text"
-                                className='bg-gray-100 rounded-xs p-2'
+                                className='bg-(--surface2) rounded-xs p-2 text-(--text)'
                                 value={name}
                                 onChange={e => setName(e.target.value)}
                             />
                         </div>
                         <div className='flex w-full gap-5 mt-5 justify-between'>
                             <div className='flex flex-col gap-1 w-3/7'>
-                                <label className='text-gray-500 '>Email</label>
+                                <label className='text-(--text2) '>Email</label>
                                 <input
                                     type="text"
-                                    className='bg-gray-100 rounded-xs p-2'
+                                    className='bg-(--surface2) rounded-xs p-2 text-(--text)'
                                     value={email}
                                     onChange={e => setEmail(e.target.value)}
                                 />
                             </div>
                             <div className='flex flex-col gap-1 w-3/7'>
-                                <label className='text-gray-500'>Phone Number</label>
+                                <label className='text-(--text2)'>Phone Number</label>
                                 <input
                                     type="text"
-                                    className='bg-gray-100 rounded-xs p-2'
+                                    className='bg-(--surface2) rounded-xs p-2 text-(--text)'
                                     value={phonenumber}
                                     onChange={e => setPhonenumber(e.target.value)}
                                 />
                             </div>
                         </div>
                         <div className='flex flex-col gap-2 mt-5'>
-                            <label className='text-gray-500'>Password Change</label>
+                            <label className='text-(--text2)'>Password Change</label>
                             <input
                                 type="password"
-                                className='bg-gray-100 rounded-xs p-2'
+                                className='bg-(--surface2) rounded-xs p-2 text-(--text)'
                                 placeholder='Current Password'
                                 value={currentPassword}
                                 onChange={e => setCurrentPassword(e.target.value)}
                             />
                             <input
                                 type="password"
-                                className='bg-gray-100 rounded-xs p-2'
+                                className='bg-(--surface2) rounded-xs p-2 text-(--text)'
                                 placeholder='New Password'
                                 value={newPassword}
                                 onChange={e => setNewPassword(e.target.value)}
                             />
                             <input
                                 type="password"
-                                className='bg-gray-100 rounded-xs p-2'
+                                className='bg-(--surface2) rounded-xs p-2 text-(--text)'
                                 placeholder='Confirm New Password'
                                 value={confirmPassword}
                                 onChange={e => setConfirmPassword(e.target.value)}
@@ -345,7 +345,7 @@ export default function Account() {
                         <div className='flex justify-end gap-5 items-center mt-5 mr-5'>
                             <button className='px-4 py-2 rounded-xs cursor-pointer' onClick={handleCancel}>Cancel</button>
                             <button
-                                className={`bg-[#ff8200] text-white px-4 py-2 rounded-xs cursor-pointer${isDisabled ? " disabled bg-gray-700" : ""}`}
+                                className={`bg-(--primary) text-white px-4 py-2 rounded-xs cursor-pointer${isDisabled ? " disabled bg-(--muted)" : ""}`}
                                 onClick={isDisabled ? undefined : handleSaveChanges}
                                 disabled={isDisabled}
                             >

@@ -104,22 +104,22 @@ export default function AddImportPage() {
                 <div>
                     <h1 className='text-3xl font-bold'>Add Import</h1>
                     <div id="roadmap" className="flex items-center mt-2">
-                        <a className="text-[#ff8200]" href="/dashboard">Dashboard</a>
+                        <a className="text-(--primary)" href="/dashboard">Dashboard</a>
                         <label className="ml-3 mr-3">
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                             </svg>
                         </label>
-                        <a className="text-[#ff8200]" href="/import">Import List</a>
+                        <a className="text-(--primary)" href="/import">Import List</a>
                         <label className="ml-3 mr-3">
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                             </svg>
                         </label>
-                        <a className="text-[#667085]" href={`/addimport`}>Add Import </a>
+                        <a className="text-(--muted)" href={`/addimport`}>Add Import </a>
                     </div>
                 </div>
-                <button className='bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center'
+                <button className='bg-(--primary) text-white px-4 py-2 rounded-md flex gap-2 items-center'
                     onClick={handleSaveImport}>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M9.16667 15.4167C9.16667 15.8769 9.53976 16.25 10 16.25C10.4602 16.25 10.8333 15.8769 10.8333 15.4167V10.8333H15.4167C15.8769 10.8333 16.25 10.4602 16.25 10C16.25 9.53976 15.8769 9.16667 15.4167 9.16667H10.8333V4.58333C10.8333 4.1231 10.4602 3.75 10 3.75C9.53976 3.75 9.16667 4.1231 9.16667 4.58333V9.16667H4.58333C4.1231 9.16667 3.75 9.53976 3.75 10C3.75 10.4602 4.1231 10.8333 4.58333 10.8333H9.16667V15.4167Z" fill="white" />
@@ -128,7 +128,7 @@ export default function AddImportPage() {
                 </button>
             </div>
             <div className='flex gap-10 mt-5'>
-                <div className='flex flex-col gap-3 p-5 bg-white rounded-md shadow-md w-2/7 h-fit'>
+                <div className='flex flex-col gap-3 p-5 bg-(--surface) rounded-md shadow-md w-2/7 h-fit'>
                     <div className='flex gap-3 items-center'>
                         <h1 className='text-xl font-semibold'>Add New Import</h1>
                     </div>
@@ -181,13 +181,13 @@ export default function AddImportPage() {
                     </div>
                 </div>
                 <div className='flex gap-[7%] w-full '>
-                    <div className='w-full p-5 bg-white rounded-md shadow-md h-fit'>
+                    <div className='w-full p-5 bg-(--surface) rounded-md shadow-md h-fit'>
                         <div className='flex justify-between'>
                             <div className='flex w-full gap-4 items-center px-5'>
                                 <div className='text-lg font-semibold'>Product List</div>
                                 <div className='bg-[#E7F4EE] text-[#0D894F] rounded-full px-2 py-1'>{details.length} Product{details.length > 1 ? "s" : ""}</div>
                             </div>
-                            <button className='bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center'
+                            <button className='bg-(--primary) text-white px-4 py-2 rounded-md flex gap-2 items-center'
                                 onClick={() => { setShowDialog(true) }}>
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M9.16667 15.4167C9.16667 15.8769 9.53976 16.25 10 16.25C10.4602 16.25 10.8333 15.8769 10.8333 15.4167V10.8333H15.4167C15.8769 10.8333 16.25 10.4602 16.25 10C16.25 9.53976 15.8769 9.16667 15.4167 9.16667H10.8333V4.58333C10.8333 4.1231 10.4602 3.75 10 3.75C9.53976 3.75 9.16667 4.1231 9.16667 4.58333V9.16667H4.58333C4.1231 9.16667 3.75 9.53976 3.75 10C3.75 10.4602 4.1231 10.8333 4.58333 10.8333H9.16667V15.4167Z" fill="white" />
@@ -196,27 +196,27 @@ export default function AddImportPage() {
                             </button>
                             {showDialog && (
                                 <div className="fixed inset-0 bg-[rgba(0,0,0,0.5)] flex items-center justify-center z-60">
-                                    <div className="bg-white rounded-lg shadow-lg p-6 min-w-[320px]">
+                                    <div className="bg-(--surface) text-(--text) rounded-lg shadow-lg p-6 min-w-[320px]">
                                         <h3 className="text-lg font-semibold mb-4">Add Product</h3>
                                         <div className="flex flex-col gap-3">
                                             <div className='flex flex-col gap-2'>
                                                 <label className='text-md'> Product: </label>
                                                 <select
-                                                    className="border border-gray-400 rounded px-2 py-1"
+                                                    className="border border-(--border) rounded px-2 py-1"
                                                     value={selectedProduct}
                                                     onChange={e => setSelectedProduct(e.target.value)}
                                                 >
                                                     <option value="" disabled>Select product</option>
                                                     {products.map(p => (
-                                                        <option key={p.id} value={p.id}>{p.name}</option>
+                                                        <option className='text-(--text) bg-(--surface)' key={p.id} value={p.id}>{p.translations?.[0]?.name}</option>
                                                     ))}
                                                 </select>
                                             </div>
                                             <div className='flex flex-col gap-2'>
                                                 <label>Quantity:</label>
-                                                <div className="flex items-center border border-gray-400 rounded w-fit">
+                                                <div className="flex items-center border border-(--border) rounded w-fit">
                                                     <button
-                                                        className="px-4 py-2 border-r border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="px-4 py-2 border-r border-(--border) disabled:opacity-50 disabled:cursor-not-allowed"
                                                         onClick={() => setCount(count - 1)}
                                                         disabled={count <= 1}
                                                     >
@@ -224,7 +224,7 @@ export default function AddImportPage() {
                                                     </button>
                                                     <span className="px-4">{count}</span>
                                                     <button
-                                                        className="px-4 py-2 border-l border-gray-400 bg-orange-500 text-white"
+                                                        className="px-4 py-2 border-l border-(--border) bg-(--primary) text-white"
                                                         onClick={() => setCount(count + 1)}
                                                     >
                                                         +
@@ -233,7 +233,7 @@ export default function AddImportPage() {
                                             </div>
                                             <div className='flex flex-col gap-2'>
                                                 <label>Price:</label>
-                                                <input type='number' value={price} min={1000} step={1000} onChange={e => setPrice(e.target.value)} className="border border-gray-400 rounded px-2 py-1" />
+                                                <input type='number' value={price} min={1000} step={1000} onChange={e => setPrice(e.target.value)} className="border border-(--border) rounded px-2 py-1" />
                                             </div>
                                         </div>
                                         <div className="flex justify-end gap-2 mt-4">
@@ -244,7 +244,7 @@ export default function AddImportPage() {
                                                 Cancel
                                             </button>
                                             <button
-                                                className="px-4 py-2 rounded bg-[#ff8200] text-white"
+                                                className="px-4 py-2 rounded bg-(--primary) text-white"
                                                 onClick={handleAddProduct}
                                                 disabled={!selectedProduct || count < 1}
                                             >
@@ -256,15 +256,15 @@ export default function AddImportPage() {
                             )}
                         </div>
                         <table className='w-full mt-5'>
-                            <thead className='bg-[#F9FAFB] font-medium'>
-                                <tr className='text-center bg-[#F9F9FC] font-semibold border-b border-[#E0E2E7]'>
+                            <thead className='bg-(--surface2) font-medium'>
+                                <tr className='text-center bg-(--surface2) font-semibold border-b border-(--border) text-(--text)'>
                                     <th className='py-2 px-4'>Product</th>
                                     <th className='py-2 px-4'>Quantity</th>
                                     <th className='py-2 px-4'>Price</th>
                                     <th className='py-2 px-4'>Total</th>
                                 </tr>
                             </thead>
-                            <tbody className='text-[#344054] font-normal text-center'>
+                            <tbody className=' font-normal text-center'>
                                 {details.map((item) => (
                                     <ImportDetailItem
                                         key={item.id}

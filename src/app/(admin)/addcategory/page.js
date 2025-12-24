@@ -73,19 +73,19 @@ export default function AddCategory() {
                 <div>
                     <h1 className='text-3xl font-bold'>Add Category</h1>
                     <div id="roadmap" className="flex items-center mt-2">
-                        <a className="text-[#ff8200]" href="/dashboard">Dashboard</a>
+                        <a className="text-(--primary)" href="/dashboard">Dashboard</a>
                         <label className="ml-3 mr-3">
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                             </svg>
                         </label>
-                        <a className="text-[#ff8200]" href="/productcategory">Product Category</a>
+                        <a className="text-(--primary)" href="/productcategory">Product Category</a>
                         <label className="ml-3 mr-3">
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                             </svg>
                         </label>
-                        <a className="text-[#667085]" href="/addcategory">Add Category</a>
+                        <a className="text-(--muted)" href="/addcategory">Add Category</a>
                     </div>
                 </div>
                 <div className='flex gap-3'>
@@ -95,7 +95,7 @@ export default function AddCategory() {
                             <path d="M15.1728 13.9941C15.4982 14.3195 15.4982 14.8472 15.1728 15.1726C14.8473 15.498 14.3197 15.498 13.9942 15.1726L10.0002 11.1786L6.00626 15.1726C5.68082 15.4981 5.15318 15.4981 4.82774 15.1726C4.5023 14.8472 4.5023 14.3195 4.82773 13.9941L8.82167 10.0001L4.82758 6.00607C4.50214 5.68064 4.50214 5.15301 4.82758 4.82757C5.15302 4.50214 5.68066 4.50214 6.0061 4.82757L10.0002 8.82158L13.9941 4.82759C14.3195 4.50215 14.8472 4.50214 15.1726 4.82758C15.498 5.15301 15.4981 5.68065 15.1726 6.00609L11.1787 10.0001L15.1728 13.9941Z" fill="#858D9D" />
                         </svg>
                         Cancel</button>
-                    <button className='bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+                    <button className='bg-(--primary) text-white px-4 py-2 rounded-md flex gap-2 items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
                         disabled={!category || category.name === ""} onClick={handleSave}>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.16667 15.4167C9.16667 15.8769 9.53976 16.25 10 16.25C10.4602 16.25 10.8333 15.8769 10.8333 15.4167V10.8333H15.4167C15.8769 10.8333 16.25 10.4602 16.25 10C16.25 9.53976 15.8769 9.16667 15.4167 9.16667H10.8333V4.58333C10.8333 4.1231 10.4602 3.75 10 3.75C9.53976 3.75 9.16667 4.1231 9.16667 4.58333V9.16667H4.58333C4.1231 9.16667 3.75 9.53976 3.75 10C3.75 10.4602 4.1231 10.8333 4.58333 10.8333H9.16667V15.4167Z" fill="white" />
@@ -112,7 +112,7 @@ export default function AddCategory() {
                             <label className='text-sm font-medium ml-2'>Photo</label>
                             <div
                                 className={`flex flex-col gap-3 justify-center items-center py-4 bg-[#F9F9FC] rounded-md border border-dashed border-[#E0E2E7]
-                                                            ${isDragging ? "border-dashed border-[#ff8200]" : "border-[#E0E2E7]"
+                                                            ${isDragging ? "border-dashed border-(--primary)" : "border-[#E0E2E7]"
                                     }`}
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
@@ -144,7 +144,7 @@ export default function AddCategory() {
 
                                 {!imagePreview && (<><label className='text-md font-medium ml-2 text-[#858D9D]'>Drag and drop image here, or click add image</label>
                                     <div className='flex flex-col gap-2 justify-center'>
-                                        <label htmlFor='upload-image' className='text-[#ff8200] bg-[#FBE3CA] rounded-lg px-4 py-2 text-center'>Add Image</label>
+                                        <label htmlFor='upload-image' className='text-(--primary) bg-[#FBE3CA] rounded-lg px-4 py-2 text-center'>Add Image</label>
                                         <input
                                             id='upload-image'
                                             onChange={handleImageUpload}
@@ -159,18 +159,18 @@ export default function AddCategory() {
                     </div>
                 </div> */}
                 <div className='w-2/3'>
-                    <div className='bg-white shadow-md rounded-lg p-5'>
+                    <div className='bg-(--surface) shadow-md rounded-lg p-5'>
                         <h2 className='text-xl font-semibold'>General Information</h2>
                         <div className='mt-2 gap-1'>
                             <label className='text-sm font-medium ml-2'>Category Name</label>
-                            <input id='name' type="text" className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2  outline-none'
-                                placeholder='Type category name here...' onChange={handleInputChange}/>
+                            <input id='name' type="text" className='border border-(--border) bg-(--surface2) rounded-md w-full px-3 py-2  outline-none'
+                                placeholder='Type category name here...' onChange={handleInputChange} />
                         </div>
 
                         <div className='mt-2 gap-1'>
                             <label className='text-sm font-medium ml-2'>Description</label>
-                            <textarea id='description' className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 resize-none  outline-none'
-                                placeholder='Type category description here...' rows="6" onChange={handleInputChange}/>
+                            <textarea id='description' className='border border-(--border) bg-(--surface2) rounded-md w-full px-3 py-2 resize-none  outline-none'
+                                placeholder='Type category description here...' rows="6" onChange={handleInputChange} />
                         </div>
                     </div>
                 </div>
