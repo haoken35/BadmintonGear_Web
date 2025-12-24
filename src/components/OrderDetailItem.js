@@ -1,25 +1,39 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { getProductById } from '@/service/productService'
 
-export default function OrderDetailItem({item}) {
+export default function OrderDetailItem({ item }) {
+    const [product, setProduct] = useState(item.product)
+
+    useEffect(() => {
+        async function fetchProduct() {
+            try {
+                const productData = await getProductById(item.Product.id)
+                setProduct(productData)
+            } catch (error) {
+                console.error('Error fetching product:', error)
+            }
+        }
+        fetchProduct()
+    }, [item.Product.id])
+
     return (
         <tr>
-            <td>
+            <td className='py-4'>
                 <div className='flex items-center gap-2'>
                     <Image
-                        src={item.product.image}
-                        alt={item.product.name}
+                        src={product && product.Imagesproducts ? product.Imagesproducts[0].url : "/images/unimage.png"}
+                        alt={product ? product.name : "Product Image"}
                         width={50}
                         height={50}
                         className="rounded-md"
                     />
-                    <div>{item.product.name}</div>
+                    <div>{item.Product.name}</div>
                 </div>
             </td>
-            <td>{item.product.sku}</td>
             <td>{item.quantity}</td>
-            <td>${item.price}</td>
-            <td>${item.quantity * item.price}</td>
+            <td>{Number(item.Product.price).toLocaleString()} VND</td>
+            <td>{Number(item.quantity * item.Product.price).toLocaleString()} VND</td>
         </tr>
     )
 }

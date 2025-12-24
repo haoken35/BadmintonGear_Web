@@ -54,7 +54,7 @@ export default function AdminOrderItem({ order, customer }) {
             <td className='text-gray-500 font-medium'>{new Date(order.createdAt).toLocaleDateString('vi-VN')}</td>
             {!customer && (
                 <td>
-                    <div>
+                    <div>   
                         <div className='font-medium'>{order.User.name}</div>
                         <div className='text-gray-500 text-sm' >{order.User.email}</div>
                     </div>
