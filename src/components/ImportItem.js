@@ -32,28 +32,28 @@ export default function ImportItem({ grn }) {
     }, [grn.id]);
 
     return (
-        <tr className='bg-white shadow-md border-b border-[#F0F1F3] cursor-pointer' onClick={() => { window.location.href = `/importdetail?id=${grn.id}` }}>
-            <td className='text-[#ff8200] font-semibold text-center'>#{grn.id}</td>
+        <tr className='bg-(--surface) shadow-md border-b border-(--border) cursor-pointer' onClick={() => { window.location.href = `/importdetail?id=${grn.id}` }}>
+            <td className='text-(--primary) font-semibold text-center'>#{grn.id}</td>
             <td className='py-4 flex items-center '>
                 {
                     details.length > 0 && (
                         <div className="flex items-center gap-3">
                             {/* Hiển thị sản phẩm đầu tiên */}
                             <Image
-                                 src={product?.ImagesProducts?.[0]?.url || "/images/unimage.png"}
+                                src={product?.ImagesProducts?.[0]?.url || "/images/unimage.png"}
                                 alt={details?.[0]?.Product?.name || "Product image"}
                                 width={60}
                                 height={60}
                                 className="rounded-lg"
                             />
                             <div className='flex flex-col items-start'>
-                                <div className="font-medium">{details[0].Product.name}</div>
-                                <div className="text-sm text-gray-500">
+                                <div className="font-medium text-(--text)">{details[0].Product.name}</div>
+                                <div className="text-sm text-(--text2)">
                                     {Number(details[0].Product.price).toLocaleString()} VND x {details[0].quantity}
                                 </div>
                                 {/* Hiển thị số lượng sản phẩm còn lại */}
                                 {details.length > 1 && (
-                                    <div className="text-sm text-gray-400">
+                                    <div className="text-sm text-(--text2)">
                                         +{details.length - 1} more items
                                     </div>
                                 )}
@@ -62,14 +62,14 @@ export default function ImportItem({ grn }) {
                     )
                 }
             </td>
-            <td className='text-gray-500 font-medium'>{new Date(grn.createdAt).toLocaleDateString('vi-VN')}</td>
+            <td className='text-(--text2) font-medium'>{new Date(grn.createdAt).toLocaleDateString('vi-VN')}</td>
             <td>
                 <div className='flex flex-col gap-2'>
                     <div className='font-medium'>{staff?.name || ""}</div>
-                    <div className='text-gray-500 text-sm' >{staff?.email || ""}</div>
+                    <div className='text-(--text2) text-sm' >{staff?.email || ""}</div>
                 </div>
             </td>
-            <td className='text-gray-500 font-medium'>{Number(grn.totalprice).toLocaleString()} VND</td>
+            <td className='text-(--text2) font-medium'>{Number(grn.totalprice).toLocaleString()} VND</td>
         </tr>
     )
 }
