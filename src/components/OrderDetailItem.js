@@ -23,12 +23,12 @@ export default function OrderDetailItem({ item }) {
                 <div className='flex items-center gap-2'>
                     <Image
                         src={product && product.ImagesProducts ? product.ImagesProducts[0].url : "/images/unimage.png"}
-                        alt={product ? product.name : "Product Image"}
+                        alt={product?.translations?.[0]?.name || "Product Image"}
                         width={50}
                         height={50}
                         className="rounded-md"
                     />
-                    <div>{item.Product.name}</div>
+                    <div>{product?.translations?.[0]?.name || "Product Name"}</div>
                 </div>
             </td>
             <td>{item.quantity}</td>
