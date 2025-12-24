@@ -1,26 +1,121 @@
 @import "tailwindcss";
 
+/* Color variables for light theme (defaults) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f5f5f5;
+  --bg2: #FFFFF6;
+  --surface: #ffffff;
+  --surface2: #f0f0f0;
+  --button: #000;
+  --text: #252B42;
+  --text2: #525252;
+  --muted: #737374;
+  --primary: #FF8200;
+  --secondary: #e0de34;
+  --border: rgba(0, 0, 0, 0.1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html.dark,
+.dark {
+  --bg: #0b0f15;
+  --bg2: #1c2530;
+  --surface: #0f1720;
+  --surface2: #1c2530;
+  --button: var(--primary);
+  --text: #e6eef8;
+  --text2: #aabbcc;
+  --muted: #9aa3b2;
+  --primary: #FF8200;
+  --secondary: #e0de34;
+  --border: rgba(255, 255, 255, 0.1);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: Poppins, Montserrat, sans-serif;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+input[type="range"].range-orange {
+  width: 100%;
+  height: 4px;
+  background: #ffe0c2;
+  border-radius: 2px;
+  outline: none;
+  appearance: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Chrome, Safari, Edge */
+input[type="range"].range-orange::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ff8200;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px #aaa;
+  margin-top: -7px; /* (thumb height - track height) / 2 = (18-4)/2 = 7 */
+}
+
+input[type="range"].range-orange::-webkit-slider-runnable-track {
+  height: 4px;
+  background: #ffe0c2;
+  border-radius: 2px;
+}
+
+/* Firefox */
+input[type="range"].range-orange::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ff8200;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px #aaa;
+}
+input[type="range"].range-orange::-moz-range-track {
+  height: 4px;
+  background: #ffe0c2;
+  border-radius: 2px;
+}
+input[type="range"].range-orange::-moz-range-progress {
+  background-color: #ff8200;
+  height: 4px;
+  border-radius: 2px;
+}
+
+/* IE */
+input[type="range"].range-orange::-ms-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ff8200;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px #aaa;
+}
+input[type="range"].range-orange::-ms-fill-lower {
+  background: #ff8200;
+  border-radius: 2px;
+}
+input[type="range"].range-orange::-ms-fill-upper {
+  background: #ffe0c2;
+  border-radius: 2px;
+}
+
+/* Remove outline on focus */
+input[type="range"].range-orange:focus {
+  outline: none;
 }
