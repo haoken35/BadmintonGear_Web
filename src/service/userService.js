@@ -95,7 +95,7 @@ const forgotPassword = async (email) =>{
 
 const uploadAvatar = async (formData) => {
     const token = localStorage.getItem("loginToken");
-    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/imguser/`, {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/imguser`, {
         method: "POST",
         headers: {
             "token": token,
