@@ -21,7 +21,7 @@ export default function Sidebar() {
             <nav className="flex flex-col gap-4 text-lg ">
                 <a
                     href="/dashboard"
-                    className={`flex gap-2 py-2 px-2 ${pathname === "/dashboard" ? "bg-(--primary) rounded-md text-white" : "text-gray-600"
+                    className={`flex gap-2 py-2 px-2 ${pathname === "/dashboard" ? "bg-(--primary) rounded-md text-white" : "text-(--text)"
                         } hover:bg-(--primary)/30 hover:text-white transition duration-300 rounded-md`}
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

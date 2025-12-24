@@ -16,7 +16,7 @@ export default function AdminProductItem({ product, onCheck, onDelete, low }) {
             )}
             <td className='py-4 pl-5'>
                 <div className='flex items-center gap-2'>
-                    <Image src={product.ImagesProducts && product.ImagesProducts[0] ? product.ImagesProducts[0].url : "/images/unimage.png"} alt={product.name} width={50} height={50} className='object-contain rounded-lg' />
+                    <Image src={product.ImagesProducts && product.ImagesProducts[0] ? product.ImagesProducts[0].url : "/images/unimage.png"} alt={product.name ?? "Productname"} width={50} height={50} className='object-contain rounded-lg' />
                     <label className='font-medium text-(--text)'>{product.translations?.[0]?.name}</label>
                 </div>
             </td>
