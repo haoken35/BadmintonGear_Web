@@ -195,25 +195,25 @@ export default function PromotionDetail(id) {
                 <div>
                     <h1 className='text-3xl font-bold'>Promotion Details</h1>
                     <div id="roadmap" className="flex items-center mt-2">
-                        <a className="text-[#ff8200]" href="/dashboard">Dashboard</a>
+                        <a className="text-(--primary)" href="/dashboard">Dashboard</a>
                         <label className="ml-3 mr-3">
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                             </svg>
                         </label>
-                        <a className="text-[#ff8200]" href="/promotion">Promotion List</a>
+                        <a className="text-(--primary)" href="/promotion">Promotion List</a>
                         <label className="ml-3 mr-3">
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                             </svg>
                         </label>
-                        <a className="text-[#667085]" href={promotionId ? `/promotiondetail?id=${promotionId}&&mode=${mode}` : '/promotiondetail?mode=add'}>Promotion Details</a>
+                        <a className="text-(--muted)" href={promotionId ? `/promotiondetail?id=${promotionId}&&mode=${mode}` : '/promotiondetail?mode=add'}>Promotion Details</a>
                     </div>
 
                 </div>
-                {mode === 'view' && promotion && promotion.status !== 1 && (
+                {mode === 'view' && promotion && (
                     <div>
-                        <button className={`bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center cursor-pointer`}
+                        <button className={`bg-(--primary) text-white px-4 py-2 rounded-md flex gap-2 items-center cursor-pointer`}
                             onClick={() => setMode('edit')}
                         >
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -230,7 +230,7 @@ export default function PromotionDetail(id) {
                                 <path d="M15.1728 13.9941C15.4982 14.3195 15.4982 14.8472 15.1728 15.1726C14.8473 15.498 14.3197 15.498 13.9942 15.1726L10.0002 11.1786L6.00626 15.1726C5.68082 15.4981 5.15318 15.4981 4.82774 15.1726C4.5023 14.8472 4.5023 14.3195 4.82773 13.9941L8.82167 10.0001L4.82758 6.00607C4.50214 5.68064 4.50214 5.15301 4.82758 4.82757C5.15302 4.50214 5.68066 4.50214 6.0061 4.82757L10.0002 8.82158L13.9941 4.82759C14.3195 4.50215 14.8472 4.50214 15.1726 4.82758C15.498 5.15301 15.4981 5.68065 15.1726 6.00609L11.1787 10.0001L15.1728 13.9941Z" fill="#858D9D" />
                             </svg>
                             Cancel</button>
-                        <button className='bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center disabled:opacity-65'
+                        <button className='bg-(--primary) text-white px-4 py-2 rounded-md flex gap-2 items-center disabled:opacity-65'
                             disabled={!inputPromotion || !inputPromotion.code || !inputPromotion.max_uses || !inputPromotion.value || !inputPromotion.start || !inputPromotion.type
                                 || !inputPromotion.end || (inputPromotion.code === promotion?.code && inputPromotion.description === promotion?.description &&
                                     inputPromotion.max_uses === promotion?.max_uses && inputPromotion.value === promotion?.value && inputPromotion.start === promotion?.start
@@ -242,7 +242,7 @@ export default function PromotionDetail(id) {
                             Save Promotion
                         </button>
                         {mode === 'edit' && promotion && promotion.status !== 1 && (
-                            <button className='bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center'
+                            <button className='bg-(--primary) text-white px-4 py-2 rounded-md flex gap-2 items-center'
                                 onClick={handleDisabled}>
                                 Disabled
                             </button>
@@ -252,18 +252,18 @@ export default function PromotionDetail(id) {
             </div>
             <div className='mt-5 flex justify-center items-center gap-5'>
                 <div className='w-2/3 '>
-                    <div className='bg-white shadow-md rounded-lg p-5'>
+                    <div className='bg-(--surface) shadow-md rounded-lg p-5'>
                         <h2 className='text-xl font-semibold'>General Information</h2>
                         <div className='mt-2 gap-1'>
                             <label className='text-sm font-medium ml-2'>Promotion Code</label>
-                            <input id='code' type="text" className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2  outline-none'
+                            <input id='code' type="text" className='border border-(--border) bg-(--surface2) text-(--text) rounded-md w-full px-3 py-2  outline-none'
                                 placeholder='Type promotion code here...'
                                 defaultValue={promotion ? promotion.code : ""}
                                 onChange={handleInputChange} />
                         </div>
                         <div className='mt-2 gap-1'>
                             <label className='text-sm font-medium ml-2'>Description</label>
-                            <textarea id='description' className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 resize-none  outline-none'
+                            <textarea id='description' className='border border-(--border) bg-(--surface2) text-(--text) rounded-md w-full px-3 py-2 resize-none  outline-none'
                                 placeholder='Type promotion description here...' rows="6" defaultValue={promotion ? promotion.description : ""}
                                 onChange={handleInputChange} />
                         </div>
@@ -276,11 +276,11 @@ export default function PromotionDetail(id) {
                         )}
                     </div>
 
-                    <div className='bg-white shadow-md rounded-lg p-5 mt-5'>
+                    <div className='bg-(--surface) shadow-md rounded-lg p-5 mt-5'>
                         <h2 className='text-xl font-semibold'>Value</h2>
                         <div className='mt-2 gap-1'>
                             <label className='text-sm font-medium ml-2'>Quantity</label>
-                            <input id='quantity' type="number" className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 flex items-center gap-2 outline-none'
+                            <input id='quantity' type="number" className='border border-(--border) bg-(--surface2) text-(--text) rounded-md w-full px-3 py-2 flex items-center gap-2 outline-none'
                                 placeholder='Type promotion quantity here...'
                                 defaultValue={promotion ? promotion.max_uses : 0} min={0}
                                 onChange={handleInputChange} />
@@ -289,7 +289,7 @@ export default function PromotionDetail(id) {
                             <label className='text-sm font-medium ml-2'>Discount Type</label>
                             <select
                                 id='type'
-                                className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 outline-none'
+                                className='border border-(--border) bg-(--surface2) text-(--text) rounded-md w-full px-3 py-2 outline-none'
                                 value={discountType}
                                 onChange={e => { setDiscountType(e.target.value); handleInputChange(e); }}
                             >
@@ -304,7 +304,7 @@ export default function PromotionDetail(id) {
                             <input
                                 id='value'
                                 type="number"
-                                className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2  outline-none'
+                                className='border border-(--border) bg-(--surface2) text-(--text) rounded-md w-full px-3 py-2  outline-none'
                                 placeholder='Type promotion value. . .'
                                 min={0}
                                 max={discountType === 'percentage' ? 100 : undefined}
@@ -317,7 +317,7 @@ export default function PromotionDetail(id) {
                             <input
                                 id='max_value'
                                 type="number"
-                                className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 outline-none'
+                                className='border border-(--border) bg-(--surface2) text-(--text) rounded-md w-full px-3 py-2 outline-none'
                                 placeholder='Nhập số tiền giảm tối đa...'
                                 defaultValue={promotion ? promotion.max_value : ''}
                                 min={0}
@@ -329,7 +329,7 @@ export default function PromotionDetail(id) {
                             <input
                                 id='min_order_value'
                                 type="number"
-                                className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 outline-none'
+                                className='border border-(--border) bg-(--surface2) text-(--text) rounded-md w-full px-3 py-2 outline-none'
                                 placeholder='Nhập giá trị đơn tối thiểu...'
                                 defaultValue={promotion ? promotion.min_order_value : ''}
                                 min={0}
@@ -338,19 +338,19 @@ export default function PromotionDetail(id) {
                         </div>
                     </div>
 
-                    <div className='bg-white shadow-md rounded-lg p-5 mt-5'>
+                    <div className='bg-(--surface) shadow-md rounded-lg p-5 mt-5'>
                         <h2 className='text-xl font-semibold'>Time</h2>
                         <div className='flex justify-start gap-10 items-center w-full'>
                             <div className='mt-2 gap-1 flex flex-col w-full'>
                                 <label className='text-sm font-medium ml-2'>Start Time</label>
-                                <input id='start' type="datetime-local" className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2 outline-none'
+                                <input id='start' type="datetime-local" className='border border-(--border) bg-(--surface2) text-(--text) rounded-md w-full px-3 py-2 outline-none'
                                     placeholder='Enter start time...'
                                     defaultValue={promotion && promotion.start ? new Date(promotion.start).toISOString().slice(0, 16) : ""}
                                     onChange={handleInputChange} />
                             </div>
                             <div className='mt-2 gap-1 flex flex-col w-full'>
                                 <label className='text-sm font-medium ml-2'>End Time</label>
-                                <input id='end' type="datetime-local" className='border border-[#E0E2E7] bg-[#F9F9FC] rounded-md w-full px-3 py-2  outline-none'
+                                <input id='end' type="datetime-local" className='border border-(--border) bg-(--surface2) text-(--text) rounded-md w-full px-3 py-2  outline-none'
                                     placeholder='Enter end time. . .'
                                     defaultValue={promotion && promotion.end ? new Date(promotion.end).toISOString().slice(0, 16) : ""}
                                     onChange={handleInputChange} />

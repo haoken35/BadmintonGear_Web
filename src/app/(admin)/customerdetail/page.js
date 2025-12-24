@@ -153,31 +153,31 @@ export default function CustomerDetailPage() {
             <div>
                 <h1 className='text-3xl font-bold'>Customer Detail</h1>
                 <div id="roadmap" className="flex items-center mt-2">
-                    <a className="text-[#ff8200]" href="/dashboard">Dashboard</a>
+                    <a className="text-(--primary)" href="/dashboard">Dashboard</a>
                     <label className="ml-3 mr-3">
                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                         </svg>
                     </label>
-                    <a className="text-[#ff8200]" href="/customer">Customer List</a>
+                    <a className="text-(--primary)" href="/customer">Customer List</a>
                     <label className="ml-3 mr-3">
                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                         </svg>
                     </label>
-                    <a className="text-[#667085]" href="/customerdetail">Customer Details</a>
+                    <a className="text-(--muted)" href="/customerdetail">Customer Details</a>
                 </div>
             </div>
             <div className='flex gap-5 mt-5'>
-                <div className="max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden w-1/3 p-1">
-                    <div className="bg-[#ff8200] h-35 w-full rounded-sm"></div>
+                <div className="max-w-sm mx-auto bg-(--surface) rounded-xl shadow-md overflow-hidden w-1/3 p-1">
+                    <div className="bg-(--primary) h-35 w-full rounded-sm"></div>
                     <div className="flex flex-col items-center -mt-20">
                         <Image src={customer.Imagesuser ? customer.Imagesuser.url : "/images/noavatar.png"} alt="customer" width={150} height={150} className="rounded-full border-4 border-white" />
-                        <h2 className="mt-2 text-lg font-semibold text-gray-800">{customer.name}</h2>
-                        <p className="text-sm text-gray-500">{customer.username}</p>
+                        <h2 className="mt-2 text-lg font-semibold text-(--text)">{customer.name}</h2>
+                        <p className="text-sm text-(--muted)">{customer.username}</p>
                     </div>
-                    <hr className="my-5 border-gray-300" />
-                    <div className="mt-6 px-6 py-4 text-sm text-gray-700 space-y-4">
+                    <hr className="my-5 border-(--muted)" />
+                    <div className="mt-6 px-6 py-4 text-sm text-(--text) space-y-4">
                         <div className="flex items-center gap-2">
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect x="2" y="2" width="36" height="36" rx="18" fill="#E0E2E7" />
@@ -186,8 +186,8 @@ export default function CustomerDetailPage() {
                                 <path fillRule="evenodd" clipRule="evenodd" d="M14 18V16C14 12.6863 16.6863 10 20 10C23.3137 10 26 12.6863 26 16V18C27.6569 18 29 19.3431 29 21V27C29 28.6569 27.6569 30 26 30H14C12.3431 30 11 28.6569 11 27V21C11 19.3431 12.3431 18 14 18ZM24 16V18H16V16C16 13.7909 17.7909 12 20 12C22.2091 12 24 13.7909 24 16ZM14 20C13.4477 20 13 20.4477 13 21V27C13 27.5523 13.4477 28 14 28H26C26.5523 28 27 27.5523 27 27V21C27 20.4477 26.5523 20 26 20H14Z" fill="#667085" />
                             </svg>
                             <div className='flex flex-col justify-start'>
-                                <span className="font-medium text-gray-500">User ID</span>
-                                <span className=" text-black">{customer.id}</span>
+                                <span className="font-medium text-(--muted)">User ID</span>
+                                <span className=" text-(--text)">{customer.id}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
@@ -197,8 +197,8 @@ export default function CustomerDetailPage() {
                                 <path fillRule="evenodd" clipRule="evenodd" d="M10 15C10 13.3431 11.3431 12 13 12H27C28.6569 12 30 13.3431 30 15V25C30 26.6569 28.6569 28 27 28H13C11.3431 28 10 26.6569 10 25V15ZM26.3334 14H13.6667L19.4 18.3C19.7556 18.5667 20.2445 18.5667 20.6 18.3L26.3334 14ZM12 15.25V25C12 25.5523 12.4477 26 13 26H27C27.5523 26 28 25.5523 28 25V15.25L21.8 19.9C20.7334 20.7 19.2667 20.7 18.2 19.9L12 15.25Z" fill="#667085" />
                             </svg>
                             <div className='flex flex-col justify-start'>
-                                <span className="font-medium text-gray-500">Email</span>
-                                <span className=" text-black">{customer.email}</span>
+                                <span className="font-medium text-(--muted)">Email</span>
+                                <span className=" text-(--text)">{customer.email}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
@@ -215,8 +215,8 @@ export default function CustomerDetailPage() {
                                 </defs>
                             </svg>
                             <div className='flex flex-col justify-start'>
-                                <span className="font-medium text-gray-500">Phone Number</span>
-                                <span className="text-black">050 414 8778</span>
+                                <span className="font-medium text-(--muted)">Phone Number</span>
+                                <span className="text-(--text)">050 414 8778</span>
                             </div>
                         </div>
                         <div className="flex items-start gap-2">
@@ -227,8 +227,8 @@ export default function CustomerDetailPage() {
                                 <path fillRule="evenodd" clipRule="evenodd" d="M28 18C27.9999 24.8707 22.0992 28.791 20.4332 29.7609C20.1612 29.9192 19.8388 29.9192 19.5668 29.7609C17.9008 28.791 12 24.8707 12 18C12 14 15 10 20 10C25 10 28 14 28 18ZM14 18C14 14.9372 16.2648 12 20 12C23.7352 12 26 14.9372 26 18C26 21.2825 24.3677 23.8038 22.5857 25.5858C21.7002 26.4714 20.8093 27.1401 20.1406 27.5859C20.0924 27.618 20.0455 27.6489 20 27.6785C19.9544 27.6489 19.9075 27.618 19.8594 27.5859C19.1907 27.1401 18.2998 26.4714 17.4142 25.5858C15.6322 23.8038 14 21.2825 14 18Z" fill="#667085" />
                             </svg>
                             <div className='flex flex-col justify-start'>
-                                <span className="font-medium text-gray-500">Delivery Address</span>
-                                <div className="text-black">{customer.address}</div>
+                                <span className="font-medium text-(--muted)">Delivery Address</span>
+                                <div className="text-(--text)">{customer.address}</div>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
@@ -241,8 +241,8 @@ export default function CustomerDetailPage() {
                             </svg>
 
                             <div className='flex flex-col justify-start'>
-                                <span className="font-medium text-gray-500">Latest Transaction</span>
-                                <span className=" text-black">{new Date(lastOrder?.createdAt).toLocaleDateString("vi-VN")}</span>
+                                <span className="font-medium text-(--muted)">Latest Transaction</span>
+                                <span className=" text-(--text)">{new Date(lastOrder?.createdAt).toLocaleDateString("vi-VN")}</span>
                             </div>
                         </div>
                     </div>
@@ -250,17 +250,17 @@ export default function CustomerDetailPage() {
                 <div className='w-full'>
                     <div className='flex justify-between mb-5'>
                         <div className='flex items-center mb-5 gap-10'>
-                            <div className='w-100 bg-white rounded-md shadow-md overflow-hidden p-10 flex flex-col gap-2  pr-20'>
+                            <div className='w-100 bg-(--surface) rounded-md shadow-md overflow-hidden p-10 flex flex-col gap-2  pr-20'>
                                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect x="2" y="2" width="36" height="36" rx="18" fill="#CFE7DC" />
                                     <rect x="2" y="2" width="36" height="36" rx="18" stroke="#E7F4EE" strokeWidth="4" />
                                     <path d="M23 20.5C22.4477 20.5 22 20.9477 22 21.5C22 22.0523 22.4477 22.5 23 22.5H25C25.5523 22.5 26 22.0523 26 21.5C26 20.9477 25.5523 20.5 25 20.5H23Z" fill="#0D894F" />
                                     <path fillRule="evenodd" clipRule="evenodd" d="M28 14.5C29.1046 14.5 30 15.3954 30 16.5V26C30 27.6569 28.6569 29 27 29H13C11.3431 29 10 27.6569 10 26V14C10 12.3431 11.3431 11 13 11H25C26.6569 11 28 12.3431 28 14V14.5ZM25 13H13C12.4477 13 12 13.4477 12 14V26C12 26.5523 12.4477 27 13 27H27C27.5523 27 28 26.5523 28 26V16.5H17C16.4477 16.5 16 16.0523 16 15.5C16 14.9477 16.4477 14.5 17 14.5H26V14C26 13.4477 25.5523 13 25 13Z" fill="#0D894F" />
                                 </svg>
-                                <span className='text-gray-600'>Total Balance</span>
+                                <span className='text-(--muted)'>Total Balance</span>
                                 <div className='text-xl font-semibold'>{Number(totalBalance).toLocaleString()} VND</div>
                             </div>
-                            <div className='w-100 bg-white rounded-md shadow-md overflow-hidden p-10 flex flex-col gap-2 pr-20'>
+                            <div className='w-100 bg-(--surface) rounded-md shadow-md overflow-hidden p-10 flex flex-col gap-2 pr-20'>
                                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect x="2" y="2" width="36" height="36" rx="18" fill="#FAE1CF" />
                                     <rect x="2" y="2" width="36" height="36" rx="18" stroke="#FDF1E8" strokeWidth="4" />
@@ -269,7 +269,7 @@ export default function CustomerDetailPage() {
                                     <path d="M25.5 29.5C24.6715 29.5 24 28.8284 24 28C24 27.1716 24.6715 26.5 25.5 26.5C26.3284 26.5 27 27.1716 27 28C27 28.8284 26.3284 29.5 25.5 29.5Z" fill="#E46A11" />
                                 </svg>
 
-                                <span className='text-gray-600'>Total Orders</span>
+                                <span className='text-(--muted)'>Total Orders</span>
                                 <div className='text-xl font-semibold'>{orderCount}</div>
                             </div>
                             {/* <div className='w-2/7 bg-white rounded-md shadow-md overflow-hidden p-5 flex flex-col gap-2'>
@@ -283,21 +283,21 @@ export default function CustomerDetailPage() {
                             <span className='text-gray-600'>Reward Point</span>
                             <div className='text-xl font-semibold'>{customer.point}</div>
                         </div>*/}
+                        </div>
+                        {/* <button className='bg-(--primary) text-white px-4 py-2 rounded-md shadow-md hover:bg-[#e67e22] transition-colors cursor-pointer h-fit'>Ban Account</button> */}
                     </div>
-                    {/* <button className='bg-[#FF8200] text-white px-4 py-2 rounded-md shadow-md hover:bg-[#e67e22] transition-colors cursor-pointer h-fit'>Ban Account</button> */}
-                    </div>
-                    <div className='mt-5 shadow-md bg-white rounded-md py-5'>
+                    <div className='mt-5 shadow-md bg-(--surface) rounded-md py-5'>
                         <div className='flex w-full justify-between items-center px-5'>
                             <div className='text-lg font-semibold'>Transaction History</div>
                             <div className='flex gap-5'>
-                                <button className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2'
+                                <button className='text-(--muted) border border-(--border) rounded-md px-4 py-2 flex items-center gap-2'
                                     onClick={handleOpenDateDialog}>
                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path fillRule="evenodd" clipRule="evenodd" d="M7.5 2.49984C7.5 2.0396 7.1269 1.6665 6.66667 1.6665C6.20643 1.6665 5.83333 2.0396 5.83333 2.49984H5C3.61929 2.49984 2.5 3.61913 2.5 4.99984V15.8332C2.5 17.2139 3.61929 18.3332 5 18.3332H15C16.3807 18.3332 17.5 17.2139 17.5 15.8332V4.99984C17.5 3.61913 16.3807 2.49984 15 2.49984H14.1667C14.1667 2.0396 13.7936 1.6665 13.3333 1.6665C12.8731 1.6665 12.5 2.0396 12.5 2.49984H7.5ZM15.8333 5.83317V4.99984C15.8333 4.5396 15.4602 4.1665 15 4.1665H14.1667C14.1667 4.62674 13.7936 4.99984 13.3333 4.99984C12.8731 4.99984 12.5 4.62674 12.5 4.1665H7.5C7.5 4.62674 7.1269 4.99984 6.66667 4.99984C6.20643 4.99984 5.83333 4.62674 5.83333 4.1665H5C4.53976 4.1665 4.16667 4.5396 4.16667 4.99984V5.83317H15.8333ZM4.16667 7.49984V15.8332C4.16667 16.2934 4.53976 16.6665 5 16.6665H15C15.4602 16.6665 15.8333 16.2934 15.8333 15.8332V7.49984H4.16667Z" fill="#667085" />
                                     </svg>
                                     Select Dates
                                 </button>
-                                <button className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2'
+                                <button className='text-(--muted) border border-(--border) rounded-md px-4 py-2 flex items-center gap-2'
                                     onClick={() => setShowFilter((prev) => !prev)}>
                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M10.8333 6.66667C10.8333 7.1269 11.2064 7.5 11.6667 7.5C12.1269 7.5 12.5 7.1269 12.5 6.66667V5.83333H16.6667C17.1269 5.83333 17.5 5.46024 17.5 5C17.5 4.53976 17.1269 4.16667 16.6667 4.16667H12.5V3.33333C12.5 2.8731 12.1269 2.5 11.6667 2.5C11.2064 2.5 10.8333 2.8731 10.8333 3.33333V6.66667Z" fill="#667085" />
@@ -315,7 +315,7 @@ export default function CustomerDetailPage() {
                         {showDateDialog && (
                             <div className="absolute z-50 mt-2 right-10">
                                 <div ref={dateDialogRef}
-                                    className="bg-white rounded-lg shadow-lg p-6 min-w-[320px]">
+                                    className="bg-(--surface) rounded-lg shadow-lg p-6 min-w-[320px] text-(--text)">
                                     <h3 className="text-lg font-semibold mb-4">Select Dates</h3>
                                     <div className="flex flex-col gap-3">
                                         <label className="flex justify-between items-center">
@@ -345,7 +345,7 @@ export default function CustomerDetailPage() {
                                             Clear
                                         </button>
                                         <button
-                                            className="px-4 py-2 rounded bg-[#ff8200] text-white"
+                                            className="px-4 py-2 rounded bg-(--primary) text-white"
                                             onClick={handleApplyDateFilter}
                                             disabled={!startDate || !endDate}
                                         >
@@ -358,12 +358,12 @@ export default function CustomerDetailPage() {
                         {showFilter && (
                             <div
                                 ref={filterRef}
-                                className="absolute z-50 bg-white border border-[#E0E2E7] rounded-md shadow-md py-4 px-5 mt-2 right-10"
+                                className="absolute z-50 bg-(--surface) border border-(--border) text-(--text) rounded-md shadow-md py-4 px-5 mt-2 right-10"
                             >
                                 <div className="flex flex-col gap-3 mb-2">
                                     <div>
-                                        <label className="block mb-1 text-sm font-medium text-gray-700">
-                                            Min Total: <span className="font-bold text-[#ff8200]">{minTotal}</span>
+                                        <label className="block mb-1 text-sm font-medium text-(--muted)">
+                                            Min Total: <span className="font-bold text-(--primary)">{minTotal}</span>
                                         </label>
                                         <input
                                             type="range"
@@ -375,8 +375,8 @@ export default function CustomerDetailPage() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block mb-1 text-sm font-medium text-gray-700">
-                                            Max Total: <span className="font-bold text-[#ff8200]">{maxTotal}</span>
+                                        <label className="block mb-1 text-sm font-medium text-(--muted)">
+                                            Max Total: <span className="font-bold text-(--primary)">{maxTotal}</span>
                                         </label>
                                         <input
                                             type="range"
@@ -388,17 +388,17 @@ export default function CustomerDetailPage() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block mb-1 text-sm font-medium text-gray-700">Status</label>
+                                        <label className="block mb-1 text-sm font-medium text-(--muted)">Status</label>
                                         <select
                                             className="border px-2 py-1 rounded w-full"
                                             value={statusFilter}
                                             onChange={e => setStatusFilter(e.target.value)}
                                         >
-                                            <option value="">All</option>
-                                            <option value="1">Processing</option>
-                                            <option value="2">Shipped</option>
-                                            <option value="3">Delivered</option>
-                                            <option value="4">Cancelled</option>
+                                            <option className='text-(--text) bg-(--surface)' value="">All</option>
+                                            <option className='text-(--text) bg-(--surface)' value="1">Processing</option>
+                                            <option className='text-(--text) bg-(--surface)' value="2">Shipped</option>
+                                            <option className='text-(--text) bg-(--surface)' value="3">Delivered</option>
+                                            <option className='text-(--text) bg-(--surface)' value="4">Cancelled</option>
                                             {/* Thêm trạng thái khác nếu có */}
                                         </select>
                                     </div>
@@ -418,8 +418,8 @@ export default function CustomerDetailPage() {
                             </div>
                         )}
                         <table className='w-full mt-5'>
-                            <thead className='bg-[#F9FAFB] font-medium'>
-                                <tr className='text-center bg-[#F9F9FC] font-semibold border-b border-[#E0E2E7]'>
+                            <thead className='bg-(--surface2) font-medium'>
+                                <tr className='text-center bg-(--surface2) font-semibold border-b border-(--border) text-(--text)'>
                                     <th className='py-2 px-4'>OrderID</th>
                                     <th className='py-2 px-4'>Product</th>
                                     <th className='py-2 px-4'>Date</th>
@@ -427,7 +427,7 @@ export default function CustomerDetailPage() {
                                     <th className='py-2 px-4'>State</th>
                                 </tr>
                             </thead>
-                            <tbody className='text-[#344054] font-normal text-center'>
+                            <tbody className='font-normal text-center'>
                                 {displayOrders.map((order) => (
                                     <AdminOrderItem
                                         key={order.id}

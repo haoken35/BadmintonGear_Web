@@ -41,13 +41,13 @@ export default function ImportItem({ grn }) {
                             {/* Hiển thị sản phẩm đầu tiên */}
                             <Image
                                 src={product?.ImagesProducts?.[0]?.url || "/images/unimage.png"}
-                                alt={details?.[0]?.Product?.name || "Product image"}
+                                alt={details?.[0]?.Product?.translations?.[0]?.name || "Product image"}
                                 width={60}
                                 height={60}
                                 className="rounded-lg"
                             />
                             <div className='flex flex-col items-start'>
-                                <div className="font-medium text-(--text)">{details[0].Product.name}</div>
+                                <div className="font-medium text-(--text)">{details[0].Product?.translations?.[0]?.name}</div>
                                 <div className="text-sm text-(--text2)">
                                     {Number(details[0].Product.price).toLocaleString()} VND x {details[0].quantity}
                                 </div>
