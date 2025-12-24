@@ -116,6 +116,15 @@ export default function Sidebar() {
 
                     Promotions
                 </a>
+                <a href="/flashsale"
+                    className={`flex gap-2 py-2 px-2 ${pathname.startsWith("/flashsale") || pathname.startsWith("/addflashsale") ? "bg-(--primary) rounded-md text-white" : "text-(--text)"
+                        } hover:bg-(--primary)/30 hover:text-white transition duration-300 rounded-md items-center`}
+                >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    Flash Sales
+                </a>
                 <a href="/import"
                     className={`flex gap-2 py-2 px-2 ${pathname.startsWith("/import") ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
                         } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md items-center`}
