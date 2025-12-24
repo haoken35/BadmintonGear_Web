@@ -5,7 +5,8 @@ import ImportDetailItem from '@/components/ImportDetailItem';
 import { getImportById } from '@/service/importService';
 import { getDetailByImportId } from '@/service/importDetailService';
 import { getUserById } from '@/service/userService';
-import * as XLSX from 'xlsx';
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 
 export default function ImportDetailsPage() {
     const searchParams = useSearchParams();
@@ -16,33 +17,119 @@ export default function ImportDetailsPage() {
     const [grandTotal, setGrandTotal] = useState(0);
     const [user, setUser] = useState({});
 
-    const handleExport = () => {
-        const data = details.map(item => ({
-            ID: item.id,
-            ProductName: item.Product.name,
-            Quantity: item.quantity,
-            Price: Number(item.price).toLocaleString('vi-VN'),
-            Subtotal: Number(item.price * item.quantity).toLocaleString('vi-VN'),
-            CreatedAt: new Date(item.createdAt).toLocaleString('vi-VN'),
-            UpdatedAt: new Date(item.updatedAt).toLocaleString('vi-VN'),
-        }));
-        data.push({
-            ID: '',
-            ProductName: 'Grand Total:',
-            Quantity: '',
-            Price: '',
-            Subtotal: Number(grandTotal).toLocaleString('vi-VN') + ' VND',
-            CreatedAt: '',
-            UpdatedAt: '',
+    const handleExport = async () => {
+        if (!Array.isArray(details) || details.length === 0) return;
+
+        const workbook = new ExcelJS.Workbook();
+        workbook.creator = "YourApp";
+        workbook.created = new Date();
+
+        const worksheet = workbook.addWorksheet("Import Detail", {
+            views: [{ state: "frozen", ySplit: 1 }],
         });
 
-        const worksheet = XLSX.utils.json_to_sheet(data);
+        worksheet.columns = [
+            { header: "ID", key: "id", width: 12 },
+            { header: "Quantity", key: "quantity", width: 10 },
+            { header: "Price", key: "price", width: 16 },
+            { header: "Subtotal", key: "subtotal", width: 16 },
+            { header: "CreatedAt", key: "createdAt", width: 20 },
+            { header: "UpdatedAt", key: "updatedAt", width: 20 },
+        ];
 
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Import Detail');
+        // Header style (optional)
+        const headerRow = worksheet.getRow(1);
+        headerRow.height = 20;
+        headerRow.eachCell((cell) => {
+        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1F4E79" } };
+        cell.alignment = { vertical: "middle", horizontal: "center" };
+        cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+        };
+    });
 
-        XLSX.writeFile(workbook, `Import_${grn.id}.xlsx`);
+  // Data rows
+        details.forEach((item) => {
+            const qty = Number(item?.quantity ?? 0);
+            const price = Number(item?.price ?? 0);
+            worksheet.addRow({
+            id: item?.id ?? "",
+            quantity: qty,
+            price: price,
+            subtotal: price * qty,
+            createdAt: item?.createdAt ? new Date(item.createdAt) : null,
+            updatedAt: item?.updatedAt ? new Date(item.updatedAt) : null,
+        });
+    });
+
+    // Grand Total row
+    const grandRow = worksheet.addRow({
+        id: "",
+        productName: "Grand Total:",
+        quantity: null,
+        price: null,
+        subtotal: Number(grandTotal ?? 0),
+        createdAt: null,
+        updatedAt: null,
+    });
+
+    // Format rows
+    worksheet.eachRow((row, rowNumber) => {
+    // borders
+    row.eachCell((cell) => {
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
+    });
+
+    if (rowNumber === 1) return;
+
+    // Quantity center
+    row.getCell("quantity").alignment = { vertical: "middle", horizontal: "center" };
+
+    // Money format
+    const priceCell = row.getCell("price");
+    if (typeof priceCell.value === "number") {
+      priceCell.numFmt = '#,##0" ₫"';
+      priceCell.alignment = { vertical: "middle", horizontal: "right" };
     }
+
+    const subtotalCell = row.getCell("subtotal");
+    if (typeof subtotalCell.value === "number") {
+      subtotalCell.numFmt = '#,##0" ₫"';
+      subtotalCell.alignment = { vertical: "middle", horizontal: "right" };
+    }
+
+    // Date format
+    const createdCell = row.getCell("createdAt");
+    if (createdCell.value) createdCell.numFmt = "dd/mm/yyyy hh:mm:ss";
+
+    const updatedCell = row.getCell("updatedAt");
+    if (updatedCell.value) updatedCell.numFmt = "dd/mm/yyyy hh:mm:ss";
+    });
+
+    // Style grand total row (bold)
+    grandRow.eachCell((cell) => {
+    cell.font = { bold: true };
+    });
+    // Right-align the grand total amount
+    grandRow.getCell("subtotal").alignment = { vertical: "middle", horizontal: "right" };
+
+    // Export
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    saveAs(blob, `Import_${grn?.id ?? "detail"}.xlsx`);
+    };
 
     useEffect(() => {
   const fetchDetails = async () => {

@@ -2,7 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import AdminPromotionItem from '@/components/AdminPromotionItem';
 import { getPromotions, deletePromotion } from '@/service/promotionService';
-import * as XLSX from 'xlsx';
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 
 export default function PromotionPage() {
     const [promotions, setPromotions] = useState([]);
@@ -11,25 +12,131 @@ export default function PromotionPage() {
     const [showFilter, setShowFilter] = useState(false);
     const filterRef = useRef(null);
 
-    const handleExport = () => {
-        const worksheet = XLSX.utils.json_to_sheet(promotions.map(item => ({
-            ID: item.id,
-            Code: item.code,
-            Discount: item.value + " %",
-            Quantity: item.quantity,
-            StartDate: new Date(item.startDate).toLocaleString('vi-VN'),
-            EndDate: new Date(item.endDate).toLocaleString('vi-VN'),
-            Status: item.status === 1 ? "Active" : item.status === 2 ? "Out of turn" : item.status === 3 ? "Disable" : "Expired",
-            CreatedAt: new Date(item.createdAt).toLocaleString('vi-VN'),
-            UpdatedAt: new Date(item.updatedAt).toLocaleString('vi-VN'),
-        })));
+    const handleExport = async () => {
+  if (!Array.isArray(promotions) || promotions.length === 0) return;
 
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Promotion List');
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Promotion List", {
+    views: [{ state: "frozen", ySplit: 1 }],
+  });
 
-        XLSX.writeFile(workbook, 'Promotion_List.xlsx');
+  worksheet.columns = [
+    { header: "ID", key: "id", width: 10 },
+    { header: "Code", key: "code", width: 18 },
+    { header: "Description", key: "description", width: 30 },
+    { header: "Type", key: "type", width: 12 },
+    { header: "Value", key: "value", width: 14 },
+    { header: "MinOrderValue", key: "min_order_value", width: 16 },
+    { header: "MaxValue", key: "max_value", width: 14 },
+    { header: "RequirePoint", key: "require_point", width: 14 },
+    { header: "MaxUses", key: "max_uses", width: 12 },
+    { header: "UsedCount", key: "used_count", width: 12 },
+    { header: "UserID", key: "userid", width: 10 },
+    { header: "Start", key: "start", width: 20 },
+    { header: "End", key: "end", width: 20 },
+    { header: "Status", key: "statusText", width: 14 },
+    { header: "CreatedAt", key: "createdAt", width: 20 },
+    { header: "UpdatedAt", key: "updatedAt", width: 20 },
+  ];
+
+  // Header style
+  const headerRow = worksheet.getRow(1);
+  headerRow.eachCell((cell) => {
+    cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1F4E79" } };
+    cell.alignment = { vertical: "middle", horizontal: "center" };
+  });
+
+  const statusLabel = (status) => {
+    if (status === 1) return "Active";
+    if (status === 2) return "Out of turn";
+    if (status === 3) return "Disable";
+    return "Expired";
+  };
+
+  promotions.forEach((item) => {
+    const row = worksheet.addRow({
+      id: item?.id ?? "",
+      code: item?.code ?? "",
+      description: item?.description ?? "",
+      type: item?.type ?? "",
+      value: Number(item?.value ?? 0),
+      min_order_value: Number(item?.min_order_value ?? 0),
+      max_value: Number(item?.max_value ?? 0),
+      require_point: Number(item?.require_point ?? 0),
+      max_uses: Number(item?.max_uses ?? 0),
+      used_count: Number(item?.used_count ?? 0),
+      userid: item?.userid ?? "",
+      start: item?.start ? new Date(item.start) : null,
+      end: item?.end ? new Date(item.end) : null,
+      statusText: statusLabel(item?.status),
+      createdAt: item?.createdAt ? new Date(item.createdAt) : null,
+      updatedAt: item?.updatedAt ? new Date(item.updatedAt) : null,
+    });
+
+    // Optional: format per type
+    // - Nếu type là "percent" -> hiển thị % (value/100)
+    // - Nếu type là "amount" -> hiển thị tiền
+    const t = (item?.type ?? "").toLowerCase();
+    if (t === "percent" || t === "percentage") {
+      row.getCell("value").value = Number(item?.value ?? 0) / 100;
+      row.getCell("value").numFmt = "0%";
+      row.getCell("value").alignment = { vertical: "middle", horizontal: "center" };
+    } else {
+      // coi như số tiền
+      row.getCell("value").numFmt = '#,##0" ₫"';
+      row.getCell("value").alignment = { vertical: "middle", horizontal: "right" };
     }
 
+    // money-like fields
+    ["min_order_value", "max_value"].forEach((k) => {
+      const c = row.getCell(k);
+      if (typeof c.value === "number") {
+        c.numFmt = '#,##0" ₫"';
+        c.alignment = { vertical: "middle", horizontal: "right" };
+      }
+    });
+
+    // counters center
+    ["max_uses", "used_count", "require_point", "userid"].forEach((k) => {
+      row.getCell(k).alignment = { vertical: "middle", horizontal: "center" };
+    });
+
+    // date fields
+    ["start", "end", "createdAt", "updatedAt"].forEach((k) => {
+      const c = row.getCell(k);
+      if (c.value) c.numFmt = "dd/mm/yyyy hh:mm:ss";
+    });
+
+    // status style
+    const statusCell = row.getCell("statusText");
+    statusCell.alignment = { vertical: "middle", horizontal: "center" };
+    if (statusCell.value === "Disable" || statusCell.value === "Expired") {
+      statusCell.font = { color: { argb: "FFC00000" }, bold: true };
+    } else if (statusCell.value === "Active") {
+      statusCell.font = { color: { argb: "FF006100" }, bold: true };
+    }
+  });
+
+  // Borders for all cells (optional)
+  worksheet.eachRow((row, rowNumber) => {
+    row.eachCell((cell) => {
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      if (rowNumber !== 1) cell.alignment = { ...(cell.alignment || {}), wrapText: true };
+    });
+  });
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  saveAs(blob, "Promotion_List.xlsx");
+};
     useEffect(() => {
         if (!showFilter) return;
         const handleClickOutside = (event) => {

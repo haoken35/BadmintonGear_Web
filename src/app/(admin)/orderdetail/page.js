@@ -18,7 +18,7 @@ export default function OrderDetailsPage() {
     const invoiceRef = useRef();
 
     const handleExportInvoice = async () => {
-        // const html2pdf = (await import("html2pdf.js")).default;
+        const html2pdf = (await import("html2pdf.js")).default;
 
         html2pdf()
             .set({

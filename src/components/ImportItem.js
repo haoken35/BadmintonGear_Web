@@ -40,11 +40,11 @@ export default function ImportItem({ grn }) {
                         <div className="flex items-center gap-3">
                             {/* Hiển thị sản phẩm đầu tiên */}
                             <Image
-                                src={product && product.Imagesproducts ? product.Imagesproducts[0].url : "/images/unimage.png"}
-                                alt={details[0] ? details[0].Product.name : ""}
+                                 src={product?.ImagesProducts?.[0]?.url || "/images/unimage.png"}
+                                alt={details?.[0]?.Product?.name || "Product image"}
+                                width={60}
+                                height={60}
                                 className="rounded-lg"
-                                width={50}
-                                height={50}
                             />
                             <div className='flex flex-col items-start'>
                                 <div className="font-medium">{details[0].Product.name}</div>

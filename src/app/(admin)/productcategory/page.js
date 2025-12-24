@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react'
 import AdminCategoryItem from '@/components/AdminCategoryItem';
 import { getAllCategories, deleteCategory } from '@/service/categoryService';
 import { getAllProducts } from '@/service/productService';
-import * as XLSX from 'xlsx';
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 
 export default function ProductCategory() {
     const [categories, setCategories] = useState([]);
@@ -25,20 +26,86 @@ export default function ProductCategory() {
         setCategories(categories.map(category => ({ ...category, isChecked: newCheckedState })));
     };
 
-    const handleExport = () => {
-        const worksheet = XLSX.utils.json_to_sheet(categories.map(item => ({
-            Category: item.name,
-            Description: item.description,
-            NumberOfProducts: item.product,
-            CreatedAt: new Date(item.createdAt).toLocaleString('vi-VN'),
-            UpdatedAt: new Date(item.updatedAt).toLocaleString('vi-VN'),
-        })));
+const handleExport = async () => {
+  if (!Array.isArray(categories) || categories.length === 0) return;
 
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Category List');
+  const workbook = new ExcelJS.Workbook();
+  workbook.creator = "YourApp";
+  workbook.created = new Date();
 
-        XLSX.writeFile(workbook, 'Category_List.xlsx');
-    }
+  const worksheet = workbook.addWorksheet("Category List", {
+    views: [{ state: "frozen", ySplit: 1 }],
+  });
+
+  worksheet.columns = [
+    { header: "Category", key: "category", width: 24 },
+    { header: "Description", key: "description", width: 36 },
+    { header: "NumberOfProducts", key: "numberOfProducts", width: 20 },
+    { header: "CreatedAt", key: "createdAt", width: 20 },
+    { header: "UpdatedAt", key: "updatedAt", width: 20 },
+  ];
+
+  // Header style
+  const headerRow = worksheet.getRow(1);
+  headerRow.height = 20;
+  headerRow.eachCell((cell) => {
+    cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1F4E79" } };
+    cell.alignment = { vertical: "middle", horizontal: "center" };
+    cell.border = {
+      top: { style: "thin" },
+      left: { style: "thin" },
+      bottom: { style: "thin" },
+      right: { style: "thin" },
+    };
+  });
+
+  // Data rows
+  categories.forEach((item) => {
+    worksheet.addRow({
+      category: item?.name ?? "",
+      description: item?.description ?? "",
+      numberOfProducts: Number(item?.product ?? 0),
+      createdAt: item?.createdAt ? new Date(item.createdAt) : null,
+      updatedAt: item?.updatedAt ? new Date(item.updatedAt) : null,
+    });
+  });
+
+  // Format rows
+  worksheet.eachRow((row, rowNumber) => {
+    if (rowNumber === 1) return;
+
+    row.eachCell((cell) => {
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
+    });
+
+    // Center NumberOfProducts
+    row.getCell("numberOfProducts").alignment = {
+      vertical: "middle",
+      horizontal: "center",
+    };
+
+    // Date format
+    const createdCell = row.getCell("createdAt");
+        if (createdCell.value) createdCell.numFmt = "dd/mm/yyyy hh:mm:ss";
+
+    const updatedCell = row.getCell("updatedAt");
+        if (updatedCell.value) updatedCell.numFmt = "dd/mm/yyyy hh:mm:ss";
+    });
+
+    // Export
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        saveAs(blob, "Category_List.xlsx");
+    };
     // Hàm xử lý khi checkbox trong tbody được chọn
     const handleCategoryCheck = (id) => {
         const updatedCategories = categories.map(category =>

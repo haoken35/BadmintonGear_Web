@@ -3,7 +3,9 @@ import { useState, useEffect, useRef } from "react";
 import React from 'react'
 import ImportItem from "@/components/ImportItem";
 import { getImports } from "@/service/importService";
-import * as XLSX from 'xlsx';
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
+
 
 export default function ImportPage() {
     const [selectedOption, setSelectedOption] = useState('all-times');
@@ -38,19 +40,84 @@ export default function ImportPage() {
         }
     }
 
-    const handleExport = () => {
-        const worksheet = XLSX.utils.json_to_sheet(displayImports.map(item => ({
-            ImportID: item.id,
-            Total: Number(item.totalprice).toLocaleString('vi-VN'),
-            CreatedAt: new Date(item.createdAt).toLocaleString('vi-VN'),
-            UpdatedAt: new Date(item.updatedAt).toLocaleString('vi-VN'),
-        })));
+    const handleExport = async () => {
+    if (!Array.isArray(displayImports) || displayImports.length === 0) return;
 
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Import List');
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = "YourApp";
+    workbook.created = new Date();
 
-        XLSX.writeFile(workbook, 'Import_List.xlsx');
-    }
+    const worksheet = workbook.addWorksheet("Import List", {
+        views: [{ state: "frozen", ySplit: 1 }],
+    });
+
+    // Define columns (header + key + width)
+    worksheet.columns = [
+        { header: "ImportID", key: "importId", width: 12 },
+        { header: "Total", key: "total", width: 16 },
+        { header: "CreatedAt", key: "createdAt", width: 20 },
+        { header: "UpdatedAt", key: "updatedAt", width: 20 },
+    ];
+
+  // Header style (optional but nice)
+    const headerRow = worksheet.getRow(1);
+    headerRow.height = 20;
+    headerRow.eachCell((cell) => {
+        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1F4E79" } };
+        cell.alignment = { vertical: "middle", horizontal: "center" };
+        cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+        };
+    });
+
+    // Add rows
+    displayImports.forEach((item) => {
+        worksheet.addRow({
+        importId: item?.id ?? "",
+        total: Number(item?.totalprice ?? 0), // keep as number
+        createdAt: item?.createdAt ? new Date(item.createdAt) : null,
+        updatedAt: item?.updatedAt ? new Date(item.updatedAt) : null,
+        });
+    });
+
+    // Format cells
+    worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return;
+
+        row.eachCell((cell) => {
+        cell.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+        };
+        cell.alignment = { vertical: "middle", horizontal: "left" };
+        });
+
+        // Total format VN currency style
+        const totalCell = row.getCell("total");
+        totalCell.numFmt = '#,##0" ₫"';
+        totalCell.alignment = { vertical: "middle", horizontal: "right" };
+
+        // Date/time format
+        const createdCell = row.getCell("createdAt");
+        if (createdCell.value) createdCell.numFmt = "dd/mm/yyyy hh:mm:ss";
+
+        const updatedCell = row.getCell("updatedAt");
+        if (updatedCell.value) updatedCell.numFmt = "dd/mm/yyyy hh:mm:ss";
+    });
+
+    // Export in browser
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    saveAs(blob, "Import_List.xlsx");
+    };
 
     useEffect(() => {
         fetchImports();
