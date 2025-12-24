@@ -3,9 +3,9 @@ import React from 'react'
 export default function AdminPromotionItem({ promotion, onDelete }) {
     console.log("Promotion item:", promotion);
     return (
-        <tr className='bg-white shadow-md border-b border-[#F0F1F3]'>
-            <td className='text-[#ff8200] py-4 text-center'>{promotion.id}</td>
-            <td className='py-4 text-center'>{promotion.code}</td>
+        <tr className='bg-(--surface) shadow-md border-b border-(--border) hover:bg-(--surface2) text-(--text2)'>
+            <td className='text-(--primary) py-4 text-center'>{promotion.id}</td>
+            <td className='py-4 text-center text-(--text)'>{promotion.code}</td>
             <td className='text-center'>{promotion.value}{promotion.type === 0 ? "%" : "đ"}</td>
             <td className='py-4 text-center'>{promotion.max_uses}</td>
             <td className='py-4 text-center'>{new Date(promotion.start).toLocaleDateString("vi-VN", {
