@@ -21,7 +21,7 @@ export const ProductCard = ({ product }) => {
             setRating(totalRating / response.length);
         }
     }
-
+    
     const handleAddToCart = async () => {
         const profile = localStorage.getItem("userData");
         const userid = JSON.parse(profile).id;

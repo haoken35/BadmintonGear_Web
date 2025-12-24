@@ -1,4 +1,6 @@
 "use client";
+import { use, useEffect, useState } from "react";
+import { getAllOrders } from "@/service/orderService";
 
 import {
     CircularProgressbarWithChildren,
@@ -8,14 +10,74 @@ import "react-circular-progressbar/dist/styles.css";
 import "../styles/globals.css";
 
 export default function SaleProgress() {
-    const percentage = 75.55;
+    const [percentage, setPercentage] = useState(0);
+    const target = 50000000;
+    const [revenue, setRevenue] = useState(0);
+    const [revenueToday, setRevenueToday] = useState(0);
+    const [todayPercentage, setTodayPercentage] = useState(0);
+
+
+    useEffect(() => {
+        const fetchRevenue = async () => {
+            const orders = await getAllOrders();
+            if (!orders) return;
+            // Lấy ngày đầu tháng và hôm nay
+            const now = new Date();
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+            // Tính tổng revenue từ đầu tháng đến hôm nay
+            const total = orders
+                .filter(order => {
+                    const created = new Date(order.createdAt);
+                    return created >= firstDay && created <= now;
+                })
+                .reduce((sum, order) => sum + (Number(order.totalprice) || 0), 0);
+            setRevenue(total);
+
+            now.setHours(0, 0, 0, 0);
+            const tomorrow = new Date(now);
+            tomorrow.setDate(now.getDate() + 1);
+            // Tính tổng revenue trong hôm nay
+            const totalToday = orders
+                .filter(order => {
+                    const created = new Date(order.createdAt);
+                    return created >= now && created < tomorrow;
+                })
+                .reduce((sum, order) => sum + (Number(order.totalprice) || 0), 0);
+            setRevenueToday(totalToday);
+        };
+        fetchRevenue();
+    }, []);
+
+    useEffect(() => {
+        if (revenue === 0) {
+            setTodayPercentage(0);
+        } else {
+            const calculatedTodayPercentage = Math.min(
+                Math.round((revenueToday / (target / 30)) * 100),
+                100
+            );
+            setTodayPercentage(calculatedTodayPercentage);
+        }
+    }, [revenueToday]);
+
+    useEffect(() => {
+        if (revenue === 0) {
+            setPercentage(0);
+        } else {
+            const calculatedPercentage = Math.min(
+                Math.round((revenue / target) * 100),
+                100
+            );
+            setPercentage(calculatedPercentage);
+        }
+    }, [revenue]);
 
     return (
         <div className="bg-white rounded-md p-4 shadow-md w-full max-w-sm h-full">
             <div className="flex justify-between items-start">
                 <div>
                     <h3 className="text-md font-semibold text-gray-700">Sales Progress</h3>
-                    <p className="text-sm text-[#667085]">This Quarter</p>
+                    <p className="text-sm text-[#667085]">This Month</p>
                 </div>
                 {/* <button className="text-gray-400 text-xl font-bold">⋮</button> */}
             </div>
@@ -36,8 +98,9 @@ export default function SaleProgress() {
                     >
                         <div className="-mt-9 text-center">
                             <div className="text-2xl font-semibold text-gray-800">{percentage}%</div>
-                            <div className="text-xs bg-green-100 text-green-600 rounded-full px-2 py-0.5 mt-1">
-                                +10%
+                            <div className={`text-xs  rounded-full px-2 py-0.5 mt-1 ${todayPercentage > 0 ? "bg-green-100 text-green-600" :
+                                (todayPercentage < 0 ? "bg-red-100 text-red-600" : "bg-gray-100 text-gray-600")}`}>
+                                {todayPercentage > 0 ? "+" : (todayPercentage < 0 ? "-" : "")}{todayPercentage}%
                             </div>
                         </div>
                     </CircularProgressbarWithChildren>
@@ -45,22 +108,21 @@ export default function SaleProgress() {
             </div>
 
             <p className="text-center text-sm text-gray-500">
-                You succeed earn <span className="font-semibold text-gray-800">$240</span> today,
-                it's higher than yesterday
+                You succeed earn <span className="font-semibold text-gray-800">{Number(revenueToday).toLocaleString()} VND</span> today
             </p>
 
             <div className="flex justify-between mt-4 text-center text-sm text-gray-700">
                 <div className="flex-1 justify-center">
                     <div className="text-[#667085]">Target </div>
-                    <div className="font-semibold text-xl">$20k <span className="text-[#F04438] text-2xl font-normal">↓</span></div>
+                    <div className="font-semibold text-xl">{Number(target / 1000000).toLocaleString()}M VND </div>
                 </div>
                 <div className="flex-1 justify-center">
                     <div className="text-[#667085]">Revenue</div>
-                    <div className="font-semibold text-lg">$16k <span className="text-[#0D894F] text-2xl font-normal">↑</span></div>
+                    <div className="font-semibold text-lg">{Number(revenue / 1000000).toLocaleString()}M VND </div>
                 </div>
                 <div className="flex-1 justify-center">
                     <div className="text-[#667085]">Today</div>
-                    <div className="font-semibold text-lg">$1.5k <span className="text-[#0D894F] text-2xl font-normal">↑</span></div>
+                    <div className="font-semibold text-lg">{Number(revenueToday).toLocaleString()} VND</div>
                 </div>
             </div>
         </div>

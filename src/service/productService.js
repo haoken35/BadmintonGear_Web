@@ -130,6 +130,45 @@ const deleteImage = async (id) => {
     }
 }
 
+const getTopSellingProducts = async () => {
+    try {
+        const month = new Date().getMonth() + 1; // Months are 0-indexed in JavaScript
+        const year = new Date().getFullYear();
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/best-sale/top5?month=${month}&year=${year}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        if (!response.ok) {
+            alert('Failed to fetch top selling products');
+        }
+        const products = await response.json();
+        return products;
+    } catch (error) {
+        alert('Error fetching top selling products:', error);
+    }
+}
+
+const getLowAndOutOfStockProducts = async () => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        if (!response.ok) {
+            alert('Failed to fetch low and out of stock products');
+        }
+        const products = await response.json();
+        const filteredProducts = products.filter(product => product.quantity <= 10);
+        return filteredProducts;
+    } catch (error) {
+        alert('Error fetching low and out of stock products:', error);
+    }
+}
+
 export {
     getAllProducts,
     getProductById,
@@ -137,5 +176,7 @@ export {
     addProduct,
     deleteProduct,
     uploadImage,
-    deleteImage
+    deleteImage,
+    getLowAndOutOfStockProducts,
+    getTopSellingProducts
 }

@@ -1,9 +1,9 @@
 "use client";
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { getAllOrders } from '@/service/orderService';
+import { getImports } from '@/service/importService';
 
 import {
-    LineChart,
-    Line,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -14,21 +14,72 @@ import {
     ResponsiveContainer,
 } from "recharts";
 
+
+// Hàm format số tiền
+const formatMoney = (value) => value?.toLocaleString('vi-VN') + ' VND';
+
+// Custom Tooltip component
+const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-white p-3 rounded shadow text-sm border">
+                <div><b>{label}</b></div>
+                {payload.map((entry, idx) => (
+                    <div key={idx} style={{ color: entry.color }}>
+                        {entry.name}: <b>{formatMoney(entry.value)}</b>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+    return null;
+};
+
 export default function RevenueChart() {
-    const data = [
-        { name: "Jan", Revenue: 880, Cost: 770 },
-        { name: "Feb", Revenue: 790, Cost: 660 },
-        { name: "Mar", Revenue: 950, Cost: 890 },
-        { name: "Apr", Revenue: 870, Cost: 1100 },
-        { name: "May", Revenue: 930, Cost: 720 },
-        { name: "Jun", Revenue: 1020, Cost: 800 },
-        { name: "Jul", Revenue: 980, Cost: 850 },
-        { name: "Aug", Revenue: 1200, Cost: 820 },
-        { name: "Sep", Revenue: 1350, Cost: 880 },
-        { name: "Oct", Revenue: 770, Cost: 740 },
-        { name: "Nov", Revenue: 900, Cost: 1120 },
-        { name: "Dec", Revenue: 850, Cost: 1000 },
-    ];
+    const [orders, setOrders] = useState([]);
+    const [imports, setImports] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const orderRes = await getAllOrders();
+            const importRes = await getImports();
+            setOrders(orderRes || []);
+            setImports(importRes || []);
+        };
+        fetchData();
+    }, []);
+
+    // Tạo mảng 7 ngày gần nhất
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setHours(0, 0, 0, 0);
+        d.setDate(d.getDate() - i);
+        days.push(new Date(d));
+    }
+
+    // Gom revenue và cost theo từng ngày
+    const data = days.map(date => {
+        const dayStr = date.toLocaleDateString('en-GB');
+        const revenue = orders
+            .filter(order => {
+                const created = new Date(order.createdAt);
+                return created.toLocaleDateString('en-GB') === dayStr;
+            })
+            .reduce((sum, order) => sum + (Number(order.totalprice) || 0), 0);
+        const cost = imports
+            .filter(imp => {
+                const created = new Date(imp.createdAt);
+                return created.toLocaleDateString('en-GB') === dayStr;
+            })
+            .reduce((sum, imp) => sum + (Number(imp.totalcost || imp.totalprice) || 0), 0);
+        return {
+            name: dayStr,
+            Revenue: revenue,
+            Cost: cost,
+        };
+    });
+
 
     return (
         <div className="bg-white rounded-md p-6 shadow-md">
@@ -48,9 +99,14 @@ export default function RevenueChart() {
                             </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis tickFormatter={(value) => `$${value / 1000}k`} />
-                        <Tooltip />
+                        <XAxis dataKey="name" tick={{ fontSize: 13, fontWeight: 500 }}/>
+                        <YAxis
+                            tickFormatter={(value) => `${value / 1000000}M `}
+                            tick={{ fontSize: 13, fontWeight: 500 }}
+                            allowDecimals={false}
+                            domain={[0, 'auto']}
+                        />
+                        <Tooltip content={<CustomTooltip />} />
                         <Legend verticalAlign="top" height={36} />
                         <Area
                             type="monotone"

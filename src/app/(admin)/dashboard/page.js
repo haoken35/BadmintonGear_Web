@@ -1,133 +1,318 @@
 "use client"
-import React, { use, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import SaleProgress from '@/components/SaleProgress';
 import RevenueChart from '@/components/RevenueChart';
 import BestSellingProductItem from '@/components/AdminBestSellingProductItem';
 import AdminOrderItem from '@/components/AdminOrderItem';
-import { getAllOrders } from '@/service/orderService';
+import AdminProductItem from '@/components/AdminProductItem';
+import { getLowAndOutOfStockProducts } from '@/service/productService';
+import { getRecentOrders } from '@/service/orderService';
+import { getTopSellingProducts } from '@/service/productService';
+import { getImports } from '@/service/importService';
 
 export default function DashboardPage() {
-    const [selectedOption, setSelectedOption] = useState('all-times');
-    const totalRevenue = 0;
-    const revenueRatio = 15;
-    const totalSales = 0;
-    const salesRatio = 20;
-    const productSKU = 0;
-    const productSKURatio = -10;
-    const balance = 0;
-    const balanceRatio = 0;
+    const [selectedOption, setSelectedOption] = useState('30-days');
+    const [showDateDialog, setShowDateDialog] = useState(false);
+    const [dateRange, setDateRange] = useState({ from: '', to: '' });
+    const dialogRef = useRef(null);
 
-    const [listBestSellingProduct, setListBestSellingProduct] = useState([]);
+    const [profit, setProfit] = useState(0);
+    const [profitRatio, setProfitRatio] = useState(0);
+    const [revenue, setRevenue] = useState(0);
+    const [revenueRatio, setRevenueRatio] = useState(0);
+    const [cost, setCost] = useState(0);
+    const [costRatio, setCostRatio] = useState(0);
 
+    const [listBestSellingProduct, setListBestSellingProduct] = useState([])
     const [orders, setOrders] = useState([]);
-    
+    const [listOrders, setListOrders] = useState([]);
+    const [listImport, setListImport] = useState([]);
+    const [filteredOrders, setFilteredOrders] = useState([]);
+    const [filteredImports, setFilteredImports] = useState([]);
+    const [lowAndOutOfStockProducts, setLowAndOutOfStockProducts] = useState([]);
+
+    // Fetch data
+    const fetchLowAndOutOfStockProducts = async () => {
+        try {
+            const response = await getLowAndOutOfStockProducts();
+            if (response) setLowAndOutOfStockProducts(response);
+        } catch (error) {
+            console.error("Error fetching low and out of stock products:", error);
+        }
+    }
+    const fetchAllOrders = async () => {
+        try {
+            const response = await getRecentOrders();
+            if (response) setListOrders(response);
+        } catch (error) {
+            console.error("Error fetching all orders:", error);
+        }
+    }
+    const fetchAllImports = async () => {
+        try {
+            const response = await getImports();
+            if (response) setListImport(response);
+        } catch (error) {
+            console.error("Error fetching all imports:", error);
+        }
+    }
     const fetchOrders = async () => {
         try {
-            const response = await getAllOrders();
-            if (response && response.data) {
-                setOrders(response.data);
-            } else {
-                console.error("No orders found or invalid response format");
-            }
+            const response = await getRecentOrders();
+            if (response) setOrders(response);
         } catch (error) {
             console.error("Error fetching orders:", error);
         }
     }
+
+    const fetchBestSellingProducts = async () => {
+        try {
+            const response = await getTopSellingProducts();
+            if (response) setListBestSellingProduct(response);
+        } catch (error) {
+            console.error("Error fetching best selling products:", error);
+        }
+    }
+
+    useEffect(() => {
+        const currentRevenue = filteredOrders.reduce((sum, order) => sum + (Number(order.totalprice) || 0), 0);
+        const currentCost = filteredImports.reduce((sum, imp) => sum + (Number(imp.totalprice) || 0), 0);
+        const currentProfit = currentRevenue - currentCost;
+
+        setRevenue(currentRevenue);
+        setCost(currentCost);
+        setProfit(currentProfit);
+
+        let prevFromDate = null, prevToDate = null;
+        if (dateRange.from && dateRange.to) {
+            const from = new Date(dateRange.from);
+            const to = new Date(dateRange.to);
+            const diff = to.getTime() - from.getTime();
+            prevToDate = new Date(from.getTime() - 1);
+            prevFromDate = new Date(from.getTime() - diff - 1);
+        } else {
+            let now = new Date();
+            switch (selectedOption) {
+                case '12-months': {
+                    prevToDate = new Date(now);
+                    prevToDate.setMonth(now.getMonth() - 12);
+                    prevFromDate = new Date(prevToDate);
+                    prevFromDate.setMonth(prevToDate.getMonth() - 12);
+                    break;
+                }
+                case '30-days': {
+                    prevToDate = new Date(now);
+                    prevToDate.setDate(now.getDate() - 30);
+                    prevFromDate = new Date(prevToDate);
+                    prevFromDate.setDate(prevToDate.getDate() - 30);
+                    break;
+                }
+                case '7-days': {
+                    prevToDate = new Date(now);
+                    prevToDate.setDate(now.getDate() - 7);
+                    prevFromDate = new Date(prevToDate);
+                    prevFromDate.setDate(prevToDate.getDate() - 7);
+                    break;
+                }
+                case '24-hours': {
+                    prevToDate = new Date(now);
+                    prevToDate.setHours(now.getHours() - 24);
+                    prevFromDate = new Date(prevToDate);
+                    prevFromDate.setHours(prevToDate.getHours() - 24);
+                    break;
+                }
+                default:
+                    prevFromDate = null;
+                    prevToDate = null;
+            }
+        }
+        let prevOrders = [];
+        let prevImports = [];
+        if (prevFromDate && prevToDate) {
+            prevOrders = listOrders.filter(order => {
+                const created = new Date(order.createdAt);
+                return created >= prevFromDate && created <= prevToDate;
+            });
+            prevImports = listImport.filter(imp => {
+                const created = new Date(imp.createdAt);
+                return created >= prevFromDate && created <= prevToDate;
+            });
+        }
+
+        const prevRevenue = prevOrders.reduce((sum, order) => sum + (Number(order.totalprice) || 0), 0);
+        const prevCost = prevImports.reduce((sum, imp) => sum + (Number(imp.totalprice) || 0), 0);
+        const prevProfit = prevRevenue - prevCost;
+
+        setRevenueRatio(prevRevenue === 0 ? 0 : Math.round(((currentRevenue - prevRevenue) / prevRevenue) * 100));
+        setCostRatio(prevCost === 0 ? 0 : Math.round(((currentCost - prevCost) / prevCost) * 100));
+        setProfitRatio(prevProfit === 0 ? 0 : Math.round(((currentProfit - prevProfit) / Math.abs(prevProfit)) * 100));
+    }, [filteredOrders, filteredImports, listOrders, listImport, selectedOption, dateRange]);
+
+    useEffect(() => {
+        let now = new Date();
+        let fromDate = null;
+        let toDate = now;
+
+        if (dateRange.from && dateRange.to) {
+            fromDate = new Date(dateRange.from);
+            toDate = new Date(dateRange.to);
+            toDate.setHours(23, 59, 59, 999);
+        } else {
+            switch (selectedOption) {
+                case '12-months':
+                    fromDate = new Date(now);
+                    fromDate.setMonth(now.getMonth() - 12);
+                    break;
+                case '30-days':
+                    fromDate = new Date(now);
+                    fromDate.setDate(now.getDate() - 30);
+                    break;
+                case '7-days':
+                    fromDate = new Date(now);
+                    fromDate.setDate(now.getDate() - 7);
+                    break;
+                case '24-hours':
+                    fromDate = new Date(now);
+                    fromDate.setHours(now.getHours() - 24);
+                    break;
+                default: // all-times
+                    fromDate = null;
+            }
+        }
+
+        // Filter orders
+        const filteredOrders = fromDate
+            ? listOrders.filter(order => {
+                const created = new Date(order.createdAt);
+                return created >= fromDate && created <= toDate;
+            })
+            : listOrders;
+        setFilteredOrders(filteredOrders);
+
+        // Filter imports
+        const filteredImports = fromDate
+            ? listImport.filter(imp => {
+                const created = new Date(imp.createdAt);
+                return created >= fromDate && created <= toDate;
+            })
+            : listImport;
+        setFilteredImports(filteredImports);
+
+    }, [selectedOption, listOrders, listImport, dateRange]);
+
+    useEffect(() => {
+        fetchAllOrders();
+        fetchAllImports();
+        fetchOrders();
+        fetchBestSellingProducts();
+        fetchLowAndOutOfStockProducts();
+    }, []);
+
+    // Xử lý chọn ngày
+    const handleDateChange = (e) => {
+        const { name, value } = e.target;
+        setDateRange(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    // Đóng dialog khi click ngoài
+    useEffect(() => {
+        if (!showDateDialog) return;
+        const handleClick = (e) => {
+            if (dialogRef.current && !dialogRef.current.contains(e.target)) {
+                setShowDateDialog(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClick);
+        return () => document.removeEventListener("mousedown", handleClick);
+    }, [showDateDialog]);
 
     return (
         <div className='font-inter'>
             <div className='flex justify-between'>
                 <div className='text-[#667085] border border-[#E0E2E7] rounded-md p-1 flex items-center gap-2'>
                     <label>
-                        <input
-                            type="radio"
-                            name="option"
-                            value="all-times"
-                            className="hidden peer"
+                        <input type="radio" name="option" value="all-times" className="hidden peer"
                             checked={selectedOption === 'all-times'}
-                            onChange={() => setSelectedOption('all-times')}
-                        />
-                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">
-                            All Times
-                        </span>
+                            onChange={() => setSelectedOption('all-times')} />
+                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">All Times</span>
                     </label>
 
-                    {/* 12 Months */}
                     <label>
-                        <input
-                            type="radio"
-                            name="option"
-                            value="12-months"
-                            className="hidden peer"
+                        <input type="radio" name="option" value="12-months" className="hidden peer"
                             checked={selectedOption === '12-months'}
-                            onChange={() => setSelectedOption('12-months')}
-                        />
-                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">
-                            12 months
-                        </span>
+                            onChange={() => setSelectedOption('12-months')} />
+                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">12 months</span>
                     </label>
 
-                    {/* 30 Days */}
                     <label>
-                        <input
-                            type="radio"
-                            name="option"
-                            value="30-days"
-                            className="hidden peer"
+                         <input type="radio" name="option" value="30-days" className="hidden peer"
                             checked={selectedOption === '30-days'}
-                            onChange={() => setSelectedOption('30-days')}
-                        />
-                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">
-                            30 days
-                        </span>
+                            onChange={() => setSelectedOption('30-days')} />
+                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">30 days</span>
                     </label>
 
-                    {/* 7 Days */}
                     <label>
-                        <input
-                            type="radio"
-                            name="option"
-                            value="7-days"
-                            className="hidden peer"
+                        <input type="radio" name="option" value="7-days" className="hidden peer"
                             checked={selectedOption === '7-days'}
-                            onChange={() => setSelectedOption('7-days')}
-                        />
-                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">
-                            7 days
-                        </span>
+                            onChange={() => setSelectedOption('7-days')} />
+                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">7 days</span>
                     </label>
 
-                    {/* 24 Hours */}
                     <label>
-                        <input
-                            type="radio"
-                            name="option"
-                            value="24-hours"
-                            className="hidden peer"
+                        <input type="radio" name="option" value="24-hours" className="hidden peer"
                             checked={selectedOption === '24-hours'}
-                            onChange={() => setSelectedOption('24-hours')}
-                        />
-                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">
-                            24 hours
-                        </span>
+                            onChange={() => setSelectedOption('24-hours')} />
+                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">24 hours</span>
                     </label>
                 </div>
                 <div className='flex gap-3'>
-                    <button className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2'>
+                    <button
+                        className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2'
+                        onClick={() => setShowDateDialog(true)}
+                    >
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M7.5 2.49984C7.5 2.0396 7.1269 1.6665 6.66667 1.6665C6.20643 1.6665 5.83333 2.0396 5.83333 2.49984H5C3.61929 2.49984 2.5 3.61913 2.5 4.99984V15.8332C2.5 17.2139 3.61929 18.3332 5 18.3332H15C16.3807 18.3332 17.5 17.2139 17.5 15.8332V4.99984C17.5 3.61913 16.3807 2.49984 15 2.49984H14.1667C14.1667 2.0396 13.7936 1.6665 13.3333 1.6665C12.8731 1.6665 12.5 2.0396 12.5 2.49984H7.5ZM15.8333 5.83317V4.99984C15.8333 4.5396 15.4602 4.1665 15 4.1665H14.1667C14.1667 4.62674 13.7936 4.99984 13.3333 4.99984C12.8731 4.99984 12.5 4.62674 12.5 4.1665H7.5C7.5 4.62674 7.1269 4.99984 6.66667 4.99984C6.20643 4.99984 5.83333 4.62674 5.83333 4.1665H5C4.53976 4.1665 4.16667 4.5396 4.16667 4.99984V5.83317H15.8333ZM4.16667 7.49984V15.8332C4.16667 16.2934 4.53976 16.6665 5 16.6665H15C15.4602 16.6665 15.8333 16.2934 15.8333 15.8332V7.49984H4.16667Z" fill="#667085" />
                         </svg>
                         Select Dates
                     </button>
-                    <button className='bg-[#FBE3CA] text-[#FF8200] rounded-md px-4 py-2 flex items-center gap-2'>
+                    {/* <button className='bg-[#FBE3CA] text-[#FF8200] rounded-md px-4 py-2 flex items-center gap-2'>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M13.0891 6.00582C12.7637 6.33126 12.236 6.33126 11.9106 6.00582L10.8332 4.92841V12.9166C10.8332 13.3768 10.4601 13.7499 9.99984 13.7499C9.5396 13.7499 9.1665 13.3768 9.1665 12.9166V4.92841L8.08909 6.00582C7.76366 6.33126 7.23602 6.33126 6.91058 6.00582C6.58514 5.68039 6.58514 5.15275 6.91058 4.82731L9.70521 2.03268C9.86793 1.86997 10.1317 1.86996 10.2945 2.03268L13.0891 4.82731C13.4145 5.15275 13.4145 5.68039 13.0891 6.00582Z" fill="#FF8200" />
                             <path d="M14.9998 7.08323C16.8408 7.08323 18.3332 8.57562 18.3332 10.4166V14.5832C18.3332 16.4242 16.8408 17.9166 14.9998 17.9166H4.99984C3.15889 17.9166 1.6665 16.4242 1.6665 14.5832V10.4166C1.6665 8.57562 3.15889 7.08323 4.99984 7.08323H6.6665C7.12674 7.08323 7.49984 7.45633 7.49984 7.91657C7.49984 8.37681 7.12674 8.7499 6.6665 8.7499H4.99984C4.07936 8.7499 3.33317 9.49609 3.33317 10.4166V14.5832C3.33317 15.5037 4.07936 16.2499 4.99984 16.2499H14.9998C15.9203 16.2499 16.6665 15.5037 16.6665 14.5832V10.4166C16.6665 9.49609 15.9203 8.7499 14.9998 8.7499H13.3332C12.8729 8.7499 12.4998 8.37681 12.4998 7.91657C12.4998 7.45633 12.8729 7.08323 13.3332 7.08323H14.9998Z" fill="#FF8200" />
                         </svg>
                         Export
-                    </button>
+                    </button> */}
                 </div>
             </div>
+            {showDateDialog && (
+                <div ref={dialogRef}
+                    className="w-fit absolute mt-2 right-10 bg-white rounded-lg shadow-lg p-6 min-w-[320px]" onMouseDown={e => e.stopPropagation()}>
+                    <div className="flex flex-col gap-4">
+                        <div className="flex justify-between items-center">
+                            <label>From</label>
+                            <input type="date" name="from" value={dateRange.from} onChange={handleDateChange} className="border rounded px-2 py-1" />
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <label>To</label>
+                            <input type="date" name="to" value={dateRange.to} onChange={handleDateChange} className="border rounded px-2 py-1" />
+                        </div>
+                        <div className="flex gap-2 justify-end">
+                            <button className="px-4 py-2 bg-gray-200 rounded" onClick={() => setShowDateDialog(false)}>Close</button>
+                            <button className="px-4 py-2 bg-[#ff8200] text-white rounded"
+                                onClick={() => setShowDateDialog(false)}>
+                                Apply
+                            </button>
+                            <button className="px-4 py-2 bg-red-200 text-red-700 rounded"
+                                onClick={() => { setDateRange({ from: '', to: '' }); setShowDateDialog(false); }}>
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className='flex justify-between mt-10'>
                 <div className='bg-white rounded-md shadow-md p-5 w-6/25'>
                     <div className='flex justify-between items-center rounded-full bg-[#EFEFFD] p-1 w-fit'>
@@ -139,12 +324,12 @@ export default function DashboardPage() {
                         </div>
                     </div>
                     <div className='flex flex-col mt-5 gap-2'>
-                        <label className='text-[#667085]'>Total Revenue</label>
+                        <label className='text-[#667085]'>Profit</label>
                         <div className='flex items-center gap-2'>
-                            <label className='text-2xl font-semibold'>${totalRevenue}</label>
-                            <div className={`py-1 px-2 rounded-2xl ${revenueRatio > 0 ? "bg-[#E7F4EE] text-[#0D894F]"
+                            <label className='text-2xl font-semibold'>{Number(profit).toLocaleString()} VND</label>
+                            <div className={`py-1 px-2 rounded-2xl ${profitRatio > 0 ? "bg-[#E7F4EE] text-[#0D894F]"
                                 : (revenueRatio == 0 ? "bg-[#F0F1F3] text-[#667085]"
-                                    : "bg-[#FEEDEC] text-[#F04438]")}`}>{revenueRatio > 0 ? "+" : ""}{revenueRatio}%</div>
+                                    : "bg-[#FEEDEC] text-[#F04438]")}`}>{profitRatio > 0 ? "+" : ""}{profitRatio}%</div>
                         </div>
                     </div>
                 </div>
@@ -160,16 +345,16 @@ export default function DashboardPage() {
                         </div>
                     </div>
                     <div className='flex flex-col mt-5 gap-2'>
-                        <label className='text-[#667085]'>Total Sales</label>
+                        <label className='text-[#667085]'>Total Revenue</label>
                         <div className='flex items-center gap-2'>
-                            <label className='text-2xl font-semibold'>${totalSales}</label>
-                            <div className={`py-1 px-2 rounded-2xl ${salesRatio > 0 ? "bg-[#E7F4EE] text-[#0D894F]"
-                                : (salesRatio == 0 ? "bg-[#F0F1F3] text-[#667085]"
-                                    : "bg-[#FEEDEC] text-[#F04438]")}`}>{salesRatio > 0 ? "+" : ""}{salesRatio}%</div>
+                            <label className='text-2xl font-semibold'>{Number(revenue).toLocaleString()} VND</label>
+                            <div className={`py-1 px-2 rounded-2xl ${revenueRatio > 0 ? "bg-[#E7F4EE] text-[#0D894F]"
+                                : (revenueRatio == 0 ? "bg-[#F0F1F3] text-[#667085]"
+                                    : "bg-[#FEEDEC] text-[#F04438]")}`}>{revenueRatio > 0 ? "+" : ""}{revenueRatio}%</div>  
                         </div>
                     </div>
                 </div>
-                <div className='bg-white rounded-md shadow-md p-5 w-6/25'>
+                {/* <div className='bg-white rounded-md shadow-md p-5 w-6/25'>
                     <div className='flex justify-between items-center rounded-full bg-[#FEEDEC] p-1 w-fit'>
                         <div className='flex items-center justify-center rounded-full bg-[#FCDAD7] p-2'>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -191,8 +376,8 @@ export default function DashboardPage() {
                                     : "bg-[#FEEDEC] text-[#F04438]")}`}>{productSKURatio > 0 ? "+" : ""}{productSKURatio}%</div>
                         </div>
                     </div>
-                </div>
-                <div className='bg-white rounded-md shadow-md p-5 w-6/25'>
+                </div> */}
+                <div className='bg-white rounded-md shadow-md p-5 w-6/25 cursor-pointer hover:bg-gray-100' onClick={() => window.location.href = "/admin/report?type=cost"}>
                     <div className='flex justify-between items-center rounded-full bg-[#FDF1E8] p-1 w-fit'>
                         <div className='flex items-center justify-center rounded-full bg-[#FAE1CF] p-2'>
                             <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -203,12 +388,12 @@ export default function DashboardPage() {
                         </div>
                     </div>
                     <div className='flex flex-col mt-5 gap-2'>
-                        <label className='text-[#667085]'>Balance</label>
+                        <label className='text-[#667085]'>Cost  </label>
                         <div className='flex items-center gap-2'>
-                            <label className='text-2xl font-semibold'>${balance}</label>
-                            <div className={`py-1 px-2 rounded-2xl ${balanceRatio > 0 ? "bg-[#E7F4EE] text-[#0D894F]"
-                                : (balanceRatio == 0 ? "bg-[#F0F1F3] text-[#667085]"
-                                    : "bg-[#FEEDEC] text-[#F04438]")}`}>{balanceRatio > 0 ? "+" : ""}{balanceRatio}%</div>
+                            <label className='text-2xl font-semibold'>{Number(cost).toLocaleString()} VND</label>
+                            <div className={`py-1 px-2 rounded-2xl ${costRatio > 0 ? "bg-[#E7F4EE] text-[#0D894F]"
+                                : (costRatio == 0 ? "bg-[#F0F1F3] text-[#667085]"
+                                    : "bg-[#FEEDEC] text-[#F04438]")}`}>{costRatio > 0 ? "+" : ""}{costRatio}%</div>
                         </div>
                     </div>
                 </div>
@@ -228,7 +413,7 @@ export default function DashboardPage() {
             <div className='mt-5 shadow-md bg-white rounded-md py-5'>
                 <div className='flex w-full justify-between items-center px-5'>
                     <div className='text-lg font-semibold'>Top Selling Product</div>
-                    <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'>
+                    {/* <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.8333 6.66667C10.8333 7.1269 11.2064 7.5 11.6667 7.5C12.1269 7.5 12.5 7.1269 12.5 6.66667V5.83333H16.6667C17.1269 5.83333 17.5 5.46024 17.5 5C17.5 4.53976 17.1269 4.16667 16.6667 4.16667H12.5V3.33333C12.5 2.8731 12.1269 2.5 11.6667 2.5C11.2064 2.5 10.8333 2.8731 10.8333 3.33333V6.66667Z" fill="#667085" />
                             <path d="M2.5 10C2.5 9.53976 2.8731 9.16667 3.33333 9.16667H4.58333C4.81345 9.16667 5 9.35321 5 9.58333V10.4167C5 10.6468 4.81345 10.8333 4.58333 10.8333H3.33333C2.8731 10.8333 2.5 10.4602 2.5 10Z" fill="#667085" />
@@ -238,7 +423,7 @@ export default function DashboardPage() {
                             <path d="M2.5 15C2.5 14.5398 2.8731 14.1667 3.33333 14.1667H10.4167C10.6468 14.1667 10.8333 14.3532 10.8333 14.5833V15.4167C10.8333 15.6468 10.6468 15.8333 10.4167 15.8333H3.33333C2.8731 15.8333 2.5 15.4602 2.5 15Z" fill="#667085" />
                         </svg>
                         Filters
-                    </button>
+                    </button> */}
                 </div>
                 <table className='w-full mt-5'>
                     <thead className='bg-[#F9FAFB] font-medium'>
@@ -257,11 +442,13 @@ export default function DashboardPage() {
                 </table>
                 {/* Pagination*/}
             </div>
+
+
             <div className='mt-5 shadow-md bg-white rounded-md py-5'>
                 <div className='flex w-full justify-between items-center px-5'>
-                    <div className='text-lg font-semibold'>Recent Orders</div>
+                    <div className='text-lg font-semibold'>Low And Out Of Stock Products</div>
                     <div className='flex gap-5'>
-                        <button className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2'>
+                        {/* <button className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2'>
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M10.8333 6.66667C10.8333 7.1269 11.2064 7.5 11.6667 7.5C12.1269 7.5 12.5 7.1269 12.5 6.66667V5.83333H16.6667C17.1269 5.83333 17.5 5.46024 17.5 5C17.5 4.53976 17.1269 4.16667 16.6667 4.16667H12.5V3.33333C12.5 2.8731 12.1269 2.5 11.6667 2.5C11.2064 2.5 10.8333 2.8731 10.8333 3.33333V6.66667Z" fill="#667085" />
                                 <path d="M2.5 10C2.5 9.53976 2.8731 9.16667 3.33333 9.16667H4.58333C4.81345 9.16667 5 9.35321 5 9.58333V10.4167C5 10.6468 4.81345 10.8333 4.58333 10.8333H3.33333C2.8731 10.8333 2.5 10.4602 2.5 10Z" fill="#667085" />
@@ -271,7 +458,65 @@ export default function DashboardPage() {
                                 <path d="M2.5 15C2.5 14.5398 2.8731 14.1667 3.33333 14.1667H10.4167C10.6468 14.1667 10.8333 14.3532 10.8333 14.5833V15.4167C10.8333 15.6468 10.6468 15.8333 10.4167 15.8333H3.33333C2.8731 15.8333 2.5 15.4602 2.5 15Z" fill="#667085" />
                             </svg>
                             Filters
-                        </button>
+                        </button> */}
+                        <button className='bg-[#ff8200] rounded-md text-white px-4 py-2'
+                            onClick={() => {
+                                window.location.href = '/admin/productlist';
+                            }}>View All</button>
+                    </div>
+
+                </div>
+                <table className='w-full py-2 rounded-md overflow-hidden mt-5'>
+                    <thead className='bg-[#F9F9FC] font-medium border-b border-[#F0F1F3]'>
+                        <tr className='text-center text-[#344054] font-semibold rounded-md'>
+                            <th className='py-2 px-4'>Product</th>
+                            {/* <th className='py-2 px-4'>SKU</th> */}
+                            <th className='py-2 px-4'>Brand</th>
+                            <th className='py-2 px-4'>Category</th>
+                            <th className='py-2 px-4'>Stock</th>
+                            <th className='py-2 px-4'>Price</th>
+                            <th className='py-2 px-4'>Status</th>
+                            <th className='py-2 px-4'>Added</th>
+                            <th className='py-2 px-4'>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody className='text-[#344054] font-normal text-center'>
+                        {lowAndOutOfStockProducts.map((product) => (
+                            <AdminProductItem
+                                key={product.id}
+                                product={product}
+                                low = {true}
+                            />
+                        ))}
+                        {
+                            lowAndOutOfStockProducts.length === 0 && (
+                                <tr>
+                                    <td colSpan="9" className="text-center py-4 text-gray-500">
+                                        No products low or out of stock found
+                                    </td>
+                                </tr>
+                            )
+                        }
+                    </tbody>
+
+                </table>
+                {/* Pagination*/}
+            </div>
+            <div className='mt-5 shadow-md bg-white rounded-md py-5'>
+                <div className='flex w-full justify-between items-center px-5'>
+                    <div className='text-lg font-semibold'>Recent Orders</div>
+                    <div className='flex gap-5'>
+                        {/* <button className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2'>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10.8333 6.66667C10.8333 7.1269 11.2064 7.5 11.6667 7.5C12.1269 7.5 12.5 7.1269 12.5 6.66667V5.83333H16.6667C17.1269 5.83333 17.5 5.46024 17.5 5C17.5 4.53976 17.1269 4.16667 16.6667 4.16667H12.5V3.33333C12.5 2.8731 12.1269 2.5 11.6667 2.5C11.2064 2.5 10.8333 2.8731 10.8333 3.33333V6.66667Z" fill="#667085" />
+                                <path d="M2.5 10C2.5 9.53976 2.8731 9.16667 3.33333 9.16667H4.58333C4.81345 9.16667 5 9.35321 5 9.58333V10.4167C5 10.6468 4.81345 10.8333 4.58333 10.8333H3.33333C2.8731 10.8333 2.5 10.4602 2.5 10Z" fill="#667085" />
+                                <path d="M7.5 7.5C7.03976 7.5 6.66667 7.8731 6.66667 8.33333V11.6667C6.66667 12.1269 7.03976 12.5 7.5 12.5C7.96024 12.5 8.33333 12.1269 8.33333 11.6667V10.8333H16.6667C17.1269 10.8333 17.5 10.4602 17.5 10C17.5 9.53976 17.1269 9.16667 16.6667 9.16667H8.33333V8.33333C8.33333 7.8731 7.96024 7.5 7.5 7.5Z" fill="#667085" />
+                                <path d="M2.5 5C2.5 4.53976 2.8731 4.16667 3.33333 4.16667H8.75C8.98012 4.16667 9.16667 4.35321 9.16667 4.58333V5.41667C9.16667 5.64679 8.98012 5.83333 8.75 5.83333H3.33333C2.8731 5.83333 2.5 5.46024 2.5 5Z" fill="#667085" />
+                                <path d="M12.5 13.3333C12.5 12.8731 12.8731 12.5 13.3333 12.5C13.7936 12.5 14.1667 12.8731 14.1667 13.3333V14.1667H16.6667C17.1269 14.1667 17.5 14.5398 17.5 15C17.5 15.4602 17.1269 15.8333 16.6667 15.8333H14.1667V16.6667C14.1667 17.1269 13.7936 17.5 13.3333 17.5C12.8731 17.5 12.5 17.1269 12.5 16.6667V13.3333Z" fill="#667085" />
+                                <path d="M2.5 15C2.5 14.5398 2.8731 14.1667 3.33333 14.1667H10.4167C10.6468 14.1667 10.8333 14.3532 10.8333 14.5833V15.4167C10.8333 15.6468 10.6468 15.8333 10.4167 15.8333H3.33333C2.8731 15.8333 2.5 15.4602 2.5 15Z" fill="#667085" />
+                            </svg>
+                            Filters
+                        </button> */}
                         <button className='bg-[#ff8200] rounded-md text-white px-4 py-2'
                             onClick={() => {
                                 window.location.href = '/order';
@@ -293,15 +538,12 @@ export default function DashboardPage() {
                         </tr>
                     </thead>
                     <tbody className='text-[#344054] font-normal'>
-                        {orders
-                            .slice()
-                            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                            .map((order) => (
-                                <AdminOrderItem
-                                    key={order.id}
-                                    order={order}
-                                    onCheck={() => handleOrderCheck(order.id)} />
-                            ))}
+                        {orders.map((order) => (
+                            <AdminOrderItem
+                                key={order.id}
+                                order={order}
+                                onCheck={() => handleOrderCheck(order.id)} />
+                        ))}
                     </tbody>
                 </table>
                 {/* Pagination*/}
