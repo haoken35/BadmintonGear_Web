@@ -22,7 +22,7 @@ export default function AdminOrderItem({ order, customer }) {
     }, [order.id]);
 
     return (
-        <tr className='bg-(--surface) shadow-md border-b border-(--border) text-(--text2)'>
+        <tr className='bg-(--surface) shadow-md border-b border-(--border) text-(--text2) hover:bg-(--surface2)'>
             <td className='text-(--primary) font-semibold text-center'>#{order.id}</td>
             <td className='py-4 flex items-center '>
                 {
