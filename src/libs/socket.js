@@ -44,10 +44,8 @@ export const getSocket = () => {
     if (typeof window === 'undefined') return null;
 
     const token = localStorage.getItem("loginToken") || "";
-    // Don't attempt socket auth until we actually have a token
     if (!token) return null;
 
-    // If token changed (login/logout), recreate socket so auth updates without F5
     if (socket && lastAuthToken !== token) {
         try {
             socket.disconnect();
