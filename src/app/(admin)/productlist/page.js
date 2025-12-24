@@ -23,7 +23,7 @@ export default function Product() {
     const [tempMinPrice, setTempMinPrice] = useState('');
     const [tempMaxPrice, setTempMaxPrice] = useState('');
 
-     const fetchProducts = async () => {
+    const fetchProducts = async () => {
         try {
             const data = await getAllProducts();
             if (data) {
@@ -37,90 +37,90 @@ export default function Product() {
     }
 
     const handleExport = async () => {
-  if (!Array.isArray(products) || products.length === 0) return;
+        if (!Array.isArray(products) || products.length === 0) return;
 
-  const workbook = new ExcelJS.Workbook();
-  workbook.creator = "YourApp";
-  workbook.created = new Date();
+        const workbook = new ExcelJS.Workbook();
+        workbook.creator = "YourApp";
+        workbook.created = new Date();
 
-  const worksheet = workbook.addWorksheet("Product List", {
-    views: [{ state: "frozen", ySplit: 1 }],
-  });
-
-  worksheet.columns = [
-    { header: "ID", key: "id", width: 12 },
-    { header: "Brand", key: "brand", width: 16 },
-    { header: "Category", key: "category", width: 18 },
-    { header: "Stock", key: "stock", width: 10 },
-    { header: "Price", key: "price", width: 16 },
-    { header: "CreatedAt", key: "createdAt", width: 20 },
-    { header: "UpdatedAt", key: "updatedAt", width: 20 },
-  ];
-
-  // Header style
-  const headerRow = worksheet.getRow(1);
-  headerRow.height = 20;
-  headerRow.eachCell((cell) => {
-    cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
-    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1F4E79" } };
-    cell.alignment = { vertical: "middle", horizontal: "center" };
-    cell.border = {
-        top: { style: "thin" },
-        left: { style: "thin" },
-        bottom: { style: "thin" },
-        right: { style: "thin" },
-        };
-    });
-
-  // Add rows
-    products.forEach((item) => {
-    worksheet.addRow({
-        id: item?.id ?? "",
-        brand: item?.brand || "Unknown",
-        category: item?.Category?.name || "Unknown",
-        stock: Number(item?.quantity ?? 0),
-        price: Number(item?.price ?? 0), // keep as number
-        createdAt: item?.createdAt ? new Date(item.createdAt) : null,
-        updatedAt: item?.updatedAt ? new Date(item.updatedAt) : null,
+        const worksheet = workbook.addWorksheet("Product List", {
+            views: [{ state: "frozen", ySplit: 1 }],
         });
-    });
 
-  // Format rows
-    worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber === 1) return;
+        worksheet.columns = [
+            { header: "ID", key: "id", width: 12 },
+            { header: "Brand", key: "brand", width: 16 },
+            { header: "Category", key: "category", width: 18 },
+            { header: "Stock", key: "stock", width: 10 },
+            { header: "Price", key: "price", width: 16 },
+            { header: "CreatedAt", key: "createdAt", width: 20 },
+            { header: "UpdatedAt", key: "updatedAt", width: 20 },
+        ];
 
-    row.eachCell((cell) => {
-      cell.border = {
-        top: { style: "thin" },
-        left: { style: "thin" },
-        bottom: { style: "thin" },
-        right: { style: "thin" },
-      };
-      cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
-    });
+        // Header style
+        const headerRow = worksheet.getRow(1);
+        headerRow.height = 20;
+        headerRow.eachCell((cell) => {
+            cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+            cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1F4E79" } };
+            cell.alignment = { vertical: "middle", horizontal: "center" };
+            cell.border = {
+                top: { style: "thin" },
+                left: { style: "thin" },
+                bottom: { style: "thin" },
+                right: { style: "thin" },
+            };
+        });
 
-    // Stock center
-    row.getCell("stock").alignment = { vertical: "middle", horizontal: "center" };
+        // Add rows
+        products.forEach((item) => {
+            worksheet.addRow({
+                id: item?.id ?? "",
+                brand: item?.brand || "Unknown",
+                category: item?.Category?.name || "Unknown",
+                stock: Number(item?.quantity ?? 0),
+                price: Number(item?.price ?? 0), // keep as number
+                createdAt: item?.createdAt ? new Date(item.createdAt) : null,
+                updatedAt: item?.updatedAt ? new Date(item.updatedAt) : null,
+            });
+        });
 
-    // Price: VN currency format
-    const priceCell = row.getCell("price");
-    if (typeof priceCell.value === "number") {
-      priceCell.numFmt = '#,##0" ₫"';
-      priceCell.alignment = { vertical: "middle", horizontal: "right" };
-    }
+        // Format rows
+        worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber === 1) return;
 
-    // Date format
-    const createdCell = row.getCell("createdAt");
-        if (createdCell.value) createdCell.numFmt = "dd/mm/yyyy hh:mm:ss";
+            row.eachCell((cell) => {
+                cell.border = {
+                    top: { style: "thin" },
+                    left: { style: "thin" },
+                    bottom: { style: "thin" },
+                    right: { style: "thin" },
+                };
+                cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
+            });
 
-    const updatedCell = row.getCell("updatedAt");
-        if (updatedCell.value) updatedCell.numFmt = "dd/mm/yyyy hh:mm:ss";
-    });
+            // Stock center
+            row.getCell("stock").alignment = { vertical: "middle", horizontal: "center" };
 
-    // Export
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            // Price: VN currency format
+            const priceCell = row.getCell("price");
+            if (typeof priceCell.value === "number") {
+                priceCell.numFmt = '#,##0" ₫"';
+                priceCell.alignment = { vertical: "middle", horizontal: "right" };
+            }
+
+            // Date format
+            const createdCell = row.getCell("createdAt");
+            if (createdCell.value) createdCell.numFmt = "dd/mm/yyyy hh:mm:ss";
+
+            const updatedCell = row.getCell("updatedAt");
+            if (updatedCell.value) updatedCell.numFmt = "dd/mm/yyyy hh:mm:ss";
+        });
+
+        // Export
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
         saveAs(blob, "Product_List.xlsx");
     };
@@ -204,7 +204,7 @@ export default function Product() {
         const confirmDelete = window.confirm(`Are you sure you want to delete ${checkedProducts.length} product(s)?`);
         if (confirmDelete) {
             checkedProducts.forEach(product => handleDeleteProduct(product.id));
-            setIsCheck(false); 
+            setIsCheck(false);
             setIsAllChecked(false);
         }
     }
@@ -261,7 +261,7 @@ export default function Product() {
                 <div>
                     <h1 className='text-3xl font-bold'>Product</h1>
                     <div id="roadmap" className="flex items-center mt-2">
-                        <a className="text-[#ff8200]" href="/dashboard">Dashboard</a>
+                        <a className="text-(--primary)" href="/dashboard">Dashboard</a>
                         <label className="ml-3 mr-3">
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
@@ -271,13 +271,13 @@ export default function Product() {
                     </div>
                 </div>
                 <div className='flex gap-3'>
-                    <button className='bg-[#FBE3CA] text-[#ff8200] px-4 py-2 rounded-md flex gap-2 items-center 'onClick={handleExport}>
+                    <button className='bg-[#FBE3CA] text-(--primary) px-4 py-2 rounded-md flex gap-2 items-center ' onClick={handleExport}>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M13.0891 6.00582C12.7637 6.33126 12.236 6.33126 11.9106 6.00582L10.8332 4.92841V12.9166C10.8332 13.3768 10.4601 13.7499 9.99984 13.7499C9.5396 13.7499 9.1665 13.3768 9.1665 12.9166V4.92841L8.08909 6.00582C7.76366 6.33126 7.23602 6.33126 6.91058 6.00582C6.58514 5.68039 6.58514 5.15275 6.91058 4.82731L9.70521 2.03268C9.86793 1.86997 10.1317 1.86996 10.2945 2.03268L13.0891 4.82731C13.4145 5.15275 13.4145 5.68039 13.0891 6.00582Z" fill="#FF8200" />
                             <path d="M14.9998 7.08323C16.8408 7.08323 18.3332 8.57562 18.3332 10.4166V14.5832C18.3332 16.4242 16.8408 17.9166 14.9998 17.9166H4.99984C3.15889 17.9166 1.6665 16.4242 1.6665 14.5832V10.4166C1.6665 8.57562 3.15889 7.08323 4.99984 7.08323H6.6665C7.12674 7.08323 7.49984 7.45633 7.49984 7.91657C7.49984 8.37681 7.12674 8.7499 6.6665 8.7499H4.99984C4.07936 8.7499 3.33317 9.49609 3.33317 10.4166V14.5832C3.33317 15.5037 4.07936 16.2499 4.99984 16.2499H14.9998C15.9203 16.2499 16.6665 15.5037 16.6665 14.5832V10.4166C16.6665 9.49609 15.9203 8.7499 14.9998 8.7499H13.3332C12.8729 8.7499 12.4998 8.37681 12.4998 7.91657C12.4998 7.45633 12.8729 7.08323 13.3332 7.08323H14.9998Z" fill="#FF8200" />
                         </svg>
                         Export</button>
-                    <button className='bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center'
+                    <button className='bg-(--primary) text-white px-4 py-2 rounded-md flex gap-2 items-center'
                         onClick={() => window.location.href = '/addproduct'}>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.16667 15.4167C9.16667 15.8769 9.53976 16.25 10 16.25C10.4602 16.25 10.8333 15.8769 10.8333 15.4167V10.8333H15.4167C15.8769 10.8333 16.25 10.4602 16.25 10C16.25 9.53976 15.8769 9.16667 15.4167 9.16667H10.8333V4.58333C10.8333 4.1231 10.4602 3.75 10 3.75C9.53976 3.75 9.16667 4.1231 9.16667 4.58333V9.16667H4.58333C4.1231 9.16667 3.75 9.53976 3.75 10C3.75 10.4602 4.1231 10.8333 4.58333 10.8333H9.16667V15.4167Z" fill="white" />
@@ -285,7 +285,7 @@ export default function Product() {
                         Add Product
                     </button>
                     {isCheck && (
-                        <button className='bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center' onClick={handleDeleteChecked}>
+                        <button className='bg-(--primary) text-white px-4 py-2 rounded-md flex gap-2 items-center' onClick={handleDeleteChecked}>
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8.33317 8.12484C8.79341 8.12484 9.1665 8.49793 9.1665 8.95817V13.9582C9.1665 14.4184 8.79341 14.7915 8.33317 14.7915C7.87293 14.7915 7.49984 14.4184 7.49984 13.9582V8.95817C7.49984 8.49793 7.87293 8.12484 8.33317 8.12484Z" fill="#fff" />
                                 <path d="M12.4998 8.95817C12.4998 8.49793 12.1267 8.12484 11.6665 8.12484C11.2063 8.12484 10.8332 8.49793 10.8332 8.95817V13.9582C10.8332 14.4184 11.2063 14.7915 11.6665 14.7915C12.1267 14.7915 12.4998 14.4184 12.4998 13.9582V8.95817Z" fill="#fff" />
@@ -298,13 +298,13 @@ export default function Product() {
             </div>
 
             <div className='mt-5 flex justify-between items-center'>
-                <div className='flex gap-1 items-center bg-white rounded-md px-4 border border-[#E0E2E7]'>
+                <div className='flex gap-1 items-center bg-(--surface) rounded-md px-4 border border-(--border)'>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M14.7844 16.1991C11.646 18.6416 7.10629 18.4205 4.22156 15.5358C1.09737 12.4116 1.09737 7.34625 4.22156 4.22205C7.34576 1.09786 12.4111 1.09786 15.5353 4.22205C18.42 7.10677 18.6411 11.6464 16.1986 14.7849L20.4851 19.0713C20.8756 19.4618 20.8756 20.095 20.4851 20.4855C20.0945 20.876 19.4614 20.876 19.0708 20.4855L14.7844 16.1991ZM5.63578 14.1215C7.97892 16.4647 11.7779 16.4647 14.1211 14.1215C16.4642 11.7784 16.4642 7.97941 14.1211 5.63627C11.7779 3.29312 7.97892 3.29312 5.63578 5.63627C3.29263 7.97941 3.29263 11.7784 5.63578 14.1215Z" fill="#667085" />
                     </svg>
-                    <input type='text' placeholder='Search product...' className='px-2 py-2 outline-none' onChange={handleSearch} />
+                    <input type='text' placeholder='Search product...' className='px-2 py-2 text-(--text) outline-none' onChange={handleSearch} />
                 </div>
-                <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'
+                <button className='text-(--muted) border border-(--border) bg-(--surface) rounded-md px-4 py-2 flex items-center gap-2'
                     onClick={() => setShowFilter((prev) => !prev)}>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10.8333 6.66667C10.8333 7.1269 11.2064 7.5 11.6667 7.5C12.1269 7.5 12.5 7.1269 12.5 6.66667V5.83333H16.6667C17.1269 5.83333 17.5 5.46024 17.5 5C17.5 4.53976 17.1269 4.16667 16.6667 4.16667H12.5V3.33333C12.5 2.8731 12.1269 2.5 11.6667 2.5C11.2064 2.5 10.8333 2.8731 10.8333 3.33333V6.66667Z" fill="#667085" />
@@ -320,11 +320,11 @@ export default function Product() {
                 {showFilter && (
                     <div
                         ref={filterRef}
-                        className="absolute z-10 bg-white border border-[#E0E2E7] rounded-md shadow-md p-4 mt-2 right-10"
+                        className="absolute z-10 bg-(--surface) border border-(--border) rounded-md shadow-md p-4 mt-2 right-10"
                     >
                         <div className="flex flex-col gap-3 mb-2">
                             <div>
-                                <label className="block mb-1 text-sm font-medium text-gray-700">Brand</label>
+                                <label className="block mb-1 text-sm font-medium text-(--text)">Brand</label>
                                 <select
                                     value={filterBrand}
                                     onChange={e => setFilterBrand(e.target.value)}
@@ -338,7 +338,7 @@ export default function Product() {
                             </div>
                             <hr></hr>
                             <div >
-                                <label className="block mb-1 text-sm font-medium text-gray-700">Price Range</label>
+                                <label className="block mb-1 text-sm font-medium text-(--text)">Price Range</label>
                                 <div className="flex flex-col items-center gap-2">
                                     <div className='grid grid-cols-3 w-full gap-2 items-center'>
                                         <span className="text-sm">From:</span>
@@ -374,7 +374,7 @@ export default function Product() {
                             </div>
                             <hr></hr>
                             <div>
-                                <label className="block mb-1 text-sm font-medium text-gray-700">Category</label>
+                                <label className="block mb-1 text-sm font-medium text-(--text)">Category</label>
                                 <select
                                     value={filterCategory}
                                     onChange={e => setFilterCategory(e.target.value)}
@@ -389,7 +389,7 @@ export default function Product() {
                         </div>
                         <div className="flex gap-2 justify-end">
                             <button
-                                className="bg-gray-200 text-gray-700 px-3 py-1 rounded"
+                                className="bg-(--surface2) text-(--text) px-3 py-1 rounded"
                                 onClick={() => {
                                     setFilterBrand('');
                                     setFilterCategory('');
@@ -404,17 +404,17 @@ export default function Product() {
                         </div>
                     </div>
                 )}
-                
+
             </div>
 
-            <div className=' shadow-md rounded-md border border-[#E0E2E7] mt-5'>
+            <div className=' shadow-md rounded-md border border-(--border) mt-5'>
                 <table className='w-full py-2 rounded-md overflow-hidden '>
-                    <thead className='bg-[#F9F9FC] font-medium border-b border-[#F0F1F3]'>
-                        <tr className='text-center text-[#344054] font-semibold rounded-md'>
+                    <thead className='bg-(--surface2) font-medium border-b border-(--border)'>
+                        <tr className='text-center text-(--text) font-semibold rounded-md'>
                             <th>
                                 <input
                                     type='checkbox'
-                                    className='w-5 h-5 accent-[#ff8200] ml-5 my-4'
+                                    className='w-5 h-5 accent-(--primary) ml-5 my-4'
                                     checked={isAllChecked}
                                     onChange={handleSelectAll}
                                 />
@@ -432,7 +432,7 @@ export default function Product() {
 
                         </tr>
                     </thead>
-                    <tbody className='text-[#344054] font-normal text-center'>
+                    <tbody className='font-normal text-center'>
                         {displayProducts.map((product) => (
                             <AdminProductItem
                                 key={product.id}
