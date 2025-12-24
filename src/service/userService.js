@@ -74,6 +74,25 @@ const changePassword = async(passwordData) => {
             return res.text();
         });
 }
+
+
+const forgotPassword = async (email) =>{
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/forgotpass`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(email),
+    });
+    if (!res.ok) {
+        console.log("Failed to update user data");
+    }
+    else {
+        alert("Password reset link sent to your email");
+    }
+    return res.text();
+}
+
 const uploadAvatar = async (formData) => {
     const token = localStorage.getItem("loginToken");
     return fetch(`${process.env.NEXT_PUBLIC_API_URL}/imguser`, {
@@ -133,4 +152,4 @@ const getAllUsersByRoleId = async (roleid) => {
 };
 
 
-export { getUserById, createUser, getAllUsers, updateUser, changePassword, getAllUsersByRoleId, uploadAvatar, changeAvatar };
+export { getUserById, createUser, getAllUsers, updateUser, changePassword, getAllUsersByRoleId, uploadAvatar, changeAvatar, forgotPassword };

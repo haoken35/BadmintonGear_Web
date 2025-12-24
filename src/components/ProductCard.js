@@ -52,20 +52,8 @@ export const ProductCard = ({ product }) => {
     };
 
     useEffect(() => {
-        // const fetchProduct = async () => {
-        //     const res = await getProductById(product.productid);
-        //     if (res) {
-        //         product.name = res.name;
-        //         product.Imagesproducts = res.Imagesproducts;
-        //         product.price = res.price;
-        //         product.discount = res.discount;
-        //         product.id = res.id;
-        //     }
-        // }
-        // if (product.totalSold) {
-        //     fetchProduct();
-        // }
         fetchReview();
+        console.log("ProductCard mounted with product:", product);
     }, [])
 
     return (

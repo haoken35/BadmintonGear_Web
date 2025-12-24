@@ -65,8 +65,16 @@ export default function Product() {
         const uniqueBrands = [...new Set(products.map(p => p.brand).filter(Boolean))];
         setBrands(uniqueBrands);
         const prices = products.map(p => Number(p.price)).filter(p => !isNaN(p));
-        setMin(prices.length > 0 ? Math.min(...prices) : 0);
-        setMax(prices.length > 0 ? Math.max(...prices) : 10000000);
+        const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
+        const maxPrice = prices.length > 0 ? Math.max(...prices) : 10000000;
+        setMin(minPrice);
+        setMax(maxPrice);
+        setFilterPrice(fp => ({
+            min: minPrice,
+            max: maxPrice
+        }));
+        setTempMinPrice(minPrice);
+        setTempMaxPrice(maxPrice);
     }, [products]);
 
     const handleSearch = (e) => {

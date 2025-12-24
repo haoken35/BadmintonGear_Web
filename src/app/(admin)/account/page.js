@@ -340,7 +340,7 @@ export default function Account() {
                                 value={confirmPassword}
                                 onChange={e => setConfirmPassword(e.target.value)}
                             />
-                            <div className='text-sm text-red'>{error}</div>
+                            <div className='w-full text-left mt-5 text-sm text-red-500'>{error}</div>
                         </div>
                         <div className='flex justify-end gap-5 items-center mt-5 mr-5'>
                             <button className='px-4 py-2 rounded-xs cursor-pointer' onClick={handleCancel}>Cancel</button>

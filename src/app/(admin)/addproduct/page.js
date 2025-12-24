@@ -15,11 +15,13 @@ export default function AddProduct() {
     const [selectedCategory, setSelectedCategory] = useState("0");
     const [category, setCategory] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
+    const [imageFiles, setImageFiles] = useState([]); // Lưu file gốc
     const [isDragging, setIsDragging] = useState(false);
 
-    // Xử lý upload ảnh
+    // Xử lý upload ảnh từ input
     const handleImageUpload = (event) => {
         const files = Array.from(event.target.files);
+        setImageFiles(prev => [...prev, ...files]);
         const newPreviews = files.map((file) => {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -42,6 +44,7 @@ export default function AddProduct() {
         event.preventDefault();
         setIsDragging(false);
         const files = Array.from(event.dataTransfer.files);
+        setImageFiles(prev => [...prev, ...files]);
         const newPreviews = files.map((file) => {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -57,6 +60,7 @@ export default function AddProduct() {
 
     const removeImage = (index) => {
         setImagePreviews((prev) => prev.filter((_, i) => i !== index)); 
+        setImageFiles((prev) => prev.filter((_, i) => i !== index));
     };
 
     useEffect(() => {
@@ -92,7 +96,7 @@ export default function AddProduct() {
             alert("Please fill in all fields.");
             return;
         }
-        if (imagePreviews.length === 0) {
+        if (imageFiles.length === 0) {
             alert("Please add at least one image.");
             return;
         }
@@ -109,10 +113,9 @@ export default function AddProduct() {
         try {
             const response = await addProduct(inputProduct);
             if (response) {
-                // Lấy file thực tế từ input
-                const files = document.getElementById('upload-image').files;
-                for (let i = 0; i < files.length; i++) {
-                    await handleUpload(files[i], response.id);
+                // Upload tất cả file gốc đã lưu
+                for (let i = 0; i < imageFiles.length; i++) {
+                    await handleUpload(imageFiles[i], response.id);
                 }
                 window.location.href = "/admin/productlist";
             }
