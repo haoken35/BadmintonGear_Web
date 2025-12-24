@@ -376,7 +376,7 @@ export default function DashboardPage() {
                         </div>
                     </div>
                 </div> */}
-                <div className='bg-(--surface) rounded-md shadow-md p-5 w-6/25 cursor-pointer hover:bg-gray-100' onClick={() => window.location.href = "/admin/report?type=cost"}>
+                <div className='bg-(--surface) rounded-md shadow-md p-5 w-6/25 cursor-pointer'>
                     <div className='flex justify-between items-center rounded-full bg-[#FDF1E8] p-1 w-fit'>
                         <div className='flex items-center justify-center rounded-full bg-[#FAE1CF] p-2'>
                             <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
