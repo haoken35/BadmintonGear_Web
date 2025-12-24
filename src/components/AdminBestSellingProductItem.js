@@ -3,32 +3,25 @@ import Image from "next/image";
 import { getProductById } from '@/service/productService';
 
 export default function BestSellingProductItem(product) {
-    const [currentPrice, setCurrentPrice] = useState(0);
+    console.log('product', product);
     const [pro, setPro] = useState(product);
-
-    useEffect(() => {
-        const fetchProduct = async () => {
-            const productData = await getProductById(product.productid);
-            setCurrentPrice(productData.price);
-            setPro(productData);
-        };
-        fetchProduct();
-    }, [product.productid]);
+    const currentPrice = product.price
 
     return (
-        <tr className='bg-white shadow-md border-b border-[#F0F1F3]'>
+        <tr className='bg-(--surface) hover:bg-(--surface2) shadow-md border-b border-(--border) tex-(--muted)'>
             <td>
                 <div className='flex gap-2 items-center py-4 px-2'>
                     <Image src={pro.ImagesProducts && pro.ImagesProducts[0] ? pro.ImagesProducts[0].url : "/images/unimage.png"} alt="product" height={50} width={50} className="rounded-md" />
-                    <div>{product.Product?.name}</div>
+                    <div className='font-medium text-(--text)'>{pro.translations?.[0]?.name}</div>
                 </div>
             </td>
-            <td>{product.totalSold}</td>
+            <td className='text-(--text2) text-center'>{pro.brand}</td>
+            <td className='text-(--text2) text-center'>{pro.totalSold}</td>
             <td>
-                <div className='flex gap-4 items-center'>
-                     <div>{Number(currentPrice).toLocaleString()} VND</div>
-                    {product.Product?.discount > 0 && (
-                        <div className='line-through rounded-lg  text-gray-500 text-sm'>{Number(product.Product.price).toLocaleString()} VND</div>
+                <div className='flex gap-4 items-center text-(--text2) text-center'>
+                    <div>{Number(currentPrice).toLocaleString()} VND</div>
+                    {pro.Product?.discount > 0 && (
+                        <div className='line-through rounded-lg  text-gray-500 text-sm'>{Number(pro.Product.price).toLocaleString()} VND</div>
                     )}
                 </div>
             </td>
@@ -39,7 +32,7 @@ export default function BestSellingProductItem(product) {
                     </div>
                 )}
                 {pro.quantity > 0 && pro.quantity <= 20 && (
-                    <div className='w-fit px-2 py-1 font-medium text-[#ff8200] bg-[#FDF1E8] rounded-full'>
+                    <div className='w-fit px-2 py-1 font-medium text-(--primary) bg-(--primary)/30 rounded-full'>
                         Low stock
                     </div>
                 )}

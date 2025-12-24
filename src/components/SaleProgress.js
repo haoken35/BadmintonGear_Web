@@ -73,11 +73,11 @@ export default function SaleProgress() {
     }, [revenue]);
 
     return (
-        <div className="bg-white rounded-md p-4 shadow-md w-full max-w-sm h-full">
+        <div className="bg-(--surface) rounded-md p-4 shadow-md w-full max-w-sm h-full">
             <div className="flex justify-between items-start">
                 <div>
-                    <h3 className="text-md font-semibold text-gray-700">Sales Progress</h3>
-                    <p className="text-sm text-[#667085]">This Month</p>
+                    <h3 className="text-md font-semibold text-(--text2)">Sales Progress</h3>
+                    <p className="text-sm text-(--muted)">This Month</p>
                 </div>
                 {/* <button className="text-gray-400 text-xl font-bold">⋮</button> */}
             </div>
@@ -91,13 +91,13 @@ export default function SaleProgress() {
                         circleRatio={0.5}
                         styles={buildStyles({
                             rotation: 0.75, // start from left
-                            pathColor: "#f97316",
+                            pathColor: "var(--primary)",
                             trailColor: "#f3f4f6",
                             strokeLinecap: "round",
                         })}
                     >
                         <div className="-mt-9 text-center">
-                            <div className="text-2xl font-semibold text-gray-800">{percentage}%</div>
+                            <div className="text-2xl font-semibold text-(--text2)">{percentage}%</div>
                             <div className={`text-xs  rounded-full px-2 py-0.5 mt-1 ${todayPercentage > 0 ? "bg-green-100 text-green-600" :
                                 (todayPercentage < 0 ? "bg-red-100 text-red-600" : "bg-gray-100 text-gray-600")}`}>
                                 {todayPercentage > 0 ? "+" : (todayPercentage < 0 ? "-" : "")}{todayPercentage}%
@@ -107,21 +107,21 @@ export default function SaleProgress() {
                 </div>
             </div>
 
-            <p className="text-center text-sm text-gray-500">
-                You succeed earn <span className="font-semibold text-gray-800">{Number(revenueToday).toLocaleString()} VND</span> today
+            <p className="text-center text-sm text-(--text2)">
+                You succeed earn <span className="font-semibold text-(--text2)">{Number(revenueToday).toLocaleString()} VND</span> today
             </p>
 
-            <div className="flex justify-between mt-4 text-center text-sm text-gray-700">
+            <div className="flex justify-between mt-4 text-center text-sm text-(--text2)">
                 <div className="flex-1 justify-center">
-                    <div className="text-[#667085]">Target </div>
+                    <div className="text-(--muted)">Target </div>
                     <div className="font-semibold text-xl">{Number(target / 1000000).toLocaleString()}M VND </div>
                 </div>
                 <div className="flex-1 justify-center">
-                    <div className="text-[#667085]">Revenue</div>
+                    <div className="text-(--muted)">Revenue</div>
                     <div className="font-semibold text-lg">{Number(revenue / 1000000).toLocaleString()}M VND </div>
                 </div>
                 <div className="flex-1 justify-center">
-                    <div className="text-[#667085]">Today</div>
+                    <div className="text-(--muted)">Today</div>
                     <div className="font-semibold text-lg">{Number(revenueToday).toLocaleString()} VND</div>
                 </div>
             </div>

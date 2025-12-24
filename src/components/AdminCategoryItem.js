@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function AdminCategoryItem({ category, onCheck, onDelete }) {
     return (
         <tr className='bg-white shadow-md border-b border-[#F0F1F3]'>
-                    <td>
+            <td>
                 <input
                     type='checkbox'
                     className='w-5 h-5 accent-[#ff8200] ml-5'

@@ -82,9 +82,9 @@ export default function RevenueChart() {
 
 
     return (
-        <div className="bg-white rounded-md p-6 shadow-md">
-            <h2 className="text-lg font-semibold text-gray-800">Statistics</h2>
-            <p className="text-sm text-[#667085] mb-4">Revenue and Sales</p>
+        <div className="bg-(--surface) rounded-md p-6 shadow-md">
+            <h2 className="text-lg font-semibold text-(--text2)">Statistics</h2>
+            <p className="text-sm text-(--muted) mb-4">Revenue and Sales</p>
             <div className="w-full h-76">
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
@@ -94,12 +94,12 @@ export default function RevenueChart() {
                                 <stop offset="95%" stopColor="#22c55e" stopOpacity={0.05} />
                             </linearGradient>
                             <linearGradient id="colorSale" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#ff8200" stopOpacity={0.4} />
-                                <stop offset="95%" stopColor="#ff8200" stopOpacity={0.05} />
+                                <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.4} />
+                                <stop offset="95%" stopColor="var(--primary)" stopOpacity={0.05} />
                             </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" tick={{ fontSize: 13, fontWeight: 500 }}/>
+                        <XAxis dataKey="name" tick={{ fontSize: 13, fontWeight: 500 }} />
                         <YAxis
                             tickFormatter={(value) => `${value / 1000000}M `}
                             tick={{ fontSize: 13, fontWeight: 500 }}
@@ -118,7 +118,7 @@ export default function RevenueChart() {
                         <Area
                             type="monotone"
                             dataKey="Cost"
-                            stroke="#ff8200"
+                            stroke="var(--primary)"
                             fillOpacity={1}
                             fill="url(#colorSale)"
                         />

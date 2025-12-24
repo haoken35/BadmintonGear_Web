@@ -232,56 +232,55 @@ export default function DashboardPage() {
     return (
         <div className='font-inter'>
             <div className='flex justify-between'>
-                <div className='text-[#667085] border border-[#E0E2E7] rounded-md p-1 flex items-center gap-2'>
+                <div className='text-(--text2) border border-(--border) rounded-md p-1 flex items-center gap-2'>
                     <label>
                         <input type="radio" name="option" value="all-times" className="hidden peer"
                             checked={selectedOption === 'all-times'}
                             onChange={() => setSelectedOption('all-times')} />
-                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">All Times</span>
+                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-(--primary) peer-checked:text-white">All Times</span>
                     </label>
 
                     <label>
                         <input type="radio" name="option" value="12-months" className="hidden peer"
                             checked={selectedOption === '12-months'}
                             onChange={() => setSelectedOption('12-months')} />
-                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">12 months</span>
+                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-(--primary) peer-checked:text-white">12 months</span>
                     </label>
 
                     <label>
-                         <input type="radio" name="option" value="30-days" className="hidden peer"
+                        <input type="radio" name="option" value="30-days" className="hidden peer"
                             checked={selectedOption === '30-days'}
                             onChange={() => setSelectedOption('30-days')} />
-                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">30 days</span>
+                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-(--primary) peer-checked:text-white">30 days</span>
                     </label>
 
                     <label>
                         <input type="radio" name="option" value="7-days" className="hidden peer"
                             checked={selectedOption === '7-days'}
                             onChange={() => setSelectedOption('7-days')} />
-                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">7 days</span>
+                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-(--primary) peer-checked:text-white">7 days</span>
                     </label>
 
                     <label>
                         <input type="radio" name="option" value="24-hours" className="hidden peer"
                             checked={selectedOption === '24-hours'}
                             onChange={() => setSelectedOption('24-hours')} />
-                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-[#ff8200] peer-checked:text-white">24 hours</span>
+                        <span className="px-4 py-2 rounded-md cursor-pointer peer-checked:bg-(--primary) peer-checked:text-white">24 hours</span>
                     </label>
                 </div>
                 <div className='flex gap-3'>
                     <button
-                        className='text-[#667085] border border-[#E0E2E7] rounded-md px-4 py-2 flex items-center gap-2'
+                        className='text-(--muted) border border-(--border) rounded-md px-4 py-2 flex items-center gap-2'
                         onClick={() => setShowDateDialog(true)}
                     >
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fillRule="evenodd" clipRule="evenodd" d="M7.5 2.49984C7.5 2.0396 7.1269 1.6665 6.66667 1.6665C6.20643 1.6665 5.83333 2.0396 5.83333 2.49984H5C3.61929 2.49984 2.5 3.61913 2.5 4.99984V15.8332C2.5 17.2139 3.61929 18.3332 5 18.3332H15C16.3807 18.3332 17.5 17.2139 17.5 15.8332V4.99984C17.5 3.61913 16.3807 2.49984 15 2.49984H14.1667C14.1667 2.0396 13.7936 1.6665 13.3333 1.6665C12.8731 1.6665 12.5 2.0396 12.5 2.49984H7.5ZM15.8333 5.83317V4.99984C15.8333 4.5396 15.4602 4.1665 15 4.1665H14.1667C14.1667 4.62674 13.7936 4.99984 13.3333 4.99984C12.8731 4.99984 12.5 4.62674 12.5 4.1665H7.5C7.5 4.62674 7.1269 4.99984 6.66667 4.99984C6.20643 4.99984 5.83333 4.62674 5.83333 4.1665H5C4.53976 4.1665 4.16667 4.5396 4.16667 4.99984V5.83317H15.8333ZM4.16667 7.49984V15.8332C4.16667 16.2934 4.53976 16.6665 5 16.6665H15C15.4602 16.6665 15.8333 16.2934 15.8333 15.8332V7.49984H4.16667Z" fill="#667085" />
+                            <path fillRule="evenodd" clipRule="evenodd" d="M7.5 2.49984C7.5 2.0396 7.1269 1.6665 6.66667 1.6665C6.20643 1.6665 5.83333 2.0396 5.83333 2.49984H5C3.61929 2.49984 2.5 3.61913 2.5 4.99984V15.8332C2.5 17.2139 3.61929 18.3332 5 18.3332H15C16.3807 18.3332 17.5 17.2139 17.5 15.8332V4.99984C17.5 3.61913 16.3807 2.49984 15 2.49984H14.1667C14.1667 2.0396 13.7936 1.6665 13.3333 1.6665C12.8731 1.6665 12.5 2.0396 12.5 2.49984H7.5ZM15.8333 5.83317V4.99984C15.8333 4.5396 15.4602 4.1665 15 4.1665H14.1667C14.1667 4.62674 13.7936 4.99984 13.3333 4.99984C12.8731 4.99984 12.5 4.62674 12.5 4.1665H7.5C7.5 4.62674 7.1269 4.99984 6.66667 4.99984C6.20643 4.99984 5.83333 4.62674 5.83333 4.1665H5C4.53976 4.1665 4.16667 4.5396 4.16667 4.99984V5.83317H15.8333ZM4.16667 7.49984V15.8332C4.16667 16.2934 4.53976 16.6665 5 16.6665H15C15.4602 16.6665 15.8333 16.2934 15.8333 15.8332V7.49984H4.16667Z" fill="var(--muted)" />
                         </svg>
                         Select Dates
                     </button>
-                    {/* <button className='bg-[#FBE3CA] text-[#FF8200] rounded-md px-4 py-2 flex items-center gap-2'>
+                    {/* <button className='bg-[#FBE3CA] text-(--primary) rounded-md px-4 py-2 flex items-center gap-2'>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M13.0891 6.00582C12.7637 6.33126 12.236 6.33126 11.9106 6.00582L10.8332 4.92841V12.9166C10.8332 13.3768 10.4601 13.7499 9.99984 13.7499C9.5396 13.7499 9.1665 13.3768 9.1665 12.9166V4.92841L8.08909 6.00582C7.76366 6.33126 7.23602 6.33126 6.91058 6.00582C6.58514 5.68039 6.58514 5.15275 6.91058 4.82731L9.70521 2.03268C9.86793 1.86997 10.1317 1.86996 10.2945 2.03268L13.0891 4.82731C13.4145 5.15275 13.4145 5.68039 13.0891 6.00582Z" fill="#FF8200" />
-                            <path d="M14.9998 7.08323C16.8408 7.08323 18.3332 8.57562 18.3332 10.4166V14.5832C18.3332 16.4242 16.8408 17.9166 14.9998 17.9166H4.99984C3.15889 17.9166 1.6665 16.4242 1.6665 14.5832V10.4166C1.6665 8.57562 3.15889 7.08323 4.99984 7.08323H6.6665C7.12674 7.08323 7.49984 7.45633 7.49984 7.91657C7.49984 8.37681 7.12674 8.7499 6.6665 8.7499H4.99984C4.07936 8.7499 3.33317 9.49609 3.33317 10.4166V14.5832C3.33317 15.5037 4.07936 16.2499 4.99984 16.2499H14.9998C15.9203 16.2499 16.6665 15.5037 16.6665 14.5832V10.4166C16.6665 9.49609 15.9203 8.7499 14.9998 8.7499H13.3332C12.8729 8.7499 12.4998 8.37681 12.4998 7.91657C12.4998 7.45633 12.8729 7.08323 13.3332 7.08323H14.9998Z" fill="#FF8200" />
                         </svg>
                         Export
                     </button> */}
@@ -289,7 +288,7 @@ export default function DashboardPage() {
             </div>
             {showDateDialog && (
                 <div ref={dialogRef}
-                    className="w-fit absolute mt-2 right-10 bg-white rounded-lg shadow-lg p-6 min-w-[320px]" onMouseDown={e => e.stopPropagation()}>
+                    className="w-fit absolute mt-2 right-10 bg-(--surface) rounded-lg shadow-lg p-6 min-w-[320px]" onMouseDown={e => e.stopPropagation()}>
                     <div className="flex flex-col gap-4">
                         <div className="flex justify-between items-center">
                             <label>From</label>
@@ -300,8 +299,8 @@ export default function DashboardPage() {
                             <input type="date" name="to" value={dateRange.to} onChange={handleDateChange} className="border rounded px-2 py-1" />
                         </div>
                         <div className="flex gap-2 justify-end">
-                            <button className="px-4 py-2 bg-gray-200 rounded" onClick={() => setShowDateDialog(false)}>Close</button>
-                            <button className="px-4 py-2 bg-[#ff8200] text-white rounded"
+                            <button className="px-4 py-2 bg-gray-200 text-gray-600 rounded" onClick={() => setShowDateDialog(false)}>Close</button>
+                            <button className="px-4 py-2 bg-(--primary) text-white rounded"
                                 onClick={() => setShowDateDialog(false)}>
                                 Apply
                             </button>
@@ -314,7 +313,7 @@ export default function DashboardPage() {
                 </div>
             )}
             <div className='flex justify-between mt-10'>
-                <div className='bg-white rounded-md shadow-md p-5 w-6/25'>
+                <div className='bg-(--surface) rounded-md shadow-md p-5 w-6/25'>
                     <div className='flex justify-between items-center rounded-full bg-[#EFEFFD] p-1 w-fit'>
                         <div className='flex items-center justify-center rounded-full bg-[#DEDEFA] p-2'>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -324,7 +323,7 @@ export default function DashboardPage() {
                         </div>
                     </div>
                     <div className='flex flex-col mt-5 gap-2'>
-                        <label className='text-[#667085]'>Profit</label>
+                        <label className='text-(--text2)'>Profit</label>
                         <div className='flex items-center gap-2'>
                             <label className='text-2xl font-semibold'>{Number(profit).toLocaleString()} VND</label>
                             <div className={`py-1 px-2 rounded-2xl ${profitRatio > 0 ? "bg-[#E7F4EE] text-[#0D894F]"
@@ -333,7 +332,7 @@ export default function DashboardPage() {
                         </div>
                     </div>
                 </div>
-                <div className='bg-white rounded-md shadow-md p-5 w-6/25'>
+                <div className='bg-(--surface) rounded-md shadow-md p-5 w-6/25'>
                     <div className='flex justify-between items-center rounded-full bg-[#E7F4EE] p-1 w-fit'>
                         <div className='flex items-center justify-center rounded-full bg-[#CFE7DC] p-2'>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -345,12 +344,12 @@ export default function DashboardPage() {
                         </div>
                     </div>
                     <div className='flex flex-col mt-5 gap-2'>
-                        <label className='text-[#667085]'>Total Revenue</label>
+                        <label className='text-(--text2)'>Total Revenue</label>
                         <div className='flex items-center gap-2'>
                             <label className='text-2xl font-semibold'>{Number(revenue).toLocaleString()} VND</label>
                             <div className={`py-1 px-2 rounded-2xl ${revenueRatio > 0 ? "bg-[#E7F4EE] text-[#0D894F]"
                                 : (revenueRatio == 0 ? "bg-[#F0F1F3] text-[#667085]"
-                                    : "bg-[#FEEDEC] text-[#F04438]")}`}>{revenueRatio > 0 ? "+" : ""}{revenueRatio}%</div>  
+                                    : "bg-[#FEEDEC] text-[#F04438]")}`}>{revenueRatio > 0 ? "+" : ""}{revenueRatio}%</div>
                         </div>
                     </div>
                 </div>
@@ -377,7 +376,7 @@ export default function DashboardPage() {
                         </div>
                     </div>
                 </div> */}
-                <div className='bg-white rounded-md shadow-md p-5 w-6/25 cursor-pointer hover:bg-gray-100' onClick={() => window.location.href = "/admin/report?type=cost"}>
+                <div className='bg-(--surface) rounded-md shadow-md p-5 w-6/25 cursor-pointer hover:bg-gray-100' onClick={() => window.location.href = "/admin/report?type=cost"}>
                     <div className='flex justify-between items-center rounded-full bg-[#FDF1E8] p-1 w-fit'>
                         <div className='flex items-center justify-center rounded-full bg-[#FAE1CF] p-2'>
                             <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -388,7 +387,7 @@ export default function DashboardPage() {
                         </div>
                     </div>
                     <div className='flex flex-col mt-5 gap-2'>
-                        <label className='text-[#667085]'>Cost  </label>
+                        <label className='text-(--text2)'>Cost  </label>
                         <div className='flex items-center gap-2'>
                             <label className='text-2xl font-semibold'>{Number(cost).toLocaleString()} VND</label>
                             <div className={`py-1 px-2 rounded-2xl ${costRatio > 0 ? "bg-[#E7F4EE] text-[#0D894F]"
@@ -410,7 +409,7 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            <div className='mt-5 shadow-md bg-white rounded-md py-5'>
+            <div className='mt-5 shadow-md bg-(--surface) rounded-md py-5'>
                 <div className='flex w-full justify-between items-center px-5'>
                     <div className='text-lg font-semibold'>Top Selling Product</div>
                     {/* <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'>
@@ -426,12 +425,13 @@ export default function DashboardPage() {
                     </button> */}
                 </div>
                 <table className='w-full mt-5'>
-                    <thead className='bg-[#F9FAFB] font-medium'>
-                        <tr className='text-left bg-[#F9F9FC] font-semibold border-b border-[#E0E2E7]'>
+                    <thead className='bg-(--surface2) font-medium'>
+                        <tr className='text-left bg-(--surface2) font-semibold border-b border-(--border)'>
                             <th className='py-4 px-4'>Product</th>
-                            <th className='py-2 px-4'>Quantity</th>
-                            <th className='py-2 px-4'>Price</th>
-                            <th className='py-2 px-4'>Status</th>
+                            <th className='py-4 px-4 text-center'>Brand</th>
+                            <th className='py-2 px-4 text-center'>Quantity</th>
+                            <th className='py-2 px-4 text-center'>Price</th>
+                            <th className='py-2 px-4 text-center'>Status</th>
                         </tr>
                     </thead>
                     <tbody className='text-[#344054] font-normal'>
@@ -444,7 +444,7 @@ export default function DashboardPage() {
             </div>
 
 
-            <div className='mt-5 shadow-md bg-white rounded-md py-5'>
+            {/* <div className='mt-5 shadow-md bg-(--surface) rounded-md py-5'>
                 <div className='flex w-full justify-between items-center px-5'>
                     <div className='text-lg font-semibold'>Low And Out Of Stock Products</div>
                     <div className='flex gap-5'>
@@ -459,19 +459,19 @@ export default function DashboardPage() {
                             </svg>
                             Filters
                         </button> */}
-                        <button className='bg-[#ff8200] rounded-md text-white px-4 py-2'
+            {/* <button className='bg-(--primary) rounded-md text-white px-4 py-2'
                             onClick={() => {
                                 window.location.href = '/admin/productlist';
                             }}>View All</button>
                     </div>
 
-                </div>
-                <table className='w-full py-2 rounded-md overflow-hidden mt-5'>
-                    <thead className='bg-[#F9F9FC] font-medium border-b border-[#F0F1F3]'>
-                        <tr className='text-center text-[#344054] font-semibold rounded-md'>
-                            <th className='py-2 px-4'>Product</th>
-                            {/* <th className='py-2 px-4'>SKU</th> */}
-                            <th className='py-2 px-4'>Brand</th>
+                </div> */}
+            {/* <table className='w-full py-2 rounded-md overflow-hidden mt-5'>
+                    <thead className='bg-(--surface2) font-medium border-b border-(--border)'>
+                        <tr className='text-center text-(--text) font-semibold rounded-md'>
+                            <th className='py-2 px-4'>Product</th> */}
+            {/* <th className='py-2 px-4'>SKU</th> */}
+            {/* <th className='py-2 px-4'>Brand</th>
                             <th className='py-2 px-4'>Category</th>
                             <th className='py-2 px-4'>Stock</th>
                             <th className='py-2 px-4'>Price</th>
@@ -480,12 +480,12 @@ export default function DashboardPage() {
                             <th className='py-2 px-4'>Action</th>
                         </tr>
                     </thead>
-                    <tbody className='text-[#344054] font-normal text-center'>
+                    <tbody className='text-(--text2) font-normal text-center'>
                         {lowAndOutOfStockProducts.map((product) => (
                             <AdminProductItem
                                 key={product.id}
                                 product={product}
-                                low = {true}
+                                low={true}
                             />
                         ))}
                         {
@@ -499,10 +499,10 @@ export default function DashboardPage() {
                         }
                     </tbody>
 
-                </table>
-                {/* Pagination*/}
-            </div>
-            <div className='mt-5 shadow-md bg-white rounded-md py-5'>
+                </table> */}
+            {/* Pagination*/}
+            {/* </div> */}
+            <div className='mt-5 shadow-md bg-(--surface) rounded-md py-5'>
                 <div className='flex w-full justify-between items-center px-5'>
                     <div className='text-lg font-semibold'>Recent Orders</div>
                     <div className='flex gap-5'>
@@ -517,7 +517,7 @@ export default function DashboardPage() {
                             </svg>
                             Filters
                         </button> */}
-                        <button className='bg-[#ff8200] rounded-md text-white px-4 py-2'
+                        <button className='bg-(--primary) rounded-md text-white px-4 py-2'
                             onClick={() => {
                                 window.location.href = '/order';
                             }}>See more</button>
@@ -525,8 +525,8 @@ export default function DashboardPage() {
 
                 </div>
                 <table className='w-full mt-5'>
-                    <thead className='bg-[#F9FAFB] font-medium'>
-                        <tr className='text-left bg-[#F9F9FC] font-semibold border-b border-[#E0E2E7]'>
+                    <thead className='bg-(--surface2) font-medium'>
+                        <tr className='text-left bg-(--surface2) font-semibold border-b border-(--border)'>
                             <th className='py-2 px-4'>OrderID</th>
                             <th className='py-2 px-4'>Product</th>
                             <th className='py-2 px-4'>Date</th>

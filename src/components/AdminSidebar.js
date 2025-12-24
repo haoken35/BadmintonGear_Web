@@ -12,7 +12,7 @@ export default function Sidebar() {
     };
 
     return (
-        <aside className=" bg-white min-h-screen p-5 fixed left-0 top-0 z-52 ">
+        <aside className=" bg-(--bg) min-h-screen p-5 fixed left-0 top-0 z-52 ">
             <div className="flex items-center gap-2 mb-10 cursor-pointer" id="logo" onClick={() => window.location.href = "/dashboard"}>
                 <Image src={"/images/logo.ico"} alt="logo" width={40} height={40} />
                 <h1 className="text-2xl font-bold"
@@ -21,8 +21,8 @@ export default function Sidebar() {
             <nav className="flex flex-col gap-4 text-lg ">
                 <a
                     href="/dashboard"
-                    className={`flex gap-2 py-2 px-2 ${pathname === "/dashboard" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
-                        } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md`}
+                    className={`flex gap-2 py-2 px-2 ${pathname === "/dashboard" ? "bg-(--primary) rounded-md text-white" : "text-gray-600"
+                        } hover:bg-(--primary)/30 hover:text-white transition duration-300 rounded-md`}
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M3 5.5C3 4.11929 4.11929 3 5.5 3H8.5C9.88071 3 11 4.11929 11 5.5V8.5C11 9.88071 9.88071 11 8.5 11H5.5C4.11929 11 3 9.88071 3 8.5V5.5ZM5.5 5H8.5C8.77614 5 9 5.22386 9 5.5V8.5C9 8.77614 8.77614 9 8.5 9H5.5C5.22386 9 5 8.77614 5 8.5V5.5C5 5.22386 5.22386 5 5.5 5Z" fill="currentColor" />
@@ -34,8 +34,8 @@ export default function Sidebar() {
                 </a>
                 <div>
                     <div className={`flex justify-between items-center px-2 py-2
-                        ${pathname.startsWith("/product/") ? "rounded-md text-[#ff8200] bg-[#FBE3CA]" : (pathname === "/product" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600")
-                        } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md *:${pathname.startsWith("/product/") ? "text-[#ff8200]" : ""} 
+                        ${pathname.startsWith("/product/") ? "rounded-md text-(--primary) bg-[#FBE3CA]" : (pathname === "/product" ? "bg-(--primary) rounded-md text-white" : "text-(--text)")
+                        } hover:bg-(--primary)/30 hover:text-white transition duration-300 rounded-md *:${pathname.startsWith("/product/") ? "text-(--primary)" : ""} 
                         ${pathname === "/product" ? "text-white" : ""}`}>
                         <a
                             href="/productlist"
@@ -61,14 +61,14 @@ export default function Sidebar() {
                         <div className="ml-6 mt-2 flex flex-col gap-2">
                             <a
                                 href="/productlist"
-                                className={`pl-2 py-2 ${pathname === "/productlist" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
+                                className={`pl-2 py-2 ${pathname === "/productlist" ? "bg-(--primary) rounded-md text-white" : "text-(--text) hover:bg-(--primary)/30 hover:text-white rounded-md"
                                     }`}
                             >
                                 Product List
                             </a>
                             <a
                                 href="/productcategory"
-                                className={`pl-2 py-2 ${pathname === "/productcategory" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
+                                className={`pl-2 py-2 ${pathname === "/productcategory" ? "bg-(--primary) rounded-md text-white" : "text-(--text) hover:bg-(--primary)/30 hover:text-white rounded-md"
                                     }`}
                             >
                                 Categories
@@ -78,8 +78,8 @@ export default function Sidebar() {
                 </div>
                 <a
                     href="/order"
-                    className={`flex gap-2 py-2 px-2 ${pathname === "/order" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
-                        } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md`}
+                    className={`flex gap-2 py-2 px-2 ${pathname === "/order" ? "bg-(--primary) rounded-md text-white" : "text-(--text)"
+                        } hover:bg-(--primary)/30 hover:text-white transition duration-300 rounded-md`}
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M6.638 4.12231C6.45691 3.18063 5.63292 2.5 4.67398 2.5H3C2.44772 2.5 2 2.94772 2 3.5C2 4.05228 2.44772 4.5 3 4.5L4.67398 4.5L6.55002 14.2554C6.91221 16.1388 8.56018 17.5 10.478 17.5H16.6873C18.5044 17.5 20.0932 16.2752 20.5556 14.518L21.8068 9.76348C22.3074 7.86122 20.8726 6 18.9056 6H6.99909L6.638 4.12231ZM7.38371 8L8.51403 13.8777C8.69513 14.8194 9.51911 15.5 10.478 15.5H16.6873C17.5959 15.5 18.3903 14.8876 18.6215 14.009L19.8727 9.25449C20.0395 8.62041 19.5613 8 18.9056 8H7.38371Z" fill="currentColor" />
@@ -91,8 +91,8 @@ export default function Sidebar() {
                 </a>
                 <a
                     href="/customer"
-                    className={`flex gap-2 py-2 px-2 ${pathname === "/customer" ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
-                        } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md`}
+                    className={`flex gap-2 py-2 px-2 ${pathname === "/customer" ? "bg-(--primary) rounded-md text-white" : "text-(--text)"
+                        } hover:bg-(--primary)/30 hover:text-white transition duration-300 rounded-md`}
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M14.5 6.5C14.5 8.98528 12.4853 11 10 11C7.51472 11 5.5 8.98528 5.5 6.5C5.5 4.01472 7.51472 2 10 2C12.4853 2 14.5 4.01472 14.5 6.5ZM12.5 6.5C12.5 7.88071 11.3807 9 10 9C8.61929 9 7.5 7.88071 7.5 6.5C7.5 5.11929 8.61929 4 10 4C11.3807 4 12.5 5.11929 12.5 6.5Z" fill="currentColor" />
@@ -105,8 +105,8 @@ export default function Sidebar() {
                 </a>
                 <a
                     href="/promotion"
-                    className={`flex gap-2 py-2 px-2 ${pathname.startsWith("/promotion") ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
-                        } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md items-center`}
+                    className={`flex gap-2 py-2 px-2 ${pathname.startsWith("/promotion") ? "bg-(--primary) rounded-md text-white" : "text-(--text)"
+                        } hover:bg-(--primary)/30 hover:text-white transition duration-300 rounded-md items-center`}
                 >
                     <svg width="29" height="21" viewBox="0 0 29 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M27.948 16.9652C27.4844 16.9652 27.0398 16.781 26.712 16.4532C26.3842 16.1254 26.2 15.6807 26.2 15.2171C26.2 14.7535 26.3842 14.3089 26.712 13.9811C27.0398 13.6533 27.4844 13.4691 27.948 13.4691H28V9.05687H27.948C27.502 9.02969 27.0832 8.83335 26.7769 8.50791C26.4707 8.18247 26.3002 7.75245 26.3002 7.3056C26.3002 6.85875 26.4707 6.42873 26.7769 6.10329C27.0832 5.77785 27.502 5.58151 27.948 5.55433H28V1.34998H1V5.55433C1.44433 5.58146 1.86158 5.77708 2.16661 6.10131C2.47165 6.42553 2.64148 6.85393 2.64148 7.29909C2.64148 7.74425 2.47165 8.17266 2.16661 8.49688C1.86158 8.82111 1.44433 9.01673 1 9.04386V13.4691C1.44433 13.4963 1.86158 13.6919 2.16661 14.0161C2.47165 14.3403 2.64148 14.7687 2.64148 15.2139C2.64148 15.6591 2.47165 16.0875 2.16661 16.4117C1.86158 16.7359 1.44433 16.9315 1 16.9587V19.9673H28V16.9652H27.948Z" stroke="currentColor" strokeWidth="1.29964" strokeLinejoin="round" />
@@ -126,8 +126,8 @@ export default function Sidebar() {
                     Flash Sales
                 </a>
                 <a href="/import"
-                    className={`flex gap-2 py-2 px-2 ${pathname.startsWith("/import") ? "bg-[#ff8200] rounded-md text-white" : "text-gray-600"
-                        } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md items-center`}
+                    className={`flex gap-2 py-2 px-2 ${pathname.startsWith("/import") ? "bg-(--primary) rounded-md text-white" : "text-(--text)"
+                        } hover:bg-(--primary)/30 hover:text-white transition duration-300 rounded-md items-center`}
                 >
                     <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15.6219 8.61865L11.0004 12.918L6.37891 8.61865" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />

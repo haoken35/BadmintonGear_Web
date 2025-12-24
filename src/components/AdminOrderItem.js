@@ -22,8 +22,8 @@ export default function AdminOrderItem({ order, customer }) {
     }, [order.id]);
 
     return (
-        <tr className='bg-white shadow-md border-b border-[#F0F1F3]'>
-            <td className='text-[#ff8200] font-semibold text-center'>#{order.id}</td>
+        <tr className='bg-(--surface) shadow-md border-b border-(--border) text-(--text2)'>
+            <td className='text-(--primary) font-semibold text-center'>#{order.id}</td>
             <td className='py-4 flex items-center '>
                 {
                     details.length > 0 && (
@@ -37,13 +37,13 @@ export default function AdminOrderItem({ order, customer }) {
                                 height={50}
                             />
                             <div className='flex flex-col items-start'>
-                                <div className="font-medium">{details[0].Product?.translations[0]?.name}</div>
-                                <div className="text-sm text-gray-500">
+                                <div className="font-medium text-(--text)">{details[0].Product?.translations[0]?.name}</div>
+                                <div className="text-sm text-(--text2)">
                                     {Number(details[0].Product?.price).toLocaleString()} VND x {details[0].quantity}
                                 </div>
                                 {/* Hiển thị số lượng sản phẩm còn lại */}
                                 {details.length > 1 && (
-                                    <div className="text-sm text-gray-400">
+                                    <div className="text-sm text-(--text2)">
                                         +{details.length - 1} more items
                                     </div>
                                 )}
@@ -69,7 +69,7 @@ export default function AdminOrderItem({ order, customer }) {
                 <div className={`py-1 px-2 justify-center rounded-full w-fit mx-auto ${order.delivered ?
                     "bg-[#E7F4EE] text-[#0D894F]" : (order.shipping ?
                         "bg-[#E8F8FD] text-[#13B2E4]" : (order.process ?
-                            "bg-[#FDF1E8] text-[#ff8200]" : (order.status === -1 ? "bg-[#FEEDEC] text-[#F04438]" : "bg-[#FDF1E8] text-[#ff8200]")))}
+                            "bg-[#FDF1E8] text-(--primary)" : (order.status === -1 ? "bg-[#FEEDEC] text-[#F04438]" : "bg-[#FDF1E8] text-(--primary)")))}
     `}>
                     {order.delivered ? "Delivered" : (order.shipping ? "Shipping" : (order.process ? "Processing" : (order.status === -1 ? "Cancelled" : "Order Placed")))}
                 </div>

@@ -1,6 +1,6 @@
-const getAllProducts = async () =>{
+const getAllProducts = async () => {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?languagecode=vi`,{
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?languagecode=vi`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ const getAllProducts = async () =>{
 
 const getProductById = async (id) => {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}?languagecode=vi`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ const deleteProduct = async (id) => {
 }
 
 const uploadImage = async (uploadData) => {
-    try{
+    try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/imgproduct/`, {
             method: 'POST',
             body: uploadData
