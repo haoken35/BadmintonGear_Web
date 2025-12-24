@@ -4,6 +4,7 @@ import SaleProgress from '@/components/SaleProgress';
 import RevenueChart from '@/components/RevenueChart';
 import BestSellingProductItem from '@/components/AdminBestSellingProductItem';
 import AdminOrderItem from '@/components/AdminOrderItem';
+import { getAllOrders } from '@/service/orderService';
 
 export default function DashboardPage() {
     const [selectedOption, setSelectedOption] = useState('all-times');
@@ -15,88 +16,23 @@ export default function DashboardPage() {
     const productSKURatio = -10;
     const balance = 0;
     const balanceRatio = 0;
-    const [isAllChecked, setIsAllChecked] = useState(false); // Trạng thái checkbox của thead
 
-    const [listBestSellingProduct, setListBestSellingProduct] = useState([
-        { id: "pro001", name: "Product 1", image: "/images/product1.png", price: 166, quantity: 50, discount: 40, stock: 100 },
-        { id: "pro002", name: "Product 2", image: "/images/product1.png", price: 166, quantity: 60, discount: 10, stock: 100 },
-        { id: "pro003", name: "Product 3", image: "/images/product1.png", price: 166, quantity: 70, discount: 25, stock: 13 },
-        { id: "pro004", name: "Product 4", image: "/images/product1.png", price: 166, quantity: 89, discount: 0, stock: 0 },
-    ])
+    const [listBestSellingProduct, setListBestSellingProduct] = useState([]);
 
-    const [orders, setOrders] = useState([
-        {
-            id: "1",
-            total: 345,
-            date: "2025-05-01",
-            customer: { username: "customer1", email: "cus1@gmail.com" },
-            payment: "Cash On Delivery",
-            state: "Delivered",
-            isChecked: false,
-            products: [
-                { id: "pro001", name: "Product 1", image: "/images/product1.png", price: 166, quantity: 2 },
-                { id: "pro002", name: "Product 2", image: "/images/product1.png", price: 200, quantity: 1 },
-            ],
-        },
-        {
-            id: "2",
-            total: 456,
-            date: "2025-05-02",
-            customer: { username: "customer1", email: "cus1@gmail.com" },
-            payment: "Bank Transfer",
-            state: "Shipped",
-            isChecked: false,
-            products: [
-                { id: "pro001", name: "Product 1", image: "/images/product1.png", price: 166, quantity: 2 },
-            ],
-        }, 
-        {
-            id: "3",
-            total: 288,
-            date: "2025-05-04",
-            customer: { username: "customer1", email: "cus1@gmail.com" },
-            payment: "Bank Transfer",
-            state: "Processing",
-            isChecked: false,
-            products: [
-                { id: "pro001", name: "Product 3", image: "/images/product1.png", price: 189, quantity: 1 },
-                { id: "pro002", name: "Product 2", image: "/images/product1.png", price: 99, quantity: 1 },
-
-            ],
-        },     
-        {
-            id: "4",
-            total: 288,
-            date: "2025-05-04",
-            customer: { username: "customer1", email: "cus1@gmail.com" },
-            payment: "Cash On Delivery",
-            state: "Cancelled",
-            isChecked: false,
-            products: [
-                { id: "pro001", name: "Product 3", image: "/images/product1.png", price: 189, quantity: 1 },
-                { id: "pro002", name: "Product 2", image: "/images/product1.png", price: 99, quantity: 1 },
-
-            ],
-        },   
-    ]);
-
-    const handleSelectAll = () => {
-        const newCheckedState = !isAllChecked;
-        setIsAllChecked(newCheckedState);
-        setOrders(orders.map(order => ({ ...order, isChecked: newCheckedState })));
-    };
-
-    // Hàm xử lý khi checkbox trong tbody được chọn
-    const handleOrderCheck = (id) => {
-        const updatedOrders = orders.map(order =>
-            order.id === id ? { ...order, isChecked: !order.isChecked } : order
-        );
-        setOrders(updatedOrders);
-
-        // Kiểm tra nếu tất cả các checkbox con đều được chọn
-        const allChecked = updatedOrders.every(order => order.isChecked);
-        setIsAllChecked(allChecked);
-    };
+    const [orders, setOrders] = useState([]);
+    
+    const fetchOrders = async () => {
+        try {
+            const response = await getAllOrders();
+            if (response && response.data) {
+                setOrders(response.data);
+            } else {
+                console.error("No orders found or invalid response format");
+            }
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+        }
+    }
 
     return (
         <div className='font-inter'>
@@ -336,21 +272,16 @@ export default function DashboardPage() {
                             </svg>
                             Filters
                         </button>
-                        <button className='bg-[#ff8200] rounded-md text-white px-4 py-2'>See more</button>
+                        <button className='bg-[#ff8200] rounded-md text-white px-4 py-2'
+                            onClick={() => {
+                                window.location.href = '/admin/order';
+                            }}>See more</button>
                     </div>
 
                 </div>
                 <table className='w-full mt-5'>
                     <thead className='bg-[#F9FAFB] font-medium'>
                         <tr className='text-left bg-[#F9F9FC] font-semibold border-b border-[#E0E2E7]'>
-                            <th>
-                                <input
-                                    type='checkbox'
-                                    className='w-5 h-5 accent-[#ff8200] ml-5 my-4'
-                                    checked={isAllChecked}
-                                    onChange={handleSelectAll}
-                                />
-                            </th>
                             <th className='py-2 px-4'>OrderID</th>
                             <th className='py-2 px-4'>Product</th>
                             <th className='py-2 px-4'>Date</th>
@@ -359,17 +290,18 @@ export default function DashboardPage() {
                             <th className='py-2 px-4'>Payment</th>
                             <th className='py-2 px-4'>State</th>
                             <th className='py-2 px-4'>Action</th>
-
-
                         </tr>
                     </thead>
                     <tbody className='text-[#344054] font-normal'>
-                        {orders.map((order) => (
-                            <AdminOrderItem
-                                key={order.id}
-                                order={order}
-                                onCheck={() => handleOrderCheck(order.id)} />
-                        ))}
+                        {orders
+                            .slice()
+                            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                            .map((order) => (
+                                <AdminOrderItem
+                                    key={order.id}
+                                    order={order}
+                                    onCheck={() => handleOrderCheck(order.id)} />
+                            ))}
                     </tbody>
                 </table>
                 {/* Pagination*/}

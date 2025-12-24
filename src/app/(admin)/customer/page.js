@@ -106,6 +106,13 @@ const fetchCustomers = async () => {
             {displayCustomers.map((user) => (
               <CustomerItem key={user.id} user={user} />
             ))}
+            {
+              displayCustomers.length === 0 && (
+                <tr className='bg-white shadow-md border-b border-[#F0F1F3]'>
+                  <td colSpan="7" className='text-center py-4 text-gray-500'>No customers found</td>
+                </tr>
+              )
+            }
           </tbody>
         </table>
       </div>

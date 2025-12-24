@@ -72,10 +72,30 @@ const deletePromotion = async (id) => {
     }
 }
 
+const getPromotionByCode = async (code) => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/promotions/code/${code}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            alert('Error fetching promotion by code');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching promotion by code:', error);
+        alert('Error fetching promotion by code');
+    }
+}
+
 export {
     addPromotion,
     getPromotions,
     getPromotionById,
     updatePromotion,
-    deletePromotion
+    deletePromotion,
+    getPromotionByCode
 };

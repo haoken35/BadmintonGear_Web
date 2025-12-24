@@ -351,6 +351,15 @@ export default function Product() {
                                 onDelete={() => onDeleteProduct(product.id)}
                             />
                         ))}
+                        {
+                            displayProducts.length === 0 && (
+                                <tr>
+                                    <td colSpan="9" className="text-center py-4 text-gray-500">
+                                        No products found
+                                    </td>
+                                </tr>
+                            )
+                        }
                     </tbody>
                 </table>
                 {/* Pagination*/}

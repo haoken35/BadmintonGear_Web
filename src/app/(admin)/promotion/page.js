@@ -1,11 +1,36 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import AdminPromotionItem from '@/components/AdminPromotionItem';
 import { getPromotions, deletePromotion } from '@/service/promotionService';
 
 export default function PromotionPage() {
     const [promotions, setPromotions] = useState([]);
     const [displayPromotions, setDisplayPromotions] = useState([]);
+    const [statusFilter, setStatusFilter] = useState("");
+    const [showFilter, setShowFilter] = useState(false);
+    const filterRef = useRef(null);
+
+    useEffect(() => {
+        if (!showFilter) return;
+        const handleClickOutside = (event) => {
+            if (filterRef.current && !filterRef.current.contains(event.target)) {
+                setShowFilter(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showFilter]);
+
+    useEffect(() => {
+        let filtered = promotions;
+        if (statusFilter !== "") {
+            filtered = filtered.filter(promotion => String(promotion.status) === String(statusFilter));
+        }
+        setDisplayPromotions(filtered);
+    }, [promotions, statusFilter]);
+
 
     const fetchPromotions = async () => {
         try {
@@ -13,8 +38,8 @@ export default function PromotionPage() {
             if (response && response.length > 0) {
                 setPromotions(response);
                 setDisplayPromotions(response);
-            } else {
-                alert('No promotions found');
+            // } else {
+            //     alert('No promotions found');
             }
         }
         catch (error) {
@@ -94,7 +119,8 @@ export default function PromotionPage() {
                     </svg>
                     <input id='search' type='text' placeholder='Search promotion...' className='px-2 py-2 outline-none' onChange={handleSearch} />
                 </div>
-                <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'>
+                <button className='text-[#667085] border border-[#E0E2E7] bg-white rounded-md px-4 py-2 flex items-center gap-2'
+                    onClick={() => setShowFilter(true)}>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10.8333 6.66667C10.8333 7.1269 11.2064 7.5 11.6667 7.5C12.1269 7.5 12.5 7.1269 12.5 6.66667V5.83333H16.6667C17.1269 5.83333 17.5 5.46024 17.5 5C17.5 4.53976 17.1269 4.16667 16.6667 4.16667H12.5V3.33333C12.5 2.8731 12.1269 2.5 11.6667 2.5C11.2064 2.5 10.8333 2.8731 10.8333 3.33333V6.66667Z" fill="#667085" />
                         <path d="M2.5 10C2.5 9.53976 2.8731 9.16667 3.33333 9.16667H4.58333C4.81345 9.16667 5 9.35321 5 9.58333V10.4167C5 10.6468 4.81345 10.8333 4.58333 10.8333H3.33333C2.8731 10.8333 2.5 10.4602 2.5 10Z" fill="#667085" />
@@ -105,6 +131,35 @@ export default function PromotionPage() {
                     </svg>
                     Filters
                 </button>
+                {showFilter && (
+                    <div
+                        ref={filterRef}
+                        className="absolute right-10 top-60 z-50 bg-white border border-[#E0E2E7] rounded-md shadow-md p-5 min-w-[220px]"
+                    >
+                        <div className="mb-4">
+                            <label className="block mb-1 text-sm font-medium text-gray-700">Status</label>
+                            <select
+                                className="border px-2 py-1 rounded w-full"
+                                value={statusFilter}
+                                onChange={e => setStatusFilter(e.target.value)}
+                            >
+                                <option value="">All Status</option>
+                                <option value="1">Active</option>
+                                <option value="2">Out of turn</option>
+                                <option value="3">Disable</option>
+                                <option value="0">Expired</option>
+                            </select>
+                        </div>
+                        <div className="flex gap-2 justify-end">
+                            <button
+                                className="bg-gray-200 text-gray-700 px-3 py-1 rounded"
+                                onClick={() => setStatusFilter("")}
+                            >
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
             <div className="shadow-md rounded-md border border-[#E0E2E7] mt-5">
                 <table className='w-full py-2 rounded-md overflow-hidden '>
@@ -128,6 +183,13 @@ export default function PromotionPage() {
                                 onDelete={() => handleDeletePromotion(promotion.id)} />
                         ))}
                     </tbody>
+                    {displayPromotions.length === 0 && (
+                        <tbody>
+                            <tr>
+                                <td colSpan="8" className="py-4 text-center text-gray-500">No promotions found</td>
+                            </tr>
+                        </tbody>
+                    )}
                 </table>
                 {/* Pagination*/}
             </div>

@@ -53,7 +53,6 @@ export const ProductCard = ({ product }) => {
 
     useEffect(() => {
         fetchReview();
-        console.log("ProductCard mounted with product:", product);
     }, [])
 
     return (

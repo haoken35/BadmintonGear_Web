@@ -121,8 +121,8 @@ export default function Sidebar() {
                         } hover:bg-[#ff8200] hover:text-white transition duration-300 rounded-md items-center`}
                 >
                     <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15.6219 8.61865L11.0004 12.918L6.37891 8.61865" stroke="#667085" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M11 2V12.5871" stroke="#667085" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M15.6219 8.61865L11.0004 12.918L6.37891 8.61865" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M11 2V12.5871" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                         <path d="M20 14.4419V18.0002H2V14.4419" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                     Imports

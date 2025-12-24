@@ -23,16 +23,33 @@ export default function OrderPage() {
     const fetchOrders = async () => {
         try {
             const response = await getAllOrders();
-            if (response) {
-                console.log("Orders fetched successfully:", response);
-                setOrders(response);
-                setDisplayOrders(response);
-            } else {
-                console.error("Failed to fetch orders");
+            // normalize về array
+            const arr =
+                Array.isArray(response) ? response :
+                Array.isArray(response?.orders) ? response.orders :
+                Array.isArray(response?.data) ? response.data :
+                Array.isArray(response?.data?.orders) ? response.data.orders :
+            [];
+
+                console.log("Orders fetched:", arr);
+
+                setOrders(arr);
+                setDisplayOrders(arr);
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+                setOrders([]);
+                setDisplayOrders([]);
             }
-        } catch (error) {
-            console.error("Error fetching orders:", error);
-        }
+        //     if (response) {
+        //         console.log("Orders fetched successfully:", response);
+        //         setOrders(response);
+        //         setDisplayOrders(response);
+        //     } else {
+        //         console.error("Failed to fetch orders");
+        //     }
+        // } catch (error) {
+        //     console.error("Error fetching orders:", error);
+        // }
     }
     useEffect(() => {
         fetchOrders();
@@ -382,6 +399,15 @@ export default function OrderPage() {
                                 order={order} />
                         ))}
                     </tbody>
+                    {displayOrders.length === 0 && (
+                        <tbody>
+                            <tr>
+                                <td colSpan="8" className="text-center py-4 text-gray-500">
+                                    No orders found
+                                </td>
+                            </tr>
+                        </tbody>
+                    )}
                 </table>
                 {/* Pagination*/}
             </div>
