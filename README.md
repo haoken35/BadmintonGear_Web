@@ -1,5 +1,3 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
 ## Hướng dẫn chạy dự án BadmintonGear_Web
 
 Đây là hướng dẫn chi tiết để thiết lập và chạy dự án Front end Web của BadmintonGear.
