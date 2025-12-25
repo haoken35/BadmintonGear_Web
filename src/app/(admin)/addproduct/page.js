@@ -213,7 +213,7 @@ export default function AddProduct() {
                             onDragLeave={() => setIsDragging(false)}
                         >
 
-                            <div className='rounded-full p-2 bg-[#FBE3CA] border-3 border-[#EFEFFD] w-fit flex flex-col items-center justify-center gap-2'>
+                            <div className='rounded-full p-2 border-3 border-[#EFEFFD] w-fit flex flex-col items-center justify-center gap-2'>
                                 {imagePreviews.length === 0 && (<div className='rounded-full p-2 bg-[#FBE3CA] border-3 border-[#EFEFFD] w-fit'>
                                     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9.3335 12.2502C10.3 12.2502 11.0835 11.4667 11.0835 10.5002C11.0835 9.53366 10.3 8.75016 9.3335 8.75016C8.367 8.75016 7.5835 9.53366 7.5835 10.5002C7.5835 11.4667 8.367 12.2502 9.3335 12.2502Z" fill="#FF8200" />
@@ -286,7 +286,9 @@ export default function AddProduct() {
                             </div>
                         </div>
 
-                        <div className='bg-(--surface) shadow-md rounded-lg p-5 mt-5'>
+                        
+                    </div>
+                    <div className='bg-(--surface) shadow-md rounded-lg p-5 mt-5'>
                             <h2 className='text-xl font-semibold'>Inventory</h2>
                             <div className='mt-2 justify-between flex'>
                                 <div className=' gap-1 w-full'>
@@ -302,8 +304,8 @@ export default function AddProduct() {
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
+                
                 <div className='w-4/15'>
                     <div className='bg-(--surface) shadow-md rounded-lg p-5 w-full'>
                         <h2 className='text-xl font-semibold'>Category</h2>
