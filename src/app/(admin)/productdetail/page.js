@@ -111,7 +111,7 @@ export default function ProductDetail() {
             try {
                 const productData = await getProductById(productId);
                 setProduct(productData);
-                setImagePreviews(productData.Imagesproducts || []);
+                setImagePreviews(productData.ImagesProducts || []);
                 setName(productData.translations?.[0]?.name || '');
                 setDescription(productData.translations?.[0]?.description || '');
                 setBrand(productData.brand || '');

@@ -4,9 +4,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import OrderDetailItem from '@/components/OrderDetailItem';
 import { getOrderById, updateOrder } from '@/service/orderService';
 import { getDetailByOrderId } from '@/service/orderDetailService';
+import { useRouter } from 'next/navigation';
 
 export default function OrderDetailsPage() {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const orderId = searchParams.get('id');
     const [order, setOrder] = useState([]);
     const [mode, setMode] = useState(searchParams.get('mode') || "view");
@@ -17,6 +19,9 @@ export default function OrderDetailsPage() {
 
     const invoiceRef = useRef();
 
+    useEffect(() => {
+  setMode(searchParams.get("mode") || "view");
+}, [searchParams]);
     const handleExportInvoice = async () => {
         const html2pdf = (await import("html2pdf.js")).default;
 
@@ -89,7 +94,7 @@ export default function OrderDetailsPage() {
                     {mode === 'view' && (
                         <div>
                             <button className={`bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center cursor-pointer`}
-                                onClick={() => setMode('edit')}
+                                onClick={() => router.push(`/orderdetail?id=${orderId}&mode=edit`)}
                             >
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path fillRule="evenodd" clipRule="evenodd" d="M17.3047 6.81991C18.281 5.8436 18.281 4.26069 17.3047 3.28438L16.7155 2.69512C15.7391 1.71881 14.1562 1.71881 13.1799 2.69512L3.69097 12.1841C3.34624 12.5288 3.10982 12.9668 3.01082 13.4442L2.34111 16.6735C2.21932 17.2607 2.73906 17.7805 3.32629 17.6587L6.55565 16.989C7.03302 16.89 7.47103 16.6536 7.81577 16.3089L17.3047 6.81991ZM16.1262 4.46289L15.5369 3.87363C15.2115 3.5482 14.6839 3.5482 14.3584 3.87363L13.4745 4.75755L15.2423 6.52531L16.1262 5.6414C16.4516 5.31596 16.4516 4.78833 16.1262 4.46289ZM14.0638 7.70382L12.296 5.93606L4.86948 13.3626C4.75457 13.4775 4.67577 13.6235 4.64277 13.7826L4.23082 15.769L6.21721 15.3571C6.37634 15.3241 6.52234 15.2453 6.63726 15.1303L14.0638 7.70382Z" fill="#ffffff" />
