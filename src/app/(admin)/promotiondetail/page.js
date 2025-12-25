@@ -11,7 +11,7 @@ export default function PromotionDetail(id) {
     const [mode, setMode] = useState(searchParams.get('mode'));
     const [promotion, setPromotion] = useState(null);
     const [inputPromotion, setInputPromotion] = useState(null);
-    const [discountType, setDiscountType] = useState('percentage');
+    const [discountType, setDiscountType] = useState('0');
 
     const handleInputChange = (e) => {
         const code = document.getElementById('code').value;

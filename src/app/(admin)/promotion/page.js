@@ -185,8 +185,6 @@ export default function PromotionPage() {
             if (response.message === "Promotion deleted successfully") {
                 alert('Promotion deleted successfully');
                 fetchPromotions(); // Refresh the list after deletion
-            } else {
-                alert('Error deleting promotion');
             }
         } catch (error) {
             console.error('Error deleting promotion:', error);
