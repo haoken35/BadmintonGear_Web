@@ -108,6 +108,7 @@ export default function AddProduct() {
             price,
             brand,
             quantity,
+            languagecode: "vi",
         };
 
         try {

@@ -74,9 +74,10 @@ export default function ProductDetail() {
             name,
             description,
             brand,
-            price,
-            quantity,
+            price: Number(price),
+            quantity: Number(quantity),
             categoriesid: selectedCategory,
+            languagecode: "vi",
         };
 
         if (imagePreviews !== product.ImagesProducts) {
