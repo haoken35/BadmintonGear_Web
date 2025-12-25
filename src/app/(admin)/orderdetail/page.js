@@ -143,7 +143,7 @@ export default function OrderDetailsPage() {
                                 >
                                     ✕
                                 </button>
-                                <div ref={invoiceRef} id="invoice-content">
+                                <div ref={invoiceRef} id="invoice-content" className='text-black'>
                                     <h2 className="text-xl font-bold mb-2 text-center">HÓA ĐƠN BÁN HÀNG</h2>
                                     <p>Mã hóa đơn: {order.id}</p>
                                     <p>Ngày: {new Date(order.createdAt).toLocaleDateString('vi-VN')}</p>
@@ -160,7 +160,7 @@ export default function OrderDetailsPage() {
                                         <tbody>
                                             {details.map((item, idx) => (
                                                 <tr key={idx}>
-                                                    <td className="border px-2 py-4">{item.Product?.name}</td>
+                                                    <td className="border px-2 py-4">{item.Product?.translations?.[0]?.name}</td>
                                                     <td className="border px-2 py-4">{item.quantity}</td>
                                                     <td className="border px-2 py-4">{item.Product?.price.toLocaleString()}</td>
                                                     <td className="border px-2 py-4">{(item.quantity * item.Product?.price).toLocaleString()}</td>
@@ -301,7 +301,7 @@ export default function OrderDetailsPage() {
                     </div>
                     <table className='w-full mt-5'>
                         <thead className='bg-(--surface2) font-medium'>
-                            <tr className='text-center bg-(--surface2) font-semibold border-b border-(--border)'>
+                            <tr className='text-center bg-(--surface2) font-semibold border-b border-[#E0E2E7]'>
                                 <th className='py-2 px-4'>Product</th>
                                 {/* <th className='py-2 px-4'>SKU</th> */}
                                 <th className='py-2 px-4'>Quantity</th>
@@ -336,7 +336,7 @@ export default function OrderDetailsPage() {
                                 <td className='py-2 px-4 '>Shipping Cost</td>
                                 <td className='py-2 px-4 '>{Number(order.shippingAmount ? order.shippingAmount : 0).toLocaleString()} VND</td>
                             </tr>
-                            <tr className='text-(--text)'>
+                            <tr>
                                 <td></td>
                                 <td></td>
                                 <td className='py-2 px-4 font-semibold'>Grand Total</td>
