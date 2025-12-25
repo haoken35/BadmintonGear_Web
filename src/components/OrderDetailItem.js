@@ -20,7 +20,7 @@ export default function OrderDetailItem({ item }) {
     return (
         <tr>
             <td className='py-4'>
-                <div className='flex items-center gap-2'>
+                <div className='flex items-center gap-2 text-(--text)'>
                     <Image
                         src={product && product.ImagesProducts ? product.ImagesProducts[0].url : "/images/unimage.png"}
                         alt={product?.translations?.[0]?.name || "Product Image"}

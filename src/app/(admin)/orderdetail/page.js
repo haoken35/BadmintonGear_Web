@@ -70,25 +70,25 @@ export default function OrderDetailsPage() {
                 <div>
                     <h1 className='text-3xl font-bold'>Order Detail</h1>
                     <div id="roadmap" className="flex items-center mt-2">
-                        <a className="text-[#ff8200]" href="/dashboard">Dashboard</a>
+                        <a className="text-(--primary)" href="/dashboard">Dashboard</a>
                         <label className="ml-3 mr-3">
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                             </svg>
                         </label>
-                        <a className="text-[#ff8200]" href="/order">Order List</a>
+                        <a className="text-(--primary)" href="/order">Order List</a>
                         <label className="ml-3 mr-3">
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd" d="M6.59467 3.96967C6.30178 4.26256 6.30178 4.73744 6.59467 5.03033L10.5643 9L6.59467 12.9697C6.30178 13.2626 6.30178 13.7374 6.59467 14.0303C6.88756 14.3232 7.36244 14.3232 7.65533 14.0303L12.4205 9.26516C12.5669 9.11872 12.5669 8.88128 12.4205 8.73484L7.65533 3.96967C7.36244 3.67678 6.88756 3.67678 6.59467 3.96967Z" fill="#A3A9B6" />
                             </svg>
                         </label>
-                        <a className="text-[#667085]" href="/orderdetail">Order Detail</a>
+                        <a className="text-(--muted)" href="/orderdetail">Order Detail</a>
                     </div>
                 </div>
                 <div className='flex gap-2'>
                     {mode === 'view' && (
                         <div>
-                            <button className={`bg-[#ff8200] text-white px-4 py-2 rounded-md flex gap-2 items-center cursor-pointer`}
+                            <button className={`bg-(--primary) text-white px-4 py-2 rounded-md flex gap-2 items-center cursor-pointer`}
                                 onClick={() => setMode('edit')}
                             >
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -98,19 +98,19 @@ export default function OrderDetailsPage() {
                             </button>
                         </div>)}
                     {mode == "edit" && !order.process && !order.shipping && !order.delivered && order.status !== -1 && (
-                        <button className='flex gap-2 bg-[#ff8200] text-white px-4 py-2 rounded-md'
+                        <button className='flex gap-2 bg-(--primary) text-white px-4 py-2 rounded-md'
                             onClick={() => handleUpdateOrder(1)}>
                             Process Order
                         </button>
                     )}
                     {mode == "edit" && !order.shipping && order.process && !order.delivered && order.status !== -1 && (
-                        <button className='flex gap-2 bg-[#ff8200] text-white px-4 py-2 rounded-md'
+                        <button className='flex gap-2 bg-(--primary) text-white px-4 py-2 rounded-md'
                             onClick={() => handleUpdateOrder(2)}>
                             Ship Order
                         </button>
                     )}
                     {mode == "edit" && !order.delivered && order.shipping && order.process && order.status !== -1 && (
-                        <button className='flex gap-2 bg-[#ff8200] text-white px-4 py-2 rounded-md'
+                        <button className='flex gap-2 bg-(--primary) text-white px-4 py-2 rounded-md'
                             onClick={() => handleUpdateOrder(3)}>
                             Deliver Order
                         </button>
@@ -124,7 +124,7 @@ export default function OrderDetailsPage() {
                             <option value="Cancelled">Cancelled</option>
                         </select>
                     </div> */}
-                    <button className='flex gap-2 bg-[#ff8200] text-white px-4 py-2 rounded-md' onClick={() => setOpen(true)}>
+                    <button className='flex gap-2 bg-(--primary) text-white px-4 py-2 rounded-md' onClick={() => setOpen(true)}>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M4.99935 13.3333C4.99935 12.8731 5.37245 12.5 5.83268 12.5H7.49935C7.95959 12.5 8.33268 12.8731 8.33268 13.3333C8.33268 13.7936 7.95959 14.1667 7.49935 14.1667H5.83268C5.37245 14.1667 4.99935 13.7936 4.99935 13.3333Z" fill="white" />
                             <path d="M5.83268 9.16667C5.37245 9.16667 4.99935 9.53976 4.99935 10C4.99935 10.4602 5.37245 10.8333 5.83268 10.8333H10.8327C11.2929 10.8333 11.666 10.4602 11.666 10C11.666 9.53976 11.2929 9.16667 10.8327 9.16667H5.83268Z" fill="white" />
@@ -191,7 +191,7 @@ export default function OrderDetailsPage() {
                                 </div>
                                 <button
                                     onClick={handleExportInvoice}
-                                    className="mt-6 px-4 py-2 bg-[#ff8200] text-white rounded"
+                                    className="mt-6 px-4 py-2 bg-(--primary) text-white rounded"
                                 >
                                     Export
                                 </button>
@@ -201,11 +201,11 @@ export default function OrderDetailsPage() {
                 </div>
             </div>
             <div className='flex gap-15 mt-5'>
-                <div className='p-5 bg-white rounded-md shadow-md w-2/7 h-fit'>
+                <div className='p-5 bg-(--surface) rounded-md shadow-md w-2/7 h-fit'>
                     <div className='flex gap-3 items-center'>
                         <h1 className='text-xl font-semibold'>Order #{order.id}</h1>
                         <div className={`py-1 px-2 rounded-full w-fit ${order.status === 1 ?
-                            "bg-[#FDF1E8] text-[#ff8200]" : (order.status === 2 ?
+                            "bg-[#FDF1E8] text-(--primary)" : (order.status === 2 ?
                                 "bg-[#E8F8FD] text-[#13B2E4]" : (order.status === 4 ?
                                     "bg-[#FEEDEC] text-[#F04438]" : "bg-[#E7F4EE] text-[#0D894F]"))}`}>
                             {order.status === 1 ? "Order Placed" : (order.status === 2 ? "Processing" : (order.status === 3 ? "Shipping" : (order.status === 4 ? "Delivered" : "Cancelled")))}
@@ -236,7 +236,7 @@ export default function OrderDetailsPage() {
                         <div>{order.Payment ? order.Payment.paymentmethod : "Cash"}</div>
                     </div>
                 </div>
-                <div className='p-5 bg-white rounded-md shadow-md w-2/7 '>
+                <div className='p-5 bg-(--surface) rounded-md shadow-md w-2/7 '>
                     <h1 className='text-xl font-semibold'>Customer</h1>
                     <div className='flex justify-between items-center mt-2'>
                         <div className='flex gap-2 items-center'>
@@ -294,14 +294,14 @@ export default function OrderDetailsPage() {
                 </div> */}
             </div>
             <div className='flex gap-[7%] w-full mt-5'>
-                <div className='w-9/14 p-5 bg-white rounded-md shadow-md h-fit'>
+                <div className='w-9/14 p-5 bg-(--surface) rounded-md shadow-md h-fit'>
                     <div className='flex w-full gap-4 items-center px-5'>
                         <div className='text-lg font-semibold'>Product List</div>
-                        <div className='bg-[#E7F4EE] text-[#0D894F] rounded-full px-2 py-1'>{details.length} Product{details.length > 1 ? "s" : ""}</div>
+                        <div className='bg-([#E7F4EE]) text-[#0D894F] rounded-full px-2 py-1'>{details.length} Product{details.length > 1 ? "s" : ""}</div>
                     </div>
                     <table className='w-full mt-5'>
-                        <thead className='bg-[#F9FAFB] font-medium'>
-                            <tr className='text-center bg-[#F9F9FC] font-semibold border-b border-[#E0E2E7]'>
+                        <thead className='bg-(--surface2) font-medium'>
+                            <tr className='text-center bg-(--surface2) font-semibold border-b border-(--border)'>
                                 <th className='py-2 px-4'>Product</th>
                                 {/* <th className='py-2 px-4'>SKU</th> */}
                                 <th className='py-2 px-4'>Quantity</th>
@@ -309,7 +309,7 @@ export default function OrderDetailsPage() {
                                 <th className='py-2 px-4'>Total</th>
                             </tr>
                         </thead>
-                        <tbody className='text-[#344054] font-normal text-center'>
+                        <tbody className='text-(--text2) font-normal text-center'>
                             {details.map((item) => (
                                 <OrderDetailItem
                                     key={item.id}
@@ -336,7 +336,7 @@ export default function OrderDetailsPage() {
                                 <td className='py-2 px-4 '>Shipping Cost</td>
                                 <td className='py-2 px-4 '>{Number(order.shippingAmount ? order.shippingAmount : 0).toLocaleString()} VND</td>
                             </tr>
-                            <tr>
+                            <tr className='text-(--text)'>
                                 <td></td>
                                 <td></td>
                                 <td className='py-2 px-4 font-semibold'>Grand Total</td>
@@ -346,7 +346,7 @@ export default function OrderDetailsPage() {
                     </table>
                 </div>
                 <div className='w-2/7 '>
-                    <div className='p-5 bg-white rounded-md shadow-md w-full'>
+                    <div className='p-5 bg-(--surface) rounded-md shadow-md w-full'>
                         <h1 className='text-xl font-semibold'>Address</h1>
                         <div className='flex gap-2 items-center'>
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -361,7 +361,7 @@ export default function OrderDetailsPage() {
                             </div>
                         </div>
                     </div>
-                    <div className='p-5 bg-white rounded-md shadow-md w-full mt-5 flex flex-col gap-5'>
+                    <div className='p-5 bg-(--surface) rounded-md shadow-md w-full mt-5 flex flex-col gap-5'>
                         <h1 className='text-xl font-semibold'>Order Status</h1>
                         <div className='flex gap-2 items-center'>
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">

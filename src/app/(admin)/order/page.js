@@ -31,10 +31,15 @@ export default function OrderPage() {
                             Array.isArray(response?.data?.orders) ? response.data.orders :
                                 [];
 
+
             console.log("Orders fetched:", arr);
+
+            // Sort by createdAt descending (newest first)
+            arr.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
             setOrders(arr);
             setDisplayOrders(arr);
+
         } catch (error) {
             console.error("Error fetching orders:", error);
             setOrders([]);
